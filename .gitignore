@@ -1,8 +1,12 @@
 *.swp
 .bundle
+.vendor
+spec/fixtures
 .ruby-version
 .yardoc
 /doc
 Gemfile.lock
 Gemfile.local
 *.gem
+*.bak
+.vagrant

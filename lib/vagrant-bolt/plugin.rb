@@ -5,8 +5,7 @@ if Vagrant::VERSION < "2.1.0"
       raise "vagrant-bolt version #{VagrantBolt::VERSION} requires Vagrant 2.1 or later"
 end
 
-module VagrantBolt
-  class Plugin < Vagrant.plugin('2')
+class VagrantBolt::Plugin < Vagrant.plugin('2')
 
     name 'bolt'
 
@@ -14,5 +13,19 @@ module VagrantBolt
     Vagrant provisioning with Puppet Bolt
     DESC
 
-  end
+    config(:bolt) do
+      require_relative 'config'
+      VagrantBolt::Config::Global
+    end
+
+    config(:bolt, :provisioner) do
+      require_relative 'config'
+      VagrantBolt::Config::Bolt
+    end
+
+    provisioner(:bolt) do
+      require_relative 'provisioner'
+      VagrantBolt::Provisioner::Bolt
+    end
+
 end
