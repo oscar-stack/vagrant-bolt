@@ -39,7 +39,7 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
   attr_accessor :sslverify
 
   # @!attribute [rw] modulepath
-  #   @return [String] The path to the modules
+  #   @return [String] The path to the modules. Defaults to `modules`.
   #   @since 0.0.1
   attr_accessor :modulepath
 
@@ -58,6 +58,11 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
   #   @since 0.0.1
   attr_accessor :debug
 
+  # @!attribute [rw] boltcommand
+  #   @return [String] The full path to the bolt command. If not passed in, the bundled version will be used.
+  #   @since 0.0.1
+  attr_accessor :boltcommand
+
   def initialize
     @username     = UNSET_VALUE
     @password     = UNSET_VALUE
@@ -70,22 +75,24 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
     @tmpdir       = UNSET_VALUE
     @verbose      = UNSET_VALUE
     @debug        = UNSET_VALUE
+    @boltcommand  = UNSET_VALUE
   end
 
   include VagrantBolt::ConfigDefault
 
   def finalize!
-    set_default :@username, "root"
+    set_default :@username, nil
     set_default :@password, nil
     set_default :@sudopassword, nil
     set_default :@privatekey, nil
     set_default :@hostkeycheck, false
     set_default :@ssl, false
     set_default :@sslverify, false
-    set_default :@modulepath, nil
+    set_default :@modulepath, 'modules'
     set_default :@tmpdir, nil
     set_default :@verbose, false
     set_default :@debug, false
+    set_default :@boltcommand, nil
   end
 
   def validate(machine)
