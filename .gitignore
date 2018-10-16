@@ -8,5 +8,7 @@ spec/fixtures
 Gemfile.lock
 Gemfile.local
 *.gem
+*.log
 *.bak
 .vagrant
+/modules

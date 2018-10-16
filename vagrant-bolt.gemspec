@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
   gem.homepage = 'https://github.com/jarretlavallee/vagrant-bolt'
 
 # net-ssh has some version differences between bolt and vagrant
-  # Maybe make this optional and default to env bolt?
+  # We require bolt to be installed in PATH
 #  gem.add_dependency 'bolt', '~> 1.0'
 
   gem.files        = %x{git ls-files -z}.split("\0")

@@ -28,8 +28,7 @@ Vagrant.configure('2') do |config|
     s.vm.provider :openstack do |os, override|
     end
     s.vm.provision :bolt do |config|
-      config.task             = "A Task"
-      config.plan             = "A Plan"
+      config.task             = "facts::linux"
     end
   end
 end

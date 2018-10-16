@@ -9,3 +9,12 @@ en:
           task_and_plan_configured: |-
             Task %{task} and Plan %{plan} were specified. Please specify either
             a task or a plan, not both
+    provisioner:
+      bolt:
+        info:
+          deploying_puppetfile: |-
+            Bolt: Deploying the Puppetfile
+          adding_trigger: |-
+            Bolt: Adding trigger after %{action} to %{machine}
+          running_bolt: |-
+            Bolt: Running bolt command locally: %{command}

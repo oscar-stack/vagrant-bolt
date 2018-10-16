@@ -6,6 +6,7 @@ AllCops:
     - "lib/**/*.rb"
   Exclude:
     - "bin/*"
+    - "modules/**/*"
     - ".vendor/**/*"
     - ".bundle/**/*"
     - "**/Gemfile"
