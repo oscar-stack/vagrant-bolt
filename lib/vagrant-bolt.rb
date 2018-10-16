@@ -1,6 +1,7 @@
 module VagrantBolt
   require 'vagrant-bolt/version'
   require 'vagrant-bolt/plugin'
+  require 'pry' #REMOVEME
 
   def self.source_root
     @source_root ||= File.expand_path('..', __FILE__)

@@ -17,7 +17,9 @@ Gem::Specification.new do |gem|
   gem.email    = ['jarret@puppet.com']
   gem.homepage = 'https://github.com/jarretlavallee/vagrant-bolt'
 
-  gem.add_dependency 'bolt', '~> 1.0'
+# net-ssh has some version differences between bolt and vagrant
+  # We require bolt to be installed in PATH
+#  gem.add_dependency 'bolt', '~> 1.0'
 
   gem.files        = %x{git ls-files -z}.split("\0")
   gem.require_path = 'lib'
