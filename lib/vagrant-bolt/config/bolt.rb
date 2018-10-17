@@ -1,12 +1,12 @@
 class VagrantBolt::Config::Bolt < Vagrant.plugin('2', :config)
 
-  # @!attribute [rw] task
-  #   @return [String] The name of task to run
-  attr_accessor :task
+  # @!attribute [rw] name
+  #   @return [String] The name of task or plan to run
+  attr_accessor :name
 
-  # @!attribute [rw] plan
-  #   @return [String] The name of plan to run
-  attr_accessor :plan
+  # @!attribute [rw] type
+  #   @return [Symbol] Task or Plan
+  attr_accessor :type
 
   # @!attribute [rw] parameters
   #   @return [Hash] The paramater hash for the task or plan
@@ -72,13 +72,13 @@ class VagrantBolt::Config::Bolt < Vagrant.plugin('2', :config)
   #   @return [String] 	User to run as using privilege escalation.
   attr_accessor :run_as
 
-  # @!attribute [rw] deploypuppetfile
-  #   @return [Boolean] 	If the `boltdir/Puppetfile` should be deployed. Note that this setting is global for all provisioners.
-  attr_accessor :deploypuppetfile
+  # @!attribute [rw] args
+  #   @return [String] 	Additional arguments for the bolt command
+  attr_accessor :args
 
   def initialize
-    @task             = UNSET_VALUE
-    @plan             = UNSET_VALUE
+    @name             = UNSET_VALUE
+    @type             = UNSET_VALUE
     @parameters       = UNSET_VALUE
     @nodes            = UNSET_VALUE
     @username         = UNSET_VALUE
@@ -95,12 +95,12 @@ class VagrantBolt::Config::Bolt < Vagrant.plugin('2', :config)
     @boltcommand      = UNSET_VALUE
     @boltdir          = UNSET_VALUE
     @run_as           = UNSET_VALUE
-    @deploypuppetfile = UNSET_VALUE
+    @args             = UNSET_VALUE
   end
 
   def finalize!
-    @task             = nil if @task == UNSET_VALUE
-    @plan             = nil if @plan == UNSET_VALUE
+    @name             = nil if @name == UNSET_VALUE
+    @type             = nil if @type == UNSET_VALUE
     @parameters       = nil if @parameters == UNSET_VALUE
     @nodes            = nil if @nodes == UNSET_VALUE
     @username         = nil if @username == UNSET_VALUE
@@ -117,19 +117,19 @@ class VagrantBolt::Config::Bolt < Vagrant.plugin('2', :config)
     @boltcommand      = 'bolt' if @boltcommand == UNSET_VALUE
     @boltdir          = '.' if @boltdir == UNSET_VALUE
     @run_as           = nil if @run_as == UNSET_VALUE
-    @deploypuppetfile = true if @deploypuppetfile == UNSET_VALUE
+    @args             = nil if @args == UNSET_VALUE
   end
 
   def validate(machine)
     errors = _detected_errors
     # if @task.nil? && @plan.nil?
     #   errors << I18n.t('vagrant-bolt.config.bolt.errors.no_task_or_plan')
-    if !@task.nil? && !@plan.nil?
-      errors << I18n.t('vagrant-bolt.config.bolt.errors.task_and_plan_configured',
-                        :task => @task,
-                        :plan => @plan,
-                      )
-    end
+    # if !@name.nil?
+    #   errors << I18n.t('vagrant-bolt.config.bolt.errors.task_and_plan_configured',
+    #                     :task => @task,
+    #                     :plan => @plan,
+    #                   )
+    # end
 
     {"Bolt" => errors }
   end
