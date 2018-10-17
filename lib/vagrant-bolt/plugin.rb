@@ -1,8 +1,8 @@
 require 'vagrant'
 require 'vagrant-bolt/version'
 
-if Vagrant::VERSION < "2.1.0"
-      raise "vagrant-bolt version #{VagrantBolt::VERSION} requires Vagrant 2.1 or later"
+if Vagrant::VERSION < "2.2.0"
+      raise "vagrant-bolt version #{VagrantBolt::VERSION} requires Vagrant 2.2 or later"
 end
 
 class VagrantBolt::Plugin < Vagrant.plugin('2')
