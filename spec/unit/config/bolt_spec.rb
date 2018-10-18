@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'vagrant-bolt/config'
 
-describe VagrantBolt::Config::Bolt do
+describe VagrantBolt::Config do
   let (:machine) { double("machine") }
 
   describe "bolt" do

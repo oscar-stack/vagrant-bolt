@@ -15,17 +15,17 @@ class VagrantBolt::Plugin < Vagrant.plugin('2')
 
     config(:bolt) do
       require_relative 'config'
-      VagrantBolt::Config::Bolt
+      VagrantBolt::Config
     end
 
     config(:bolt, :provisioner) do
       require_relative 'config'
-      VagrantBolt::Config::Bolt
+      VagrantBolt::Config
     end
 
     provisioner(:bolt) do
       require_relative 'provisioner'
-      VagrantBolt::Provisioner::Bolt
+      VagrantBolt::Provisioner
     end
 
 end
