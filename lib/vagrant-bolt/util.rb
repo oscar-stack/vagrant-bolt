@@ -9,7 +9,7 @@ module VagrantBolt::Util
   # @return [Object] a merged result with local overriding other
   def merge_config(local, other)
     result = local.class.new
-    [local, other].each do |obj|
+    [other, local].each do |obj|
       obj.instance_variables.each do |key|
         value = obj.instance_variable_get(key)
         result.instance_variable_set(key, value) if value != Vagrant::Plugin::V2::Config::UNSET_VALUE and value != nil
