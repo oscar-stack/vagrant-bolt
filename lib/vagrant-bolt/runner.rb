@@ -28,7 +28,6 @@ class VagrantBolt::Runner
   # @param [Array[Hash], nil] args A optional hash of bolt config overrides; {run_as: "vagrant"}
   # @return [Object] Bolt config with ssh info populated
   def setup_overrides(type, name, **args)
-    #config = @boltconfig.merge(@machine.config.bolt)
     config = @boltconfig.dup
     config.type = type
     config.name = name
@@ -53,6 +52,7 @@ class VagrantBolt::Runner
       I18n.t('vagrant-bolt.provisioner.bolt.info.running_bolt',
         :command => command,
         ))
+
     result = Vagrant::Util::Subprocess.execute(
         'bash',
         '-c',
@@ -60,7 +60,11 @@ class VagrantBolt::Runner
         :notify => [:stdout, :stderr],
         :env => {PATH: ENV["VAGRANT_OLD_ENV_PATH"]},
       ) do |io_name, data|
-          @machine.ui.info "[#{io_name}] #{data}"
+          if io_name == :stdout
+            @machine.ui.info data
+          elsif io_name == :stderr
+            @machine.ui.warn data
+          end
         end
   end
 
