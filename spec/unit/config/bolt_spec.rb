@@ -4,7 +4,7 @@ require 'vagrant-bolt/config'
 describe VagrantBolt::Config do
   let (:machine) { double("machine") }
 
-  describe "bolt" do
+  describe "bolt config" do
 
     context "validation" do
       it "should validate with the defaults" do
