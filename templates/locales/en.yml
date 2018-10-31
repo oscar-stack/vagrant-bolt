@@ -13,9 +13,5 @@ en:
     provisioner:
       bolt:
         info:
-          deploying_puppetfile: |-
-            Bolt: Deploying the Puppetfile
-          adding_trigger: |-
-            Bolt: Adding trigger after %{action} to %{machine}
           running_bolt: |-
             Bolt: Running bolt command locally: %{command}

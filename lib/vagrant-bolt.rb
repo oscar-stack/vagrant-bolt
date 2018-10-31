@@ -8,9 +8,9 @@ module VagrantBolt
   # @param [Object] env The environment
   # @param [Object] machine The machine
   # @param [Array[Hash], nil] args A optional hash of bolt config overrides; {run_as: "root", parameters: {taskparam: "value"}}
-  def self.task(task, env, machine, *args)
+  def self.task(task, env, machine, **args)
     runner = VagrantBolt::Runner.new(env, machine)
-    runner.run(:task, task, *args)
+    runner.run(:task, task, **args)
   end
 
   # Run a bolt plan
@@ -18,9 +18,9 @@ module VagrantBolt
   # @param [Object] env The environment
   # @param [Object] machine The machine
   # @param [Array[Hash], nil] args A optional hash of bolt config overrides; {run_as: "root", parameters: {planparam: "value"}}
-  def self.plan(plan, env, machine, *args)
+  def self.plan(plan, env, machine, **args)
     runner = VagrantBolt::Runner.new(env, machine)
-    runner.run(:plan, plan, *args)
+    runner.run(:plan, plan, **args)
   end
 
   def self.source_root

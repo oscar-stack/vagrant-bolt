@@ -13,7 +13,7 @@ class VagrantBolt::Runner
   # @param [String] name The name of the bolt task or plan to run
   # @param [Array[Hash], nil] args A optional hash of bolt config overrides; {run_as: "vagrant"}
   def run(type, name, **args)
-    @boltconfig = setup_overrides(type, name, args)
+    @boltconfig = setup_overrides(type, name, **args)
     validate
     run_bolt
   end
