@@ -14,6 +14,7 @@ class VagrantBolt::Runner
   # @param [Array[Hash], nil] args A optional hash of bolt config overrides; {run_as: "vagrant"}
   def run(type, name, **args)
     @boltconfig = setup_overrides(type, name, args)
+    validate
     run_bolt
   end
 
@@ -94,5 +95,33 @@ class VagrantBolt::Runner
     command << "--debug" if @boltconfig.debug
     command << @boltconfig.args unless @boltconfig.args.nil?
     command.flatten.join(" ")
+  end
+
+  # Validate the config object for configuration issues
+  # Print and raise an exception if errors exist
+  def validate
+    errors = {}
+    errors.merge!(@boltconfig.validate(@machine))
+    errors.merge!(validate_config)
+
+    errors.keys.each do |key|
+      errors.delete(key) if errors[key].empty?
+    end
+
+    if errors && !errors.empty?
+      raise Vagrant::Errors::ConfigInvalid,
+        errors: Vagrant::Util::TemplateRenderer.render(
+          "config/validation_failed",
+          errors: errors)
+    end
+
+  end
+
+  # Validate a bolt config object for logical errors
+  def validate_config
+    errors = []
+      errors << I18n.t('vagrant-bolt.config.bolt.errors.type_not_specified') if @boltconfig.type.nil?
+      errors << I18n.t('vagrant-bolt.config.bolt.errors.no_task_or_plan') if @boltconfig.name.nil?
+    {"Bolt" => errors }
   end
 end

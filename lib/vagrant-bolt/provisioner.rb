@@ -4,7 +4,7 @@ require 'vagrant-bolt/util'
 
 class VagrantBolt::Provisioner < Vagrant.plugin('2', :provisioner)
   # Provision VMs with Bolt
-  # Creates a trigger for each bolt provioner
+  # Creates a trigger for each bolt provisioner
 
   def configure(root_config)
     merge_root_config(root_config.bolt)

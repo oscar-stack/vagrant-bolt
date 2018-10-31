@@ -90,4 +90,17 @@ describe VagrantBolt::Runner do
       subject.send(:run_bolt)
     end
   end
+  context 'run' do
+    before(:each) do
+      allow(Vagrant::Util::Subprocess).to receive(:execute).and_return(subprocess_result)
+    end
+
+    it 'raises an exception if the type is not specified' do
+      expect{subject.run(nil, 'foo')}.to raise_error(Vagrant::Errors::ConfigInvalid, /No type set/)
+    end
+
+    it 'raises an exception if the name is not specified' do
+      expect{subject.run('task', nil)}.to raise_error(Vagrant::Errors::ConfigInvalid, /No name set/)
+    end
+  end
 end

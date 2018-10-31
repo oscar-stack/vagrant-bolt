@@ -5,10 +5,11 @@ en:
       bolt:
         errors:
           no_task_or_plan: |-
-            A task or a plan must be specified to use the bolt provisioner
-          task_and_plan_configured: |-
-            Task %{task} and Plan %{plan} were specified. Please specify either
-            a task or a plan, not both
+            No name set. A task or a plan must be specified to use the bolt provisioner
+          type_not_specified: |-
+            No type set. Please specify either task or plan
+          invalid_type: |-
+            Type can only be task or plan, not %{type}
     provisioner:
       bolt:
         info:

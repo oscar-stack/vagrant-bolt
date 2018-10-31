@@ -7,15 +7,36 @@ describe VagrantBolt::Config do
   describe "bolt config" do
 
     context "validation" do
-      it "should validate with the defaults" do
+      it "validates with the defaults" do
         subject.finalize!
         expect(subject.validate(machine)).to eq({"Bolt"=>[]})
       end
 
-      it "should report invalid options" do
+      it "reports invalid options" do
         subject.foo = "bar"
         subject.finalize!
         expect(subject.validate(machine)).to eq({"Bolt"=>["The following settings shouldn't exist: foo"]})
+      end
+
+      it "reports an error when the type is invalid" do
+        subject.type = "bar"
+        subject.name = "foo"
+        subject.finalize!
+        expect(subject.validate(machine)).to eq({"Bolt"=>["Type can only be task or plan, not bar"]})
+      end
+
+      it "reports an error when the name is not specified" do
+        subject.type = "task"
+        subject.name = nil
+        subject.finalize!
+        expect(subject.validate(machine)).to eq({"Bolt"=>["No name set. A task or a plan must be specified to use the bolt provisioner"]})
+      end
+
+      it "reports an error when the type is not specified" do
+        subject.type = nil
+        subject.name = "foo"
+        subject.finalize!
+        expect(subject.validate(machine)).to eq({"Bolt"=>["No type set. Please specify either task or plan"]})
       end
 
     end
@@ -31,7 +52,7 @@ describe VagrantBolt::Config do
         boltdir: ".",
       }
       expected_values.each do |val, expected|
-        it "should default #{val} to #{expected}" do
+        it "defaults #{val} to #{expected}" do
           subject.finalize!
           expect(subject.send(val)).to eq(expected)
         end
@@ -51,7 +72,7 @@ describe VagrantBolt::Config do
         "args",
       ]
       expected_nil.each do |val|
-        it "should default #{val} to nil" do
+        it "defaults #{val} to nil" do
           subject.finalize!
           expect(subject.send(val)).to eq(nil)
         end
