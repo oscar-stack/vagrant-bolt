@@ -12,8 +12,8 @@ class VagrantBolt::Runner
   # @param [Symbol|String] type The type of bolt to run; task or plan
   # @param [String] name The name of the bolt task or plan to run
   # @param [Array[Hash], nil] args A optional hash of bolt config overrides; {run_as: "vagrant"}
-  def run(type, name, *args)
-    @boltconfig = setup_overrides(type, name, *args)
+  def run(type, name, **args)
+    @boltconfig = setup_overrides(type, name, args)
     run_bolt
   end
 
@@ -26,15 +26,13 @@ class VagrantBolt::Runner
   # @param [String] name The name of the bolt task or plan to run
   # @param [Array[Hash], nil] args A optional hash of bolt config overrides; {run_as: "vagrant"}
   # @return [Object] Bolt config with ssh info populated
-  def setup_overrides(type, name, *args)
+  def setup_overrides(type, name, **args)
     #config = @boltconfig.merge(@machine.config.bolt)
     config = @boltconfig.dup
     config.type = type
     config.name = name
     # Add any additional arguments to the config object
-    args.each do |arg|
-      config.set_options(arg)
-    end
+    config.set_options(args) unless args.nil?
 
     # Pupulate ssh_info
     config.nodes = all_node_list(@env) if config.nodes.to_s.downcase == "all"
