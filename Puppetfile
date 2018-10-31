@@ -24,7 +24,3 @@ mod 'puppetlabs-selinux_core', '1.0.1'
 mod 'puppetlabs-yumrepo_core', '1.0.1'
 mod 'puppetlabs-zone_core', '1.0.1'
 
-# If we don't list these modules explicitly, r10k will purge them
-mod 'canary', local: true
-mod 'aggregate', local: true
-mod 'puppetdb_fact', local: true
