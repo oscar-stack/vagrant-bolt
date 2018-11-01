@@ -8,8 +8,6 @@ class VagrantBolt::Provisioner < Vagrant.plugin('2', :provisioner)
 
   def configure(root_config)
     merge_root_config(root_config.bolt)
-    #TODO: validate_config for type and name
-    #validate_config
   end
 
   def provision
