@@ -49,7 +49,7 @@ describe VagrantBolt::Runner do
 
     it 'adds the ssh_info to the config' do
       result = subject.send(:setup_overrides, 'task', 'foo')
-      expect(result.nodes).to eq('foo:22')
+      expect(result.nodes).to eq('ssh://foo:22')
       expect(result.username).to eq('user')
       expect(result.privatekey).to eq('path')
       expect(result.hostkeycheck).to eq(true)
@@ -83,11 +83,24 @@ describe VagrantBolt::Runner do
     it 'creates a shell execution' do
       config.type = 'task'
       config.name = 'foo'
-      config.nodes = 'test:22'
+      config.nodes = 'ssh://test:22'
       config.finalize!
-      command = 'bolt task run foo --no-host-key-check --modulepath modules -n test:22'
+      command = "bolt task run 'foo' --no-host-key-check --modulepath 'modules' --boltdir '.' -n 'ssh://test:22'"
       expect(Vagrant::Util::Subprocess).to receive(:execute).with('bash', '-c', command, options).and_return(subprocess_result)
       subject.send(:run_bolt)
+    end
+  end
+  context 'run' do
+    before(:each) do
+      allow(Vagrant::Util::Subprocess).to receive(:execute).and_return(subprocess_result)
+    end
+
+    it 'raises an exception if the type is not specified' do
+      expect{subject.run(nil, 'foo')}.to raise_error(Vagrant::Errors::ConfigInvalid, /No type set/)
+    end
+
+    it 'raises an exception if the name is not specified' do
+      expect{subject.run('task', nil)}.to raise_error(Vagrant::Errors::ConfigInvalid, /No name set/)
     end
   end
 end

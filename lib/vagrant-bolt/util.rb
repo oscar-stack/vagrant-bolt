@@ -37,9 +37,35 @@ module VagrantBolt::Util
   # @return [String]
   def all_node_list(env, excludes = [])
     nodes_in_environment(env).map { |vm|
-      unless excludes.include?(vm.name.to_s)
-        "#{vm.ssh_info[:host]}:#{vm.ssh_info[:port]}" unless vm.ssh_info.nil?
+      unless excludes.include?(vm.name.to_s) || !running?(vm)
+        if windows?(vm)
+          "winrm://#{vm.config.winrm.host}:#{vm.config.winrm.port}" unless vm.ssh_info.nil?
+        else
+          "ssh://#{vm.ssh_info[:host]}:#{vm.ssh_info[:port]}" unless vm.ssh_info.nil?
+        end
       end
     }.compact.join(",")
+  end
+
+  # Return if the guest is windows. This only works for online machines
+  # @param [Object] machine The machine
+  # @return [Boolean]
+  def windows?(machine)
+    #[:winrm, :winssh].include?(machine.config.vm.communicator)
+    machine.config.vm.communicator == :winrm
+  end
+
+  # Return if the guest is running by checking the communicator
+  # @param [Object] machine The machine
+  # @return [Boolean]
+  def running?(machine)
+    # Shamlessly taken from https://github.com/oscar-stack/vagrant-hosts/blob/master/lib/vagrant-hosts/provisioner/hosts.rb
+    begin
+      machine.communicate.ready?
+    rescue Vagrant::Errors::VagrantError
+    # WinRM will raise an error if the VM isn't running instead of
+    # returning false (hashicorp/vagrant#6356).
+      false
+    end
   end
 end

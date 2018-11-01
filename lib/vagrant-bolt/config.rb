@@ -122,14 +122,14 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
 
   def validate(machine)
     errors = _detected_errors
-    # if @task.nil? && @plan.nil?
-    #   errors << I18n.t('vagrant-bolt.config.bolt.errors.no_task_or_plan')
-    # if !@name.nil?
-    #   errors << I18n.t('vagrant-bolt.config.bolt.errors.task_and_plan_configured',
-    #                     :task => @task,
-    #                     :plan => @plan,
-    #                   )
-    # end
+    unless @type.nil?
+      errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_type', :type => @type.to_s) unless ['task', 'plan'].include?(@type.to_s)
+    end
+    if @type.nil? && !@name.nil?
+      errors << I18n.t('vagrant-bolt.config.bolt.errors.type_not_specified')
+    elsif !@type.nil? && @name.nil?
+      errors << I18n.t('vagrant-bolt.config.bolt.errors.no_task_or_plan')
+    end
 
     {"Bolt" => errors }
   end
