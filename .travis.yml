@@ -17,7 +17,4 @@ rvm:
 matrix:
   fast_finish: true
   include:
-    -
-      env: CHECK=rubocop
-    -
-      env: CHECK=spec
+    - env: CHECK="rubocop spec"
