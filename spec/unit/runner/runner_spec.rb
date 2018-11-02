@@ -75,6 +75,7 @@ describe VagrantBolt::Runner do
       expect(result.password).to eq('foo')
     end
   end
+
   context 'run_bolt' do
     let(:options) { { notify: [:stdout, :stderr], env: { PATH: nil } } }
     before(:each) do
@@ -90,9 +91,14 @@ describe VagrantBolt::Runner do
       subject.send(:run_bolt)
     end
   end
+
   context 'run' do
     before(:each) do
       allow(Vagrant::Util::Subprocess).to receive(:execute).and_return(subprocess_result)
+    end
+
+    it 'does not raise an exeption when all parameters are specified' do
+      expect { subject.run('task', 'foo') }.to_not raise_error
     end
 
     it 'raises an exception if the type is not specified' do
@@ -101,6 +107,12 @@ describe VagrantBolt::Runner do
 
     it 'raises an exception if the name is not specified' do
       expect { subject.run('task', nil) }.to raise_error(Vagrant::Errors::ConfigInvalid, %r{No name set})
+    end
+
+    it 'raises an exception if the dependencies are not ready' do
+      config.dependencies = [:bar]
+      config.finalize!
+      expect { subject.run('task', 'foo') }.to raise_error(Vagrant::Errors::SSHNotReady)
     end
   end
 end

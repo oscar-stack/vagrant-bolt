@@ -14,7 +14,7 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
   attr_accessor :parameters
 
   # @!attribute [rw] nodes
-  #   @return [Array[string]] The nodes to run the task or plan on. This defaults to the current node.
+  #   @return [Array<String>] The nodes to run the task or plan on. This defaults to the current node.
   attr_accessor :nodes
 
   # @!attribute [rw] username
@@ -77,6 +77,10 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
   #   @return [String] Additional arguments for the bolt command
   attr_accessor :args
 
+  # @!attribute [rw] dependencies
+  #   @return [Array<Symbol>] Machine names that should be online prior to running this task
+  attr_accessor :dependencies
+
   def initialize
     @name             = UNSET_VALUE
     @type             = UNSET_VALUE
@@ -97,6 +101,7 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
     @boltdir          = UNSET_VALUE
     @run_as           = UNSET_VALUE
     @args             = UNSET_VALUE
+    @dependencies     = []
   end
 
   def finalize!
@@ -119,6 +124,13 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
     @boltdir          = '.' if @boltdir == UNSET_VALUE
     @run_as           = nil if @run_as == UNSET_VALUE
     @args             = nil if @args == UNSET_VALUE
+  end
+
+  def merge(other)
+    super.tap do |result|
+      new_dependencies = (dependencies + other.dependencies.dup).flatten.uniq
+      result.instance_variable_set(:@dependencies, new_dependencies.to_a)
+    end
   end
 
   def validate(_machine)

@@ -21,6 +21,7 @@ describe VagrantBolt::Util do
       result = merge_config(local, global)
       expect(result.name).to eq('foo')
     end
+
     it 'uses local if local and global are both set' do
       global.name = 'foo'
       global.finalize!
@@ -29,6 +30,7 @@ describe VagrantBolt::Util do
       result = merge_config(local, global)
       expect(result.name).to eq('bar')
     end
+
     it 'does not allow nil overrides' do
       global.name = 'foo'
       global.finalize!
@@ -36,6 +38,15 @@ describe VagrantBolt::Util do
       local.finalize!
       result = merge_config(local, global)
       expect(result.name).to eq('foo')
+    end
+
+    it 'merges arrays' do
+      global.dependencies = ['foo']
+      global.finalize!
+      local.dependencies = ['bar']
+      local.finalize!
+      result = merge_config(local, global)
+      expect(result.dependencies).to eq(['bar', 'foo'])
     end
   end
 end

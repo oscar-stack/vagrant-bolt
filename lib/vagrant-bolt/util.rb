@@ -5,6 +5,7 @@ module VagrantBolt::Util
 
   # Merge config objects overriding Nil and UNSET_VALUE
   # Since the configs have been finalized they will have `nil` values
+  # Arrays will be merged
   # instead of UNSET_VALUE
   # @param [Object] local The local config object
   # @param [Object] other The other config object
@@ -14,6 +15,10 @@ module VagrantBolt::Util
     [other, local].each do |obj|
       obj.instance_variables.each do |key|
         value = obj.instance_variable_get(key)
+        if value.is_a? Array
+          res_value = result.instance_variable_get(key)
+          value = (value + res_value).uniq unless res_value.nil?
+        end
         result.instance_variable_set(key, value) if value != Vagrant::Plugin::V2::Config::UNSET_VALUE && !value.nil?
       end
     end
@@ -22,7 +27,7 @@ module VagrantBolt::Util
 
   # Generate a list of active machines in the environment
   # @param [Object] env The Environment
-  # @return [Array[Object]]
+  # @return [Array<Object>]
   def nodes_in_environment(env)
     env.active_machines.map { |vm|
       begin
@@ -67,5 +72,16 @@ module VagrantBolt::Util
     # WinRM will raise an error if the VM isn't running instead of
     # returning false (hashicorp/vagrant#6356).
     false
+  end
+
+  # Get the running machine object by the machine name
+  # @param [Object] environment The enviornment to look in
+  # @param [String,Symbol] name The name of the machine in the environment
+  # @return [Object, nil] The object or nil if it is not found
+  def machine_by_name(env, name)
+    vm = env.active_machines.find { |m| m[0] == name.to_sym }
+    env.machine(*vm) unless vm.nil?
+  rescue Vagrant::Errors::MachineNotFound
+    nil
   end
 end

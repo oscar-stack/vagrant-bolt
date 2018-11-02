@@ -12,8 +12,9 @@ class VagrantBolt::Runner
   # Run a bolt task or plan
   # @param [Symbol|String] type The type of bolt to run; task or plan
   # @param [String] name The name of the bolt task or plan to run
-  # @param [Array[Hash], nil] args A optional hash of bolt config overrides; {run_as: "vagrant"}
+  # @param [Hash, nil] args A optional hash of bolt config overrides; {run_as: "vagrant"}
   def run(type, name, **args)
+    validate_dependencies
     @boltconfig = setup_overrides(type, name, **args)
     validate
     run_bolt
@@ -26,7 +27,7 @@ class VagrantBolt::Runner
   # Set up config overrides
   # @param [Symbol|String] type The type of bolt to run; task or plan
   # @param [String] name The name of the bolt task or plan to run
-  # @param [Array[Hash], nil] args A optional hash of bolt config overrides; {run_as: "vagrant"}
+  # @param [Hash, nil] args A optional hash of bolt config overrides; {run_as: "vagrant"}
   # @return [Object] Bolt config with ssh info populated
   def setup_overrides(type, name, **args)
     config = @boltconfig.dup
@@ -38,7 +39,7 @@ class VagrantBolt::Runner
     # Pupulate SSH and WinRM connection info
     config.nodes = all_node_list(@env) if config.nodes.to_s.casecmp("all").zero?
     if windows?(@machine)
-      raise Vagrant::Errors::SSHNotReady unless running?(@machine)
+      raise Vagrant::Errors::MachineGuestNotReady unless running?(@machine)
 
       config.nodes ||= "winrm://#{@machine.config.winrm.host}:#{@machine.config.winrm.port}"
       config.username ||= @machine.config.winrm.username
@@ -144,5 +145,23 @@ class VagrantBolt::Runner
     errors << I18n.t('vagrant-bolt.config.bolt.errors.type_not_specified') if @boltconfig.type.nil?
     errors << I18n.t('vagrant-bolt.config.bolt.errors.no_task_or_plan') if @boltconfig.name.nil?
     { "Bolt" => errors }
+  end
+
+  # Raise an exception if dependent machines are not online
+  def validate_dependencies
+    return if @boltconfig.dependencies.nil? || @boltconfig.dependencies.empty?
+
+    @boltconfig.dependencies.each do |dep|
+      # Find the machine object from the active machines
+      vm = machine_by_name(@env, dep)
+      # Ensure it is running
+      next if !vm.nil? && running?(vm)
+
+      @machine.ui.error(
+        I18n.t('vagrant-bolt.provisioner.bolt.error.dependent_machines_offline',
+               name: dep),
+      )
+      raise Vagrant::Errors::SSHNotReady
+    end
   end
 end
