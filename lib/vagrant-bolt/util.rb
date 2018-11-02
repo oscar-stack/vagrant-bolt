@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module VagrantBolt::Util
   # Utility Functions
 
@@ -12,10 +14,10 @@ module VagrantBolt::Util
     [other, local].each do |obj|
       obj.instance_variables.each do |key|
         value = obj.instance_variable_get(key)
-        result.instance_variable_set(key, value) if value != Vagrant::Plugin::V2::Config::UNSET_VALUE and value != nil
+        result.instance_variable_set(key, value) if value != Vagrant::Plugin::V2::Config::UNSET_VALUE && !value.nil?
       end
     end
-    return result
+    result
   end
 
   # Generate a list of active machines in the environment
@@ -51,7 +53,7 @@ module VagrantBolt::Util
   # @param [Object] machine The machine
   # @return [Boolean]
   def windows?(machine)
-    #[:winrm, :winssh].include?(machine.config.vm.communicator)
+    # [:winrm, :winssh].include?(machine.config.vm.communicator)
     machine.config.vm.communicator == :winrm
   end
 
@@ -59,13 +61,11 @@ module VagrantBolt::Util
   # @param [Object] machine The machine
   # @return [Boolean]
   def running?(machine)
-    # Shamlessly taken from https://github.com/oscar-stack/vagrant-hosts/blob/master/lib/vagrant-hosts/provisioner/hosts.rb
-    begin
-      machine.communicate.ready?
-    rescue Vagrant::Errors::VagrantError
+    # Taken from https://github.com/oscar-stack/vagrant-hosts/blob/master/lib/vagrant-hosts/provisioner/hosts.rb
+    machine.communicate.ready?
+  rescue Vagrant::Errors::VagrantError
     # WinRM will raise an error if the VM isn't running instead of
     # returning false (hashicorp/vagrant#6356).
-      false
-    end
+    false
   end
 end

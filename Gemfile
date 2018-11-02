@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 require 'rubygems/version'
 
@@ -8,24 +10,23 @@ group :plugins do
 end
 
 group :development do
-  gem 'yard', '~> 0.9.16'
+  gem 'rake'
   gem 'redcarpet'
   gem 'rubocop'
   gem 'rubocop-rspec'
-  gem 'rake'
+  gem 'yard', '~> 0.9.16'
 end
 
 group :test do
-  case vagrant_branch
-  when /head/i
-    gem 'vagrant', :git => 'https://github.com/hashicorp/vagrant.git',
-      :branch => 'master'
+  if %r{head}i.match?(vagrant_branch)
+    gem 'vagrant', git: 'https://github.com/hashicorp/vagrant.git',
+                   branch: 'master'
   else
-    gem 'vagrant', :git => 'https://github.com/hashicorp/vagrant.git',
-      :tag => vagrant_branch
+    gem 'vagrant', git: 'https://github.com/hashicorp/vagrant.git',
+                   tag: vagrant_branch
   end
 
-  gem 'vagrant-spec', :git => 'https://github.com/hashicorp/vagrant-spec.git'
+  gem 'vagrant-spec', git: 'https://github.com/hashicorp/vagrant-spec.git'
 end
 
-eval_gemfile "#{__FILE__}.local" if File.exists? "#{__FILE__}.local"
+eval_gemfile "#{__FILE__}.local" if File.exist? "#{__FILE__}.local"

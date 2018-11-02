@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'vagrant-bolt/config'
 require 'vagrant-bolt/provisioner'
-
 
 describe VagrantBolt::Provisioner do
   include_context 'vagrant-unit'
@@ -16,9 +17,9 @@ describe VagrantBolt::Provisioner do
     VAGRANTFILE
     env.create_vagrant_env
   end
-  let(:machine) {iso_env.machine(:server, :dummy)}
-  let(:config) {double :config}
-  let(:runner) {double :runner}
+  let(:machine) { iso_env.machine(:server, :dummy) }
+  let(:config) { double :config }
+  let(:runner) { double :runner }
   before(:each) do
     allow(machine).to receive(:env).and_return(:iso_env)
     allow(config).to receive(:name).and_return('foo')
@@ -34,6 +35,5 @@ describe VagrantBolt::Provisioner do
     it 'creates a new runner' do
       expect(subject.provision).to eq('runner created')
     end
-
   end
 end

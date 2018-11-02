@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'vagrant-bolt/util'
 require 'vagrant-bolt/config'
 
 describe VagrantBolt::Util do
   include VagrantBolt::Util
-  let(:global) {VagrantBolt::Config.new}
-  let(:local) {VagrantBolt::Config.new}
+  let(:global) { VagrantBolt::Config.new }
+  let(:local) { VagrantBolt::Config.new }
 
   before(:each) do
     global.finalize!
@@ -34,8 +36,6 @@ describe VagrantBolt::Util do
       local.finalize!
       result = merge_config(local, global)
       expect(result.name).to eq('foo')
-
     end
   end
-
 end

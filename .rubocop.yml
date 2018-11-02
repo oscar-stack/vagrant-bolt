@@ -4,18 +4,20 @@ AllCops:
   TargetRubyVersion: '2.4'
   Include:
     - "lib/**/*.rb"
+    - "**/Vagrantfile"
+    - "spec/**/*.rb"
+    - "**/Rakefile"
   Exclude:
     - "bin/*"
     - "modules/**/*"
     - ".vendor/**/*"
     - ".bundle/**/*"
     - "**/Gemfile"
-    - "**/Rakefile"
     - "pkg/**/*"
     - "spec/fixtures/**/*"
     - "vendor/**/*"
-    - "**/Vagrantfile"
-  DisabledByDefault: true
+    - ".vagrant/**/*"
+  DisabledByDefault: false
 Metrics/LineLength:
   Description: People have wide screens, use them.
   Max: 200
@@ -84,3 +86,30 @@ Style/MethodCalledOnDoEndBlock:
   Enabled: true
 Style/StringMethods:
   Enabled: true
+Metrics/AbcSize:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+  ExcludedMethods:
+    - initialize
+    - finalize!
+    - validate
+Metrics/ClassLength:
+  Enabled: false
+Style/StringLiterals:
+  Enabled: false
+Naming/FileName:
+  Enabled: false
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - "**/Vagrantfile"
+Metrics/BlockLength:
+  Exclude:
+    - "**/Vagrantfile"
+    - "spec/**/*.rb"

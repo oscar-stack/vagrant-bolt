@@ -1,44 +1,44 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'vagrant-bolt/config'
 
 describe VagrantBolt::Config do
-  let (:machine) { double("machine") }
+  let(:machine) { double("machine") }
 
   describe "bolt config" do
-
     context "validation" do
       it "validates with the defaults" do
         subject.finalize!
-        expect(subject.validate(machine)).to eq({"Bolt"=>[]})
+        expect(subject.validate(machine)).to eq("Bolt" => [])
       end
 
       it "reports invalid options" do
         subject.foo = "bar"
         subject.finalize!
-        expect(subject.validate(machine)).to eq({"Bolt"=>["The following settings shouldn't exist: foo"]})
+        expect(subject.validate(machine)).to eq("Bolt" => ["The following settings shouldn't exist: foo"])
       end
 
       it "reports an error when the type is invalid" do
         subject.type = "bar"
         subject.name = "foo"
         subject.finalize!
-        expect(subject.validate(machine)).to eq({"Bolt"=>["Type can only be task or plan, not bar"]})
+        expect(subject.validate(machine)).to eq("Bolt" => ["Type can only be task or plan, not bar"])
       end
 
       it "reports an error when the name is not specified" do
         subject.type = "task"
         subject.name = nil
         subject.finalize!
-        expect(subject.validate(machine)).to eq({"Bolt"=>["No name set. A task or a plan must be specified to use the bolt provisioner"]})
+        expect(subject.validate(machine)).to eq("Bolt" => ["No name set. A task or a plan must be specified to use the bolt provisioner"])
       end
 
       it "reports an error when the type is not specified" do
         subject.type = nil
         subject.name = "foo"
         subject.finalize!
-        expect(subject.validate(machine)).to eq({"Bolt"=>["No type set. Please specify either task or plan"]})
+        expect(subject.validate(machine)).to eq("Bolt" => ["No type set. Please specify either task or plan"])
       end
-
     end
     context "defaults" do
       expected_values = {

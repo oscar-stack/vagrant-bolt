@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module VagrantBolt
   require 'vagrant-bolt/version'
   require 'vagrant-bolt/plugin'
@@ -24,9 +26,8 @@ module VagrantBolt
   end
 
   def self.source_root
-    @source_root ||= File.expand_path('..', __FILE__)
+    @source_root ||= File.expand_path(__DIR__)
   end
-
 end
 
 I18n.load_path << File.expand_path('../templates/locales/en.yml', File.dirname(__FILE__))

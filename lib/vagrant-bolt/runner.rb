@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'vagrant-bolt/util'
 
 class VagrantBolt::Runner
-
   def initialize(env, machine, boltconfig = nil)
     @env = env
     @machine = machine
@@ -35,9 +36,10 @@ class VagrantBolt::Runner
     config.set_options(args) unless args.nil?
 
     # Pupulate SSH and WinRM connection info
-    config.nodes = all_node_list(@env) if config.nodes.to_s.downcase == "all"
+    config.nodes = all_node_list(@env) if config.nodes.to_s.casecmp("all").zero?
     if windows?(@machine)
       raise Vagrant::Errors::SSHNotReady unless running?(@machine)
+
       config.nodes ||= "winrm://#{@machine.config.winrm.host}:#{@machine.config.winrm.port}"
       config.username ||= @machine.config.winrm.username
       config.ssl ||= (@machine.config.winrm.transport == :ssl)
@@ -45,13 +47,14 @@ class VagrantBolt::Runner
     else
       ssh_info = @machine.ssh_info
       raise Vagrant::Errors::SSHNotReady if ssh_info.nil?
+
       config.nodes ||= "ssh://#{ssh_info[:host]}:#{ssh_info[:port]}"
       config.username ||= ssh_info[:username]
       config.privatekey ||= ssh_info[:private_key_path][0]
       config.hostkeycheck ||= ssh_info[:verify_host_key]
     end
 
-    return config
+    config
   end
 
   # Run bolt locally with an execute
@@ -59,32 +62,32 @@ class VagrantBolt::Runner
     command = create_command
     @machine.ui.info(
       I18n.t('vagrant-bolt.provisioner.bolt.info.running_bolt',
-        :command => command,
-        ))
+             command: command),
+    )
 
     # TODO: Update this so it works on windows platforms
-    result = Vagrant::Util::Subprocess.execute(
-        'bash',
-        '-c',
-        command,
-        :notify => [:stdout, :stderr],
-        :env => {PATH: ENV["VAGRANT_OLD_ENV_PATH"]},
-      ) do |io_name, data|
-          if io_name == :stdout
-            @machine.ui.info data
-          elsif io_name == :stderr
-            @machine.ui.warn data
-          end
-        end
+    Vagrant::Util::Subprocess.execute(
+      'bash',
+      '-c',
+      command,
+      notify: [:stdout, :stderr],
+      env: { PATH: ENV["VAGRANT_OLD_ENV_PATH"] },
+    ) do |io_name, data|
+      if io_name == :stdout
+        @machine.ui.info data
+      elsif io_name == :stderr
+        @machine.ui.warn data
+      end
+    end
   end
 
   # Create a bolt command from the config
   # @return [String] The bolt command
   def create_command
-    #TODO: add all of the bolt the options and account for Windows Guests
+    # TODO: add all of the bolt the options and account for Windows Guests
     command = []
     command << @boltconfig.boltcommand
-    command << "#{@boltconfig.type.to_s} run \'#{@boltconfig.name}\'"
+    command << "#{@boltconfig.type} run \'#{@boltconfig.name}\'"
     command << "-u \'#{@boltconfig.username}\'" unless @boltconfig.username.nil?
     command << "-p \'#{@boltconfig.password}\'" unless @boltconfig.password.nil?
 
@@ -124,20 +127,22 @@ class VagrantBolt::Runner
       errors.delete(key) if errors[key].empty?
     end
 
+    # rubocop:disable Style/GuardClause
     if errors && !errors.empty?
       raise Vagrant::Errors::ConfigInvalid,
-        errors: Vagrant::Util::TemplateRenderer.render(
-          "config/validation_failed",
-          errors: errors)
+            errors: Vagrant::Util::TemplateRenderer.render(
+              "config/validation_failed",
+              errors: errors,
+            )
     end
-
+    # rubocop:enable Style/GuardClause
   end
 
   # Validate a bolt config object for logical errors
   def validate_config
     errors = []
-      errors << I18n.t('vagrant-bolt.config.bolt.errors.type_not_specified') if @boltconfig.type.nil?
-      errors << I18n.t('vagrant-bolt.config.bolt.errors.no_task_or_plan') if @boltconfig.name.nil?
-    {"Bolt" => errors }
+    errors << I18n.t('vagrant-bolt.config.bolt.errors.type_not_specified') if @boltconfig.type.nil?
+    errors << I18n.t('vagrant-bolt.config.bolt.errors.no_task_or_plan') if @boltconfig.name.nil?
+    { "Bolt" => errors }
   end
 end

@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'vagrant-bolt/runner'
 require 'vagrant-bolt/config'
-
 
 describe VagrantBolt::Runner do
   include_context 'vagrant-unit'
@@ -16,9 +17,9 @@ describe VagrantBolt::Runner do
     VAGRANTFILE
     env.create_vagrant_env
   end
-  let(:machine) {iso_env.machine(:server, :dummy)}
-  let(:runner) {double :runner}
-  let(:config) {VagrantBolt::Config.new}
+  let(:machine) { iso_env.machine(:server, :dummy) }
+  let(:runner) { double :runner }
+  let(:config) { VagrantBolt::Config.new }
   let(:subprocess_result) do
     double("subprocess_result").tap do |result|
       allow(result).to receive(:exit_code).and_return(0)
@@ -27,13 +28,13 @@ describe VagrantBolt::Runner do
   end
   before(:each) do
     allow(machine).to receive(:env).and_return(:iso_env)
-    allow(machine).to receive(:ssh_info).and_return({
-      :host => 'foo',
-      :port => '22',
-      :username => 'user',
-      :private_key_path => ['path'],
-      :verify_host_key => true,
-    })
+    allow(machine).to receive(:ssh_info).and_return(
+      host: 'foo',
+      port: '22',
+      username: 'user',
+      private_key_path: ['path'],
+      verify_host_key: true,
+    )
     config.finalize!
   end
 
@@ -56,7 +57,7 @@ describe VagrantBolt::Runner do
     end
 
     it 'adds all nodes when all is specified' do
-      result = subject.send(:setup_overrides, 'task', 'foo', {:nodes => 'all'})
+      result = subject.send(:setup_overrides, 'task', 'foo', nodes: 'all')
       expect(result.nodes).to eq('nodes')
     end
 
@@ -70,13 +71,12 @@ describe VagrantBolt::Runner do
     end
 
     it 'allows for specifying additional args' do
-      result = subject.send(:setup_overrides, 'task', 'foo', {:password => 'foo'})
+      result = subject.send(:setup_overrides, 'task', 'foo', password: 'foo')
       expect(result.password).to eq('foo')
     end
-
   end
   context 'run_bolt' do
-    let(:options) { {:notify => [:stdout, :stderr], :env => {PATH: nil}} }
+    let(:options) { { notify: [:stdout, :stderr], env: { PATH: nil } } }
     before(:each) do
       allow(Vagrant::Util::Subprocess).to receive(:execute).and_return(subprocess_result)
     end
@@ -96,11 +96,11 @@ describe VagrantBolt::Runner do
     end
 
     it 'raises an exception if the type is not specified' do
-      expect{subject.run(nil, 'foo')}.to raise_error(Vagrant::Errors::ConfigInvalid, /No type set/)
+      expect { subject.run(nil, 'foo') }.to raise_error(Vagrant::Errors::ConfigInvalid, %r{No type set})
     end
 
     it 'raises an exception if the name is not specified' do
-      expect{subject.run('task', nil)}.to raise_error(Vagrant::Errors::ConfigInvalid, /No name set/)
+      expect { subject.run('task', nil) }.to raise_error(Vagrant::Errors::ConfigInvalid, %r{No name set})
     end
   end
 end

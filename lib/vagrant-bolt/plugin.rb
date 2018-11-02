@@ -1,31 +1,29 @@
+# frozen_string_literal: true
+
 require 'vagrant'
 require 'vagrant-bolt/version'
 
-if Vagrant::VERSION < "2.2.0"
-      raise "vagrant-bolt version #{VagrantBolt::VERSION} requires Vagrant 2.2 or later"
-end
+raise "vagrant-bolt version #{VagrantBolt::VERSION} requires Vagrant 2.2 or later" if Vagrant::VERSION < "2.2.0"
 
 class VagrantBolt::Plugin < Vagrant.plugin('2')
+  name 'bolt'
 
-    name 'bolt'
-
-    description <<-DESC
+  description <<-DESC
     Vagrant provisioning with Puppet Bolt
-    DESC
+  DESC
 
-    config(:bolt) do
-      require_relative 'config'
-      VagrantBolt::Config
-    end
+  config(:bolt) do
+    require_relative 'config'
+    VagrantBolt::Config
+  end
 
-    config(:bolt, :provisioner) do
-      require_relative 'config'
-      VagrantBolt::Config
-    end
+  config(:bolt, :provisioner) do
+    require_relative 'config'
+    VagrantBolt::Config
+  end
 
-    provisioner(:bolt) do
-      require_relative 'provisioner'
-      VagrantBolt::Provisioner
-    end
-
+  provisioner(:bolt) do
+    require_relative 'provisioner'
+    VagrantBolt::Provisioner
+  end
 end

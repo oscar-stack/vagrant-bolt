@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'vagrant'
 require 'vagrant/errors'
 require 'vagrant-bolt/util'

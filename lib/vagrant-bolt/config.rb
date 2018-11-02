@@ -1,5 +1,6 @@
-class VagrantBolt::Config < Vagrant.plugin('2', :config)
+# frozen_string_literal: true
 
+class VagrantBolt::Config < Vagrant.plugin('2', :config)
   # @!attribute [rw] name
   #   @return [String] The name of task or plan to run
   attr_accessor :name
@@ -69,11 +70,11 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
   attr_accessor :boltdir
 
   # @!attribute [rw] run_as
-  #   @return [String] 	User to run as using privilege escalation.
+  #   @return [String] User to run as using privilege escalation.
   attr_accessor :run_as
 
   # @!attribute [rw] args
-  #   @return [String] 	Additional arguments for the bolt command
+  #   @return [String] Additional arguments for the bolt command
   attr_accessor :args
 
   def initialize
@@ -120,17 +121,16 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
     @args             = nil if @args == UNSET_VALUE
   end
 
-  def validate(machine)
+  def validate(_machine)
     errors = _detected_errors
-    unless @type.nil?
-      errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_type', :type => @type.to_s) unless ['task', 'plan'].include?(@type.to_s)
-    end
+    errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_type', type: @type.to_s) if !@type.nil? && !['task', 'plan'].include?(@type.to_s)
+    errors << I18n.t('vagrant-bolt.config.bolt.errors.dependencies_not_array') if !@dependencies.nil? && !(@dependencies.is_a? Array)
     if @type.nil? && !@name.nil?
       errors << I18n.t('vagrant-bolt.config.bolt.errors.type_not_specified')
     elsif !@type.nil? && @name.nil?
       errors << I18n.t('vagrant-bolt.config.bolt.errors.no_task_or_plan')
     end
 
-    {"Bolt" => errors }
+    { "Bolt" => errors }
   end
 end
