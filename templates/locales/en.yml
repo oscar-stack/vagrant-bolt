@@ -10,8 +10,8 @@ en:
             No type set. Please specify either task or plan
           invalid_type: |-
             Type can only be task or plan, not %{type}
-          dependencies_not_array: |-
-            Dependencies must be an array
+          invalid_data_type: |-
+            Invalid data type for %{item} must be %{type}
     provisioner:
       bolt:
         info:

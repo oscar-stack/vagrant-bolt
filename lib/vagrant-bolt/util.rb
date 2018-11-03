@@ -5,7 +5,7 @@ module VagrantBolt::Util
 
   # Merge config objects overriding Nil and UNSET_VALUE
   # Since the configs have been finalized they will have `nil` values
-  # Arrays will be merged
+  # Arrays will be merged and override parent non arrays
   # instead of UNSET_VALUE
   # @param [Object] local The local config object
   # @param [Object] other The other config object
@@ -17,7 +17,7 @@ module VagrantBolt::Util
         value = obj.instance_variable_get(key)
         if value.is_a? Array
           res_value = result.instance_variable_get(key)
-          value = (value + res_value).uniq unless res_value.nil?
+          value = (value + res_value).uniq if res_value.is_a? Array
         end
         result.instance_variable_set(key, value) if value != Vagrant::Plugin::V2::Config::UNSET_VALUE && !value.nil?
       end
@@ -40,16 +40,21 @@ module VagrantBolt::Util
 
   # Generate a CSV list of node:port addresses for all active nodes in the environment
   # @param [Object] env The Enviornment
+  # @param [Array[String], String] includes Array of machine names to include, or ALL for all nodes
   # @param [Array[String]] excludes Array of machine names to exclude
   # @return [String]
-  def all_node_list(env, excludes = [])
+  def node_uri_list(env, includes = [], excludes = [])
+    all_nodes_enabled = includes.to_s.casecmp("all").zero?
+    return nil if !all_nodes_enabled && includes.empty?
+
     nodes_in_environment(env).map { |vm|
-      unless excludes.include?(vm.name.to_s) || !running?(vm)
-        if windows?(vm)
-          "winrm://#{vm.config.winrm.host}:#{vm.config.winrm.port}" unless vm.ssh_info.nil?
-        else
-          "ssh://#{vm.ssh_info[:host]}:#{vm.ssh_info[:port]}" unless vm.ssh_info.nil?
-        end
+      next unless all_nodes_enabled || includes.include?(vm.name.to_sym) || includes.include?(vm.name.to_s)
+      next if excludes.include?(vm.name.to_sym) || excludes.include?(vm.name.to_s) || !running?(vm)
+
+      if windows?(vm)
+        "winrm://#{vm.config.winrm.host}:#{vm.config.winrm.port}" unless vm.ssh_info.nil?
+      else
+        "ssh://#{vm.ssh_info[:host]}:#{vm.ssh_info[:port]}" unless vm.ssh_info.nil?
       end
     }.compact.join(",")
   end

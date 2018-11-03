@@ -15,36 +15,37 @@ describe VagrantBolt::Config do
     it "reports invalid options" do
       subject.foo = "bar"
       subject.finalize!
-      expect(subject.validate(machine)).to eq("Bolt" => ["The following settings shouldn't exist: foo"])
+      expect(subject.validate(machine)["Bolt"][0]).to eq("The following settings shouldn't exist: foo")
     end
 
     it "reports an error when the type is invalid" do
       subject.type = "bar"
       subject.name = "foo"
       subject.finalize!
-      expect(subject.validate(machine)).to eq("Bolt" => ["Type can only be task or plan, not bar"])
+      expect(subject.validate(machine)["Bolt"][0]).to eq("Type can only be task or plan, not bar")
     end
 
     it "reports an error when the name is not specified" do
       subject.type = "task"
       subject.name = nil
       subject.finalize!
-      expect(subject.validate(machine)).to eq("Bolt" => ["No name set. A task or a plan must be specified to use the bolt provisioner"])
+      expect(subject.validate(machine)["Bolt"][0]).to eq("No name set. A task or a plan must be specified to use the bolt provisioner")
     end
 
     it "reports an error when the type is not specified" do
       subject.type = nil
       subject.name = "foo"
       subject.finalize!
-      expect(subject.validate(machine)).to eq("Bolt" => ["No type set. Please specify either task or plan"])
+      expect(subject.validate(machine)["Bolt"][0]).to eq("No type set. Please specify either task or plan")
     end
 
     it "reports an error when depenencies is not an array" do
       subject.dependencies = "foo"
       subject.finalize!
-      expect(subject.validate(machine)).to eq("Bolt" => ["Dependencies must be an array"])
+      expect(subject.validate(machine)["Bolt"][0]).to match(%r{Invalid data type for})
     end
   end
+
   context "defaults" do
     expected_values = {
       hostkeycheck: false,
@@ -56,6 +57,7 @@ describe VagrantBolt::Config do
       boltcommand: "bolt",
       boltdir: ".",
       dependencies: [],
+      nodes: [],
     }
     expected_values.each do |val, expected|
       it "defaults #{val} to #{expected}" do
@@ -68,7 +70,7 @@ describe VagrantBolt::Config do
       "name",
       "type",
       "parameters",
-      "nodes",
+      "nodelist",
       "username",
       "password",
       "sudopassword",

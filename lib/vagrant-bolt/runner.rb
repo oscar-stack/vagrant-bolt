@@ -12,7 +12,7 @@ class VagrantBolt::Runner
   # Run a bolt task or plan
   # @param [Symbol|String] type The type of bolt to run; task or plan
   # @param [String] name The name of the bolt task or plan to run
-  # @param [Hash, nil] args A optional hash of bolt config overrides; {run_as: "vagrant"}
+  # @param [Hash, nil] args A optional hash of bolt config overrides; {run_as: "vagrant"}. No merging will be done with the overrides
   def run(type, name, **args)
     validate_dependencies
     @boltconfig = setup_overrides(type, name, **args)
@@ -35,13 +35,14 @@ class VagrantBolt::Runner
     config.name = name
     # Add any additional arguments to the config object
     config.set_options(args) unless args.nil?
+    # Configure the nodelist based on the config
+    config.nodelist ||= node_uri_list(@env, config.nodes, config.nodeexcludes)
 
     # Pupulate SSH and WinRM connection info
-    config.nodes = all_node_list(@env) if config.nodes.to_s.casecmp("all").zero?
     if windows?(@machine)
       raise Vagrant::Errors::MachineGuestNotReady unless running?(@machine)
 
-      config.nodes ||= "winrm://#{@machine.config.winrm.host}:#{@machine.config.winrm.port}"
+      config.nodelist ||= "winrm://#{@machine.config.winrm.host}:#{@machine.config.winrm.port}"
       config.username ||= @machine.config.winrm.username
       config.ssl ||= (@machine.config.winrm.transport == :ssl)
       config.sslverify ||= @machine.config.winrm.ssl_peer_verification
@@ -49,12 +50,11 @@ class VagrantBolt::Runner
       ssh_info = @machine.ssh_info
       raise Vagrant::Errors::SSHNotReady if ssh_info.nil?
 
-      config.nodes ||= "ssh://#{ssh_info[:host]}:#{ssh_info[:port]}"
+      config.nodelist ||= "ssh://#{ssh_info[:host]}:#{ssh_info[:port]}"
       config.username ||= ssh_info[:username]
       config.privatekey ||= ssh_info[:private_key_path][0]
       config.hostkeycheck ||= ssh_info[:verify_host_key]
     end
-
     config
   end
 
@@ -109,7 +109,7 @@ class VagrantBolt::Runner
     command << "--modulepath \'#{@boltconfig.modulepath}\'"
     command << "--tmpdir \'#{@boltconfig.tmpdir}\'" unless @boltconfig.tmpdir.nil?
     command << "--boltdir \'#{@boltconfig.boltdir}\'" unless @boltconfig.boltdir.nil?
-    command << "-n \'#{@boltconfig.nodes}\'"
+    command << "-n \'#{@boltconfig.nodelist}\'"
     command << "--params \'#{@boltconfig.parameters.to_json}\'" unless @boltconfig.parameters.nil?
     command << "--verbose" if @boltconfig.verbose
     command << "--debug" if @boltconfig.debug
