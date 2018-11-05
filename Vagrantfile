@@ -1,8 +1,8 @@
 require 'vagrant-bolt'
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
-  config.ssh.insert_key  = false
-  config.bolt.run_as    = 'root'
+  config.ssh.insert_key = false
+  config.bolt.run_as = 'root'
 
   # Using a global bolt trigger for a plan
   # This will fire on all machines after :up
@@ -14,27 +14,26 @@ Vagrant.configure("2") do |config|
   end
 
   ## Server
-  config.vm.define 'server' do |server|
+  config.vm.define 'server' do |node|
     # Machine level bolt configs
-    server.bolt.run_as   = 'vagrant'
+    node.bolt.run_as = 'vagrant'
     # Trigger bolt using a trigger
-    server.trigger.after :provision do |trigger|
+    node.trigger.after :provision do |trigger|
       trigger.name = "Bolt \"facts::bash\" after provision"
       trigger.ruby do |env, machine|
         # Sending additional config for the task
-        VagrantBolt.task("facts::bash", env, machine, {:hostkeycheck => false, :verbose => true})
+        VagrantBolt.task("facts::bash", env, machine, hostkeycheck: false, verbose: true)
       end
     end
   end
 
   ## Server2
-  config.vm.define 'server2' do |server2|
-
+  config.vm.define 'server2' do |node|
     # Using the Bolt provisioner instead of a trigger
-    server2.vm.provision :bolt do |bolt|
+    node.vm.provision :bolt do |bolt|
       bolt.type         = :task
       bolt.name         = "service::linux"
-      bolt.parameters   = { name: "cron", action: "restart"}
+      bolt.parameters   = { name: "cron", action: "restart" }
       bolt.nodes        = 'ALL'
       bolt.run_as       = "root"
     end

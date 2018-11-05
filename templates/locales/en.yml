@@ -10,8 +10,13 @@ en:
             No type set. Please specify either task or plan
           invalid_type: |-
             Type can only be task or plan, not %{type}
+          invalid_data_type: |-
+            Invalid data type for %{item} must be %{type}
     provisioner:
       bolt:
         info:
           running_bolt: |-
             Bolt: Running bolt command locally: %{command}
+        error:
+          dependent_machines_offline: |-
+            Bolt: Dependent Machine not online: %{name}
