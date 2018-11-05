@@ -40,8 +40,8 @@ module VagrantBolt::Util
 
   # Generate a CSV list of node:port addresses for all active nodes in the environment
   # @param [Object] env The Enviornment
-  # @param [Array[String], String] includes Array of machine names to include, or ALL for all nodes
-  # @param [Array[String]] excludes Array of machine names to exclude
+  # @param [Array<String>, String] includes Array of machine names to include, or ALL for all nodes
+  # @param [Array<String>] excludes Array of machine names to exclude
   # @return [String]
   def node_uri_list(env, includes = [], excludes = [])
     all_nodes_enabled = includes.to_s.casecmp("all").zero?
@@ -81,7 +81,7 @@ module VagrantBolt::Util
 
   # Get the running machine object by the machine name
   # @param [Object] environment The enviornment to look in
-  # @param [String,Symbol] name The name of the machine in the environment
+  # @param [String, Symbol] name The name of the machine in the environment
   # @return [Object, nil] The object or nil if it is not found
   def machine_by_name(env, name)
     vm = env.active_machines.find { |m| m[0] == name.to_sym }

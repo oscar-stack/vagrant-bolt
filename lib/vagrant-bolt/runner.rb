@@ -10,9 +10,9 @@ class VagrantBolt::Runner
   end
 
   # Run a bolt task or plan
-  # @param [Symbol|String] type The type of bolt to run; task or plan
+  # @param [Symbol, String] type The type of bolt to run; task or plan
   # @param [String] name The name of the bolt task or plan to run
-  # @param [Hash, nil] args A optional hash of bolt config overrides; {run_as: "vagrant"}. No merging will be done with the overrides
+  # @param [Hash] args A optional hash of bolt config overrides; {run_as: "vagrant"}. No merging will be done with the overrides
   def run(type, name, **args)
     validate_dependencies
     @boltconfig = setup_overrides(type, name, **args)
@@ -25,9 +25,9 @@ class VagrantBolt::Runner
   include VagrantBolt::Util
 
   # Set up config overrides
-  # @param [Symbol|String] type The type of bolt to run; task or plan
+  # @param [Symbol, String] type The type of bolt to run; task or plan
   # @param [String] name The name of the bolt task or plan to run
-  # @param [Hash, nil] args A optional hash of bolt config overrides; {run_as: "vagrant"}
+  # @param [Hash] args A optional hash of bolt config overrides; {run_as: "vagrant"}
   # @return [Object] Bolt config with ssh info populated
   def setup_overrides(type, name, **args)
     config = @boltconfig.dup
