@@ -26,7 +26,9 @@ describe VagrantBolt::Runner do
       allow(result).to receive(:stderr).and_return("")
     end
   end
+  let(:root_path) { '/root/path' }
   before(:each) do
+    allow(iso_env).to receive(:root_path).and_return(root_path)
     allow(machine).to receive(:env).and_return(:iso_env)
     allow(machine).to receive(:ssh_info).and_return(
       host: 'foo',
@@ -87,7 +89,7 @@ describe VagrantBolt::Runner do
       config.name = 'foo'
       config.nodelist = 'ssh://test:22'
       config.finalize!
-      command = "bolt task run 'foo' --no-host-key-check --modulepath 'modules' --boltdir '.' -n 'ssh://test:22'"
+      command = "bolt task run 'foo' --no-host-key-check --modulepath '#{root_path}/modules' --boltdir '#{root_path}/.' -n 'ssh://test:22'"
       expect(Vagrant::Util::Subprocess).to receive(:execute).with('bash', '-c', command, options).and_return(subprocess_result)
       subject.send(:run_bolt)
     end

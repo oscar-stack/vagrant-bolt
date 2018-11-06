@@ -106,9 +106,11 @@ class VagrantBolt::Runner
     end
 
     command << "--run_as #{@boltconfig.run_as}" unless @boltconfig.run_as.nil?
-    command << "--modulepath \'#{@boltconfig.modulepath}\'"
+    modulepath = %r{^/.*}.match?(@boltconfig.modulepath) ? @boltconfig.modulepath : "#{@env.root_path}/#{@boltconfig.modulepath}"
+    command << "--modulepath \'#{modulepath}\'"
     command << "--tmpdir \'#{@boltconfig.tmpdir}\'" unless @boltconfig.tmpdir.nil?
-    command << "--boltdir \'#{@boltconfig.boltdir}\'" unless @boltconfig.boltdir.nil?
+    boltdir = %r{^/.*}.match?(@boltconfig.boltdir) ? @boltconfig.boltdir : "#{@env.root_path}/#{@boltconfig.boltdir}"
+    command << "--boltdir \'#{boltdir}\'" unless @boltconfig.boltdir.nil?
     command << "-n \'#{@boltconfig.nodelist}\'"
     command << "--params \'#{@boltconfig.parameters.to_json}\'" unless @boltconfig.parameters.nil?
     command << "--verbose" if @boltconfig.verbose
