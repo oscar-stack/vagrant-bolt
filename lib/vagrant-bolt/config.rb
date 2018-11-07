@@ -185,4 +185,36 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
 
     { "Bolt" => errors }
   end
+
+  # Generate a bolt inventory config hash for this config
+  # @return [Hash] A bolt inventory config hash containing the configured parameters
+  def config_hash
+    setting_map = {
+      'ssh': [
+        'user',
+        'password',
+        'run_as',
+        'private_key',
+        'host_key_check',
+        'sudo_password',
+      ],
+      'winrm': [
+        'user',
+        'password',
+        'run_as',
+        'ssl',
+        'ssl_verify',
+      ],
+    }
+    configs = {}
+    instance_variables_hash.each do |key, value|
+      setting_map.each do |transport, settings|
+        next unless settings.include?(key)
+
+        configs[transport.to_s] ||= {}
+        configs[transport.to_s][key.tr('_', '-')] = value unless value.nil?
+      end
+    end
+    configs
+  end
 end

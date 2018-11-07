@@ -7,6 +7,7 @@ class VagrantBolt::Runner
     @env = env
     @machine = machine
     @boltconfig = boltconfig.nil? ? machine.config.bolt : boltconfig
+    generate_inventory_hash(env)
   end
 
   # Run a bolt task or plan

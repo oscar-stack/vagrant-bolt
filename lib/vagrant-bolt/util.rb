@@ -51,10 +51,12 @@ module VagrantBolt::Util
       next unless all_nodes_enabled || includes.include?(vm.name.to_sym) || includes.include?(vm.name.to_s)
       next if excludes.include?(vm.name.to_sym) || excludes.include?(vm.name.to_s) || !running?(vm)
 
+      # Only call ssh_info once
+      vm_ssh_info = vm.ssh_info
       if windows?(vm)
-        "winrm://#{vm.config.winrm.host}:#{vm.config.winrm.port}" unless vm.ssh_info.nil?
+        "winrm://#{vm.config.winrm.host}:#{vm.config.winrm.port}" unless vm_ssh_info.nil?
       else
-        "ssh://#{vm.ssh_info[:host]}:#{vm.ssh_info[:port]}" unless vm.ssh_info.nil?
+        "ssh://#{vm_ssh_info[:host]}:#{vm_ssh_info[:port]}" unless vm_ssh_info.nil?
       end
     }.compact.join(",")
   end
@@ -88,5 +90,44 @@ module VagrantBolt::Util
     env.machine(*vm) unless vm.nil?
   rescue Vagrant::Errors::MachineNotFound
     nil
+  end
+
+  # Generate a bolt inventory hash for the environment
+  # @param [Object] env The env object
+  # @return [Hash] The hash of config options for the inventory.yaml
+  def generate_inventory_hash(env)
+    inventory = { 'groups' => [] }
+    nodes_in_environment(env).each do |vm|
+      next unless running?(vm)
+
+      inventory['groups'] << generate_node_group(vm)
+    end
+    inventory['config'] = env.vagrantfile.config.bolt.config_hash
+    inventory
+  end
+
+  # Generate a bolt inventory group hash from the VM config
+  # @param [Object] machine The machine object
+  # @return [Hash] The hash of config options for the VM
+  def generate_node_group(machine)
+    # Only call ssh_info once
+    vm_ssh_info = machine.ssh_info
+    node_group = {}
+    node_group['name'] = machine.name.to_s
+    node_group['nodes'] = [vm_ssh_info[:host]]
+    node_group['config'] = machine.config.bolt.config_hash
+    if windows?(@machine)
+      transport = 'winrm'
+      node_group['config'][transport] ||= {}
+      node_group['config'][transport]['ssl'] ||= (machine.config.bolt.ssl == true)
+      node_group['config'][transport]['ssl_verify'] ||= (machine.config.bolt.ssl_verify == true)
+    else
+      transport = 'ssh'
+      node_group['config'][transport] ||= {}
+      node_group['config'][transport]['private-key'] ||= vm_ssh_info[:private_key_path][0]
+      node_group['config'][transport]['host-key-check'] ||= (vm_ssh_info[:verify_host_key] == true)
+    end
+    node_group['config']['transport'] = transport
+    node_group
   end
 end
