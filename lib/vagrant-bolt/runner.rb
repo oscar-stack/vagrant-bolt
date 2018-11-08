@@ -7,7 +7,7 @@ class VagrantBolt::Runner
     @env = env
     @machine = machine
     @boltconfig = boltconfig.nil? ? machine.config.bolt : boltconfig
-    generate_inventory_hash(env)
+    @inventory_file = nil
   end
 
   # Run a bolt task or plan
@@ -16,6 +16,7 @@ class VagrantBolt::Runner
   # @param [Hash] args A optional hash of bolt config overrides; {run_as: "vagrant"}. No merging will be done with the overrides
   def run(type, name, **args)
     validate_dependencies
+    @inventory_file = update_inventory_file(@env) if @boltconfig.node_list.nil?
     @boltconfig = setup_overrides(type, name, **args)
     validate
     run_bolt
@@ -37,6 +38,9 @@ class VagrantBolt::Runner
     # Add any additional arguments to the config object
     config.set_options(args) unless args.nil?
     # Configure the node_list based on the config
+    # config.nodelist ||= [config.nodes - config.excludes].flatten.join(',') unless config.nodes.empty? || config.nodes.to_s.casecmp("all").zero?
+    # config.nodelist ||= nodes_in_environment(@env).map(&:name).join(',') if config.nodes.to_s.casecmp("all").zero?
+    # config.nodelist ||= @machine.name.to_s
     config.node_list ||= node_uri_list(@env, config.nodes, config.excludes)
 
     # Pupulate SSH and WinRM connection info
@@ -116,6 +120,7 @@ class VagrantBolt::Runner
     command << "--params \'#{@boltconfig.parameters.to_json}\'" unless @boltconfig.parameters.nil?
     command << "--verbose" if @boltconfig.verbose
     command << "--debug" if @boltconfig.debug
+    command << "--inventoryfile \'#{@inventory_file}\'"
     command << @boltconfig.args unless @boltconfig.args.nil?
     command.flatten.join(" ")
   end

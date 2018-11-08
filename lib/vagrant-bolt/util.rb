@@ -65,7 +65,6 @@ module VagrantBolt::Util
   # @param [Object] machine The machine
   # @return [Boolean]
   def windows?(machine)
-    # [:winrm, :winssh].include?(machine.config.vm.communicator)
     machine.config.vm.communicator == :winrm
   end
 
@@ -111,23 +110,53 @@ module VagrantBolt::Util
   # @return [Hash] The hash of config options for the VM
   def generate_node_group(machine)
     # Only call ssh_info once
-    vm_ssh_info = machine.ssh_info
     node_group = {}
     node_group['name'] = machine.name.to_s
-    node_group['nodes'] = [vm_ssh_info[:host]]
     node_group['config'] = machine.config.bolt.config_hash
+
+    vm_ssh_info = machine.ssh_info
+    return node_group if vm_ssh_info.nil?
+
+    node_group['nodes'] = [vm_ssh_info[:host]]
     if windows?(@machine)
       transport = 'winrm'
       node_group['config'][transport] ||= {}
-      node_group['config'][transport]['ssl'] ||= (machine.config.bolt.ssl == true)
-      node_group['config'][transport]['ssl_verify'] ||= (machine.config.bolt.ssl_verify == true)
+      node_group['config'][transport]['ssl'] ||= (machine.config.winrm.transport == :ssl)
+      node_group['config'][transport]['ssl_verify'] ||= machine.config.winrm.ssl_peer_verification
+      node_group['config'][transport]['port'] ||= machine.config.winrm.port
+      node_group['config'][transport]['port'] ||= machine.config.winrm.username
     else
       transport = 'ssh'
       node_group['config'][transport] ||= {}
       node_group['config'][transport]['private-key'] ||= vm_ssh_info[:private_key_path][0]
       node_group['config'][transport]['host-key-check'] ||= (vm_ssh_info[:verify_host_key] == true)
+      node_group['config'][transport]['port'] ||= vm_ssh_info[:port]
+      node_group['config'][transport]['user'] ||= vm_ssh_info[:username]
     end
     node_group['config']['transport'] = transport
     node_group
+  end
+
+  # Update and write the inventory file for the current running machines
+  # @param [Object] env The envionment object
+  # @return path to the inventory file
+  def update_inventory_file(env)
+    inventory = generate_inventory_hash(env).to_yaml
+    inventory_file = Pathname.new(File.join(env.local_data_path, 'bolt_inventory.yaml'))
+    lock = Mutex.new
+    lock.synchronize do
+      if !File.exist?(inventory_file) || (inventory != File.read(inventory_file))
+        begin
+          inventory_tmpfile = Tempfile.new('.vagrant_bolt_inventory', env.local_data_path)
+          inventory_tmpfile.write(inventory)
+          inventory_tmpfile.close
+          File.rename(inventory_tmpfile.path, inventory_file)
+        ensure
+          inventory_tmpfile.close
+          inventory_tmpfile.unlink
+        end
+      end
+    end
+    inventory_file
   end
 end

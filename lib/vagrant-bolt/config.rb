@@ -194,6 +194,7 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
         'user',
         'password',
         'run_as',
+        'port',
         'private_key',
         'host_key_check',
         'sudo_password',
@@ -204,6 +205,7 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
         'run_as',
         'ssl',
         'ssl_verify',
+        'port',
       ],
     }
     configs = {}
