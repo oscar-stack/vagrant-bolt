@@ -126,14 +126,14 @@ Vagrant.configure("2") do |config|
       trigger.name = "Bolt \"facts\" after up"
       trigger.ruby do |env, machine|
         # Specify additional **options for the task
-        VagrantBolt.task("facts", env, machine, hostkeycheck: false, verbose: false)
+        VagrantBolt.task("facts", env, machine, host_key_check: false, verbose: false)
       end
     end
   end
 end
 ~~~
 
-The configuration above would result in the `facts` task being run on the VM with `run_as = root`, `hostkeycheck = false`, and `verbose = false`. The `verbose` defined in the method will override the root level `verbose` option.
+The configuration above would result in the `facts` task being run on the VM with `run_as = root`, `host_key_check = false`, and `verbose = false`. The `verbose` defined in the method will override the root level `verbose` option.
 
 #### Trigger Methods
 The methods for a bolt command in a trigger allow for a task and a plan. Both methods take the same arguments. 
@@ -174,7 +174,7 @@ VagrantBolt.task('service::linux',
                  env,
                  machine,
                  run_as: 'root',
-                 boltcommand: '/usr/local/bin/bolt',
+                 bolt_command: '/usr/local/bin/bolt',
                  parameters:  { name: "cron", action: "restart" },
                  )
 ~~~
@@ -191,25 +191,25 @@ The settings available in the triggers and the provisioner are the same.
   * Description: A string containing name of the task or plan to run
 
 **Optional Settings**
-* `boltcommand`
+* `bolt_command`
   * Description: A string containing the full path to the bolt executable
   * Default: `bolt`
 * `boltdir`
   * Description: A string containing the bolt working directory
   * Default: `.`
-* `nodelist`
+* `node_list`
   * Description: A string containing bolt node list in URI format
-    * This will override `nodes` and `nodeexcludes`
+    * This will override `nodes` and `excludes`
   * Default: `%{protocol}://%{ssh_ip}:%{ssh_port}`
 * `nodes`
   * Description: An array of machine names to run the task or plan on
-    * The `nodelist` will override this setting.
+    * The `node_list` will override this setting.
     * A special `ALL` string can be used instead of an array to use all active machines in the environment
   * Valid Values: An array of machine symbols or the string "ALL"
   * Default: `[]`
-* `nodeexcludes`
+* `excludes`
   * Description: An array of machine names to not run the task on
-    * The `nodelist` will override this setting.
+    * The `node_list` will override this setting.
     * This setting will take precidence over `nodes`
   * Valid Values: An array of machine symbols
   * Default: `[]`
@@ -224,18 +224,18 @@ The settings available in the triggers and the provisioner are the same.
 * `username`
   * Description: A string containing the username bolt will use to connect to the machine
   * Default: The username vagrant uses to connect to the machine
-* `sudopassword`
+* `sudo_password`
   * Description: A string containing the password bolt will use to escalate privileges on the machine
-* `hostkeycheck`
+* `host_key_check`
   * Description: A boolean which controls if the connection should check the host key on the remote host (linux)
   * Default: `false`
-* `privatekey`
+* `private_key`
   * Description: A string containing the path to a ssh private key that bolt will use to connect to the machine
   * Default: The key vagrant uses to connect to the machine
 * `ssl`
   * Description: A boolean which controls if the connection should use SSL on with WinRM (Windows)
   * Default: `false`
-* `sslverify`
+* `ssl_verify`
   * Description: A boolean which controls if the connection should verify SSL on with WinRM (Windows)
   * Default: `false`
 * `modulepath`

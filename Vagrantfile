@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
       trigger.name = "Bolt \"facts::bash\" after provision"
       trigger.ruby do |env, machine|
         # Sending additional config for the task
-        VagrantBolt.task("facts::bash", env, machine, hostkeycheck: false, verbose: true)
+        VagrantBolt.task("facts::bash", env, machine, host_key_check: false, verbose: true)
       end
     end
   end

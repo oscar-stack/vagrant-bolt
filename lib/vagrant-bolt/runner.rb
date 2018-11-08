@@ -35,25 +35,25 @@ class VagrantBolt::Runner
     config.name = name
     # Add any additional arguments to the config object
     config.set_options(args) unless args.nil?
-    # Configure the nodelist based on the config
-    config.nodelist ||= node_uri_list(@env, config.nodes, config.nodeexcludes)
+    # Configure the node_list based on the config
+    config.node_list ||= node_uri_list(@env, config.nodes, config.excludes)
 
     # Pupulate SSH and WinRM connection info
     if windows?(@machine)
       raise Vagrant::Errors::MachineGuestNotReady unless running?(@machine)
 
-      config.nodelist ||= "winrm://#{@machine.config.winrm.host}:#{@machine.config.winrm.port}"
+      config.node_list ||= "winrm://#{@machine.config.winrm.host}:#{@machine.config.winrm.port}"
       config.username ||= @machine.config.winrm.username
       config.ssl ||= (@machine.config.winrm.transport == :ssl)
-      config.sslverify ||= @machine.config.winrm.ssl_peer_verification
+      config.ssl_verify ||= @machine.config.winrm.ssl_peer_verification
     else
       ssh_info = @machine.ssh_info
       raise Vagrant::Errors::SSHNotReady if ssh_info.nil?
 
-      config.nodelist ||= "ssh://#{ssh_info[:host]}:#{ssh_info[:port]}"
+      config.node_list ||= "ssh://#{ssh_info[:host]}:#{ssh_info[:port]}"
       config.username ||= ssh_info[:username]
-      config.privatekey ||= ssh_info[:private_key_path][0]
-      config.hostkeycheck ||= ssh_info[:verify_host_key]
+      config.private_key ||= ssh_info[:private_key_path][0]
+      config.host_key_check ||= ssh_info[:verify_host_key]
     end
     config
   end
@@ -87,7 +87,7 @@ class VagrantBolt::Runner
   def create_command
     # TODO: add all of the bolt the options and account for Windows Guests
     command = []
-    command << @boltconfig.boltcommand
+    command << @boltconfig.bolt_command
     command << "#{@boltconfig.type} run \'#{@boltconfig.name}\'"
     command << "-u \'#{@boltconfig.username}\'" unless @boltconfig.username.nil?
     command << "-p \'#{@boltconfig.password}\'" unless @boltconfig.password.nil?
@@ -95,13 +95,13 @@ class VagrantBolt::Runner
     if windows?(@machine)
       ssl = (@boltconfig.ssl == true) ? "--ssl" : "--no-ssl"
       command << ssl
-      sslverify = (@boltconfig.sslverify == true) ? "--ssl-verify" : "--no-ssl-verify"
-      command << sslverify
+      ssl_verify = (@boltconfig.ssl_verify == true) ? "--ssl-verify" : "--no-ssl-verify"
+      command << ssl_verify
     else
-      command << "--private-key \'#{@boltconfig.privatekey}\'" unless @boltconfig.privatekey.nil?
-      host_key_check = (@boltconfig.hostkeycheck == true) ? "--host-key-check" : "--no-host-key-check"
+      command << "--private-key \'#{@boltconfig.private_key}\'" unless @boltconfig.private_key.nil?
+      host_key_check = (@boltconfig.host_key_check == true) ? "--host-key-check" : "--no-host-key-check"
       command << host_key_check
-      command << "--sudo-password \'#{@boltconfig.sudopassword}\'" unless @boltconfig.sudopassword.nil?
+      command << "--sudo-password \'#{@boltconfig.sudo_password}\'" unless @boltconfig.sudo_password.nil?
 
     end
 
@@ -111,7 +111,7 @@ class VagrantBolt::Runner
     command << "--tmpdir \'#{@boltconfig.tmpdir}\'" unless @boltconfig.tmpdir.nil?
     boltdir = %r{^/.*}.match?(@boltconfig.boltdir) ? @boltconfig.boltdir : "#{@env.root_path}/#{@boltconfig.boltdir}"
     command << "--boltdir \'#{boltdir}\'" unless @boltconfig.boltdir.nil?
-    command << "-n \'#{@boltconfig.nodelist}\'"
+    command << "-n \'#{@boltconfig.node_list}\'"
     command << "--params \'#{@boltconfig.parameters.to_json}\'" unless @boltconfig.parameters.nil?
     command << "--verbose" if @boltconfig.verbose
     command << "--debug" if @boltconfig.debug

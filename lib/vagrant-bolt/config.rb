@@ -5,9 +5,9 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
   #   @return [String] Additional arguments for the bolt command
   attr_accessor :args
 
-  # @!attribute [rw] boltcommand
+  # @!attribute [rw] bolt_command
   #   @return [String] The full path to the bolt command. If not passed in, the default from PATH will be used.
-  attr_accessor :boltcommand
+  attr_accessor :bolt_command
 
   # @!attribute [rw] boltdir
   #   @return [String] The bolt working directory. Defaults to `.`
@@ -21,9 +21,9 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
   #   @return [Array<Symbol>] Machine names that should be online prior to running this task
   attr_accessor :dependencies
 
-  # @!attribute [rw] hostkeycheck
+  # @!attribute [rw] host_key_check
   #   @return [Boolean] If the connection should check the host key on the remote host (linux)
-  attr_accessor :hostkeycheck
+  attr_accessor :host_key_check
 
   # @!attribute [rw] modulepath
   #   @return [String] The path to the modules. Defaults to `modules`.
@@ -34,22 +34,22 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
   attr_accessor :name
 
   # @!attribute [rw] nodes
-  # Note: The `nodelist` will override this setting.
+  # Note: The `node_list` will override this setting.
   #   @return [Array<String, Symbol>, "ALL"] The nodes to run the task or plan on.
   #        Valid values are an array of machine names or the string "ALL".
   attr_accessor :nodes
 
-  # @!attribute [rw] nodeexcludes
-  # Note: The `nodelist` will override this setting.
+  # @!attribute [rw] excludes
+  # Note: The `node_list` will override this setting.
   # Note: This will be merged with `nodes`, with `excludes` taking precidence
   #   @return [Array<String, Symbol>] The nodes to exclude from running this task or plan on.
   #        Valid values are an array of machine names.
-  attr_accessor :nodeexcludes
+  attr_accessor :excludes
 
-  # @!attribute [rw] nodelist
+  # @!attribute [rw] node_list
   # This setting overrides `nodes` and needs to be in the `protocol://ipaddress:port` URI format
   #   @return [String] The bolt node list. This defaults to the currnet node.
-  attr_accessor :nodelist
+  attr_accessor :node_list
 
   # @!attribute [rw] parameters
   #   @return [Hash] The paramater hash for the task or plan
@@ -67,25 +67,25 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
   #   @return [String] The password to authenticate on the machine.
   attr_accessor :password
 
-  # @!attribute [rw] privatekey
-  #   @return [String] The path of the privatekey to authenticate on the machine.
-  attr_accessor :privatekey
+  # @!attribute [rw] private_key
+  #   @return [String] The path of the private_key to authenticate on the machine.
+  attr_accessor :private_key
 
   # @!attribute [rw] run_as
   #   @return [String] User to run as using privilege escalation.
   attr_accessor :run_as
 
-  # @!attribute [rw] sudopassword
+  # @!attribute [rw] sudo_password
   #   @return [String] The password to authenticate sudo on the machine.
-  attr_accessor :sudopassword
+  attr_accessor :sudo_password
 
   # @!attribute [rw] ssl
   #   @return [Boolean] If the connection should use SSL on with WinRM (Windows)
   attr_accessor :ssl
 
-  # @!attribute [rw] sslverify
+  # @!attribute [rw] ssl_verify
   #   @return [Boolean] If the connection should verify SSL on with WinRM (Windows)
-  attr_accessor :sslverify
+  attr_accessor :ssl_verify
 
   # @!attribute [rw] tmpdir
   #   @return [String] The directory to upload and execute temporary files on the target
@@ -96,58 +96,58 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
   attr_accessor :verbose
 
   def initialize
-    @args             = UNSET_VALUE
-    @boltcommand      = UNSET_VALUE
-    @boltdir          = UNSET_VALUE
-    @debug            = UNSET_VALUE
-    @dependencies     = []
-    @hostkeycheck     = UNSET_VALUE
-    @modulepath       = UNSET_VALUE
-    @name             = UNSET_VALUE
-    @nodes            = []
-    @nodeexcludes     = []
-    @nodelist         = UNSET_VALUE
-    @parameters       = UNSET_VALUE
-    @password         = UNSET_VALUE
-    @privatekey       = UNSET_VALUE
-    @run_as           = UNSET_VALUE
-    @ssl              = UNSET_VALUE
-    @sslverify        = UNSET_VALUE
-    @sudopassword     = UNSET_VALUE
-    @tmpdir           = UNSET_VALUE
-    @type             = UNSET_VALUE
-    @username         = UNSET_VALUE
-    @verbose          = UNSET_VALUE
+    @args           = UNSET_VALUE
+    @bolt_command   = UNSET_VALUE
+    @boltdir        = UNSET_VALUE
+    @debug          = UNSET_VALUE
+    @dependencies   = []
+    @host_key_check = UNSET_VALUE
+    @modulepath     = UNSET_VALUE
+    @name           = UNSET_VALUE
+    @nodes          = []
+    @excludes       = []
+    @node_list      = UNSET_VALUE
+    @parameters     = UNSET_VALUE
+    @password       = UNSET_VALUE
+    @private_key    = UNSET_VALUE
+    @run_as         = UNSET_VALUE
+    @ssl            = UNSET_VALUE
+    @ssl_verify     = UNSET_VALUE
+    @sudo_password  = UNSET_VALUE
+    @tmpdir         = UNSET_VALUE
+    @type           = UNSET_VALUE
+    @username       = UNSET_VALUE
+    @verbose        = UNSET_VALUE
   end
 
   def finalize!
-    @args             = nil if @args == UNSET_VALUE
-    @boltcommand      = 'bolt' if @boltcommand == UNSET_VALUE
-    @boltdir          = '.' if @boltdir == UNSET_VALUE
-    @debug            = false if @debug == UNSET_VALUE
-    @hostkeycheck     = false if @hostkeycheck == UNSET_VALUE
-    @modulepath       = 'modules' if @modulepath == UNSET_VALUE
-    @name             = nil if @name == UNSET_VALUE
-    @nodelist         = nil if @nodelist == UNSET_VALUE
-    @parameters       = nil if @parameters == UNSET_VALUE
-    @password         = nil if @password == UNSET_VALUE
-    @privatekey       = nil if @privatekey == UNSET_VALUE
-    @run_as           = nil if @run_as == UNSET_VALUE
-    @ssl              = false if @ssl == UNSET_VALUE
-    @sslverify        = false if @sslverify == UNSET_VALUE
-    @sudopassword     = nil if @sudopassword == UNSET_VALUE
-    @tmpdir           = nil if @tmpdir == UNSET_VALUE
-    @type             = nil if @type == UNSET_VALUE
-    @username         = nil if @username == UNSET_VALUE
-    @verbose          = false if @verbose == UNSET_VALUE
+    @args           = nil if @args == UNSET_VALUE
+    @bolt_command   = 'bolt' if @bolt_command == UNSET_VALUE
+    @boltdir        = '.' if @boltdir == UNSET_VALUE
+    @debug          = false if @debug == UNSET_VALUE
+    @host_key_check = false if @host_key_check == UNSET_VALUE
+    @modulepath     = 'modules' if @modulepath == UNSET_VALUE
+    @name           = nil if @name == UNSET_VALUE
+    @node_list      = nil if @node_list == UNSET_VALUE
+    @parameters     = nil if @parameters == UNSET_VALUE
+    @password       = nil if @password == UNSET_VALUE
+    @private_key    = nil if @private_key == UNSET_VALUE
+    @run_as         = nil if @run_as == UNSET_VALUE
+    @ssl            = false if @ssl == UNSET_VALUE
+    @ssl_verify     = false if @ssl_verify == UNSET_VALUE
+    @sudo_password  = nil if @sudo_password == UNSET_VALUE
+    @tmpdir         = nil if @tmpdir == UNSET_VALUE
+    @type           = nil if @type == UNSET_VALUE
+    @username       = nil if @username == UNSET_VALUE
+    @verbose        = false if @verbose == UNSET_VALUE
   end
 
   def merge(other)
     super.tap do |result|
       new_dependencies = (dependencies + other.dependencies.dup).flatten.uniq
       result.instance_variable_set(:@dependencies, new_dependencies.to_a)
-      new_nodeexcludes = (nodeexcludes + other.nodeexcludes.dup).flatten.uniq
-      result.instance_variable_set(:@nodeexcludes, new_nodeexcludes.to_a)
+      new_excludes = (excludes + other.excludes.dup).flatten.uniq
+      result.instance_variable_set(:@excludes, new_excludes.to_a)
       unless nodes.to_s.casecmp("all").zero?
         new_nodes = (nodes + other.nodes.dup).flatten.uniq
         result.instance_variable_set(:@nodes, new_nodes.to_a)
@@ -171,9 +171,9 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
                        type: 'array')
     end
 
-    if @nodeexcludes.nil? || !(@nodeexcludes.is_a? Array)
+    if @excludes.nil? || !(@excludes.is_a? Array)
       errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_data_type',
-                       item: 'nodeexcludes',
+                       item: 'excludes',
                        type: 'array')
     end
 
