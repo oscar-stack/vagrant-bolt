@@ -26,4 +26,8 @@ class VagrantBolt::Plugin < Vagrant.plugin('2')
     require_relative 'provisioner'
     VagrantBolt::Provisioner
   end
+
+  def self.config_builder_hook
+    require_relative 'config_builder'
+  end
 end
