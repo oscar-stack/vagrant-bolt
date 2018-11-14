@@ -38,29 +38,6 @@ module VagrantBolt::Util
     }.compact
   end
 
-  # Generate a CSV list of node:port addresses for all active nodes in the environment
-  # @param [Object] env The Enviornment
-  # @param [Array<String>, String] includes Array of machine names to include, or ALL for all nodes
-  # @param [Array<String>] excludes Array of machine names to exclude
-  # @return [String]
-  def node_uri_list(env, includes = [], excludes = [])
-    all_nodes_enabled = includes.to_s.casecmp("all").zero?
-    return nil if !all_nodes_enabled && includes.empty?
-
-    nodes_in_environment(env).map { |vm|
-      next unless all_nodes_enabled || includes.include?(vm.name.to_sym) || includes.include?(vm.name.to_s)
-      next if excludes.include?(vm.name.to_sym) || excludes.include?(vm.name.to_s) || !running?(vm)
-
-      # Only call ssh_info once
-      vm_ssh_info = vm.ssh_info
-      if windows?(vm)
-        "winrm://#{vm.config.winrm.host}:#{vm.config.winrm.port}" unless vm_ssh_info.nil?
-      else
-        "ssh://#{vm_ssh_info[:host]}:#{vm_ssh_info[:port]}" unless vm_ssh_info.nil?
-      end
-    }.compact.join(",")
-  end
-
   # Return if the guest is windows. This only works for online machines
   # @param [Object] machine The machine
   # @return [Boolean]

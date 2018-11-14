@@ -42,26 +42,6 @@ class VagrantBolt::Runner
     config.node_list ||= nodes_in_environment(@env).map(&:name).join(',') if config.nodes.to_s.casecmp("all").zero?
     config.node_list ||= @machine.name.to_s
 
-    ## Obselete with inventory.yaml
-    # # config.node_list ||= node_uri_list(@env, config.nodes, config.excludes)
-
-    # # Pupulate SSH and WinRM connection info
-    # if windows?(@machine)
-    #   raise Vagrant::Errors::MachineGuestNotReady unless running?(@machine)
-
-    #   config.node_list ||= "winrm://#{@machine.config.winrm.host}:#{@machine.config.winrm.port}"
-    #   config.user ||= @machine.config.winrm.username
-    #   config.ssl ||= (@machine.config.winrm.transport == :ssl)
-    #   config.ssl_verify ||= @machine.config.winrm.ssl_peer_verification
-    # else
-    #   ssh_info = @machine.ssh_info
-    #   raise Vagrant::Errors::SSHNotReady if ssh_info.nil?
-
-    #   config.node_list ||= "ssh://#{ssh_info[:host]}:#{ssh_info[:port]}"
-    #   config.user ||= ssh_info[:username]
-    #   config.private_key ||= ssh_info[:private_key_path][0]
-    #   config.host_key_check ||= ssh_info[:verify_host_key]
-    # end
     config
   end
 

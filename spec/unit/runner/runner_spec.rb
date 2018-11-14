@@ -44,8 +44,6 @@ describe VagrantBolt::Runner do
 
   context 'setup_overrides' do
     before(:each) do
-      allow_any_instance_of(VagrantBolt::Util).to receive(:node_uri_list).with(iso_env, [], []).and_return(nil)
-      allow_any_instance_of(VagrantBolt::Util).to receive(:node_uri_list).with(iso_env, 'all', []).and_return('allnodes')
       allow_any_instance_of(VagrantBolt::Util).to receive(:nodes_in_environment).with(iso_env).and_return([machine, machine2])
     end
     it 'adds the type and name to the config' do
