@@ -155,10 +155,10 @@ The methods for a bolt command in a trigger allow for a task and a plan. Both me
 
 Example of the arguments can be seen below. 
 
-Run the `facts` task using a specific username and password.
+Run the `facts` task using a specific user and password.
 
 ~~~ruby
-VagrantBolt.task('facts', env, machine, username: 'ubuntu', password: 'testpassword')
+VagrantBolt.task('facts', env, machine, user: 'ubuntu', password: 'testpassword')
 ~~~
 
 Run the `facts` plan on `server1` and `server2`.
@@ -221,9 +221,12 @@ The settings available in the triggers and the provisioner are the same.
   * Description: A hash of the parameters for the bolt task or plan
 * `password`
   * Description: A string containing the password bolt will use to connect to the machine
-* `username`
-  * Description: A string containing the username bolt will use to connect to the machine
-  * Default: The username vagrant uses to connect to the machine
+* `user`
+  * Description: A string containing the user bolt will use to connect to the machine
+  * Default: The user vagrant uses to connect to the machine
+* `port`
+  * Description: A string containing the port bolt will use to connect to the machine
+  * Default: The port that vagrant uses to connect to the machine
 * `sudo_password`
   * Description: A string containing the password bolt will use to escalate privileges on the machine
 * `host_key_check`

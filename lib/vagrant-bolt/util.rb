@@ -117,7 +117,7 @@ module VagrantBolt::Util
     vm_ssh_info = machine.ssh_info
     return node_group if vm_ssh_info.nil?
 
-    if windows?(@machine)
+    if windows?(machine)
       transport = 'winrm'
       node_group['config'][transport] ||= {}
       node_group['config'][transport]['ssl'] ||= (machine.config.winrm.transport == :ssl)

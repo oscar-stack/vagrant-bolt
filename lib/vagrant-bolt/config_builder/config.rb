@@ -61,13 +61,17 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
   #   @return [Symbol] Whether bolt should use a task or plan
   def_model_attribute :bolt_type
 
-  # @!attribute [rw] username
-  #   @return [String] The username to authenticate on the machine.
-  def_model_attribute :username
+  # @!attribute [rw] user
+  #   @return [String] The user to authenticate on the machine.
+  def_model_attribute :user
 
   # @!attribute [rw] password
   #   @return [String] The password to authenticate on the machine.
   def_model_attribute :password
+
+  # @!attribute [rw] port
+  #   @return [String] The port to connect to the machine.
+  def_model_attribute :port
 
   # @!attribute [rw] private_key
   #   @return [String] The path of the private_key to authenticate on the machine.
@@ -114,8 +118,9 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
       with_attr(:excludes)       { |val| bolt.excludes       = val }
       with_attr(:node_list)      { |val| bolt.node_list      = val }
       with_attr(:parameters)     { |val| bolt.parameters     = val }
-      with_attr(:username)       { |val| bolt.username       = val }
+      with_attr(:user)           { |val| bolt.user           = val }
       with_attr(:password)       { |val| bolt.password       = val }
+      with_attr(:port)           { |val| bolt.port           = val }
       with_attr(:private_key)    { |val| bolt.private_key    = val }
       with_attr(:run_as)         { |val| bolt.run_as         = val }
       with_attr(:sudo_password)  { |val| bolt.sudo_password  = val }

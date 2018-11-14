@@ -61,13 +61,17 @@ class VagrantBolt::ConfigBuilder::Provisioner < ConfigBuilder::Model::Provisione
   #   @return [Symbol] Whether bolt should use a task or plan
   def_model_attribute :bolt_type
 
-  # @!attribute [rw] username
-  #   @return [String] The username to authenticate on the machine.
-  def_model_attribute :username
+  # @!attribute [rw] user
+  #   @return [String] The user to authenticate on the machine.
+  def_model_attribute :user
 
   # @!attribute [rw] password
   #   @return [String] The password to authenticate on the machine.
   def_model_attribute :password
+
+  # @!attribute [rw] port
+  #   @return [String] The port to connect to the machine.
+  def_model_attribute :port
 
   # @!attribute [rw] private_key
   #   @return [String] The path of the private_key to authenticate on the machine.

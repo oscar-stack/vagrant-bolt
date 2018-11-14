@@ -59,13 +59,17 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
   #   @return [Symbol] Whether bolt should use a task or plan
   attr_accessor :type
 
-  # @!attribute [rw] username
-  #   @return [String] The username to authenticate on the machine.
-  attr_accessor :username
+  # @!attribute [rw] user
+  #   @return [String] The user to authenticate on the machine.
+  attr_accessor :user
 
   # @!attribute [rw] password
   #   @return [String] The password to authenticate on the machine.
   attr_accessor :password
+
+  # @!attribute [rw] port
+  #   @return [String] The port to connect to the machine.
+  attr_accessor :port
 
   # @!attribute [rw] private_key
   #   @return [String] The path of the private_key to authenticate on the machine.
@@ -109,6 +113,7 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
     @node_list      = UNSET_VALUE
     @parameters     = UNSET_VALUE
     @password       = UNSET_VALUE
+    @port           = UNSET_VALUE
     @private_key    = UNSET_VALUE
     @run_as         = UNSET_VALUE
     @ssl            = UNSET_VALUE
@@ -116,7 +121,7 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
     @sudo_password  = UNSET_VALUE
     @tmpdir         = UNSET_VALUE
     @type           = UNSET_VALUE
-    @username       = UNSET_VALUE
+    @user           = UNSET_VALUE
     @verbose        = UNSET_VALUE
   end
 
@@ -130,6 +135,7 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
     @name           = nil if @name == UNSET_VALUE
     @node_list      = nil if @node_list == UNSET_VALUE
     @parameters     = nil if @parameters == UNSET_VALUE
+    @port           = nil if @parameters == UNSET_VALUE
     @password       = nil if @password == UNSET_VALUE
     @private_key    = nil if @private_key == UNSET_VALUE
     @run_as         = nil if @run_as == UNSET_VALUE
@@ -138,7 +144,7 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
     @sudo_password  = nil if @sudo_password == UNSET_VALUE
     @tmpdir         = nil if @tmpdir == UNSET_VALUE
     @type           = nil if @type == UNSET_VALUE
-    @username       = nil if @username == UNSET_VALUE
+    @user           = nil if @user == UNSET_VALUE
     @verbose        = false if @verbose == UNSET_VALUE
   end
 

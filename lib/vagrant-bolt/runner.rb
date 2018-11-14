@@ -50,7 +50,7 @@ class VagrantBolt::Runner
     #   raise Vagrant::Errors::MachineGuestNotReady unless running?(@machine)
 
     #   config.node_list ||= "winrm://#{@machine.config.winrm.host}:#{@machine.config.winrm.port}"
-    #   config.username ||= @machine.config.winrm.username
+    #   config.user ||= @machine.config.winrm.username
     #   config.ssl ||= (@machine.config.winrm.transport == :ssl)
     #   config.ssl_verify ||= @machine.config.winrm.ssl_peer_verification
     # else
@@ -58,7 +58,7 @@ class VagrantBolt::Runner
     #   raise Vagrant::Errors::SSHNotReady if ssh_info.nil?
 
     #   config.node_list ||= "ssh://#{ssh_info[:host]}:#{ssh_info[:port]}"
-    #   config.username ||= ssh_info[:username]
+    #   config.user ||= ssh_info[:username]
     #   config.private_key ||= ssh_info[:private_key_path][0]
     #   config.host_key_check ||= ssh_info[:verify_host_key]
     # end
@@ -96,7 +96,7 @@ class VagrantBolt::Runner
     command = []
     command << @boltconfig.bolt_command
     command << "#{@boltconfig.type} run \'#{@boltconfig.name}\'"
-    command << "-u \'#{@boltconfig.username}\'" unless @boltconfig.username.nil?
+    command << "-u \'#{@boltconfig.user}\'" unless @boltconfig.user.nil?
     command << "-p \'#{@boltconfig.password}\'" unless @boltconfig.password.nil?
 
     # Not obselete with inventory.yaml as we want to enable overrides
@@ -122,7 +122,7 @@ class VagrantBolt::Runner
     command << "--params \'#{@boltconfig.parameters.to_json}\'" unless @boltconfig.parameters.nil?
     command << "--verbose" if @boltconfig.verbose
     command << "--debug" if @boltconfig.debug
-    command << "--inventoryfile \'#{@inventory_file}\'"
+    command << "--inventoryfile \'#{@inventory_file}\'" unless @inventory_file.nil?
     command << @boltconfig.args unless @boltconfig.args.nil?
     command.flatten.join(" ")
   end
