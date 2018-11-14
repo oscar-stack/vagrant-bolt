@@ -143,6 +143,7 @@ module VagrantBolt::Util
   def update_inventory_file(env)
     inventory = generate_inventory_hash(env).to_yaml
     inventory_file = Pathname.new(File.join(env.local_data_path, 'bolt_inventory.yaml'))
+    # TODO: This lock should be global
     lock = Mutex.new
     lock.synchronize do
       if !File.exist?(inventory_file) || (inventory != File.read(inventory_file))

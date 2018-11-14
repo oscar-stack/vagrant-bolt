@@ -38,28 +38,30 @@ class VagrantBolt::Runner
     # Add any additional arguments to the config object
     config.set_options(args) unless args.nil?
     # Configure the node_list based on the config
-    # config.nodelist ||= [config.nodes - config.excludes].flatten.join(',') unless config.nodes.empty? || config.nodes.to_s.casecmp("all").zero?
-    # config.nodelist ||= nodes_in_environment(@env).map(&:name).join(',') if config.nodes.to_s.casecmp("all").zero?
-    # config.nodelist ||= @machine.name.to_s
-    config.node_list ||= node_uri_list(@env, config.nodes, config.excludes)
+    config.node_list ||= [config.nodes - config.excludes].flatten.join(',') unless config.nodes.empty? || config.nodes.to_s.casecmp("all").zero?
+    config.node_list ||= nodes_in_environment(@env).map(&:name).join(',') if config.nodes.to_s.casecmp("all").zero?
+    config.node_list ||= @machine.name.to_s
 
-    # Pupulate SSH and WinRM connection info
-    if windows?(@machine)
-      raise Vagrant::Errors::MachineGuestNotReady unless running?(@machine)
+    ## Obselete with inventory.yaml
+    # # config.node_list ||= node_uri_list(@env, config.nodes, config.excludes)
 
-      config.node_list ||= "winrm://#{@machine.config.winrm.host}:#{@machine.config.winrm.port}"
-      config.username ||= @machine.config.winrm.username
-      config.ssl ||= (@machine.config.winrm.transport == :ssl)
-      config.ssl_verify ||= @machine.config.winrm.ssl_peer_verification
-    else
-      ssh_info = @machine.ssh_info
-      raise Vagrant::Errors::SSHNotReady if ssh_info.nil?
+    # # Pupulate SSH and WinRM connection info
+    # if windows?(@machine)
+    #   raise Vagrant::Errors::MachineGuestNotReady unless running?(@machine)
 
-      config.node_list ||= "ssh://#{ssh_info[:host]}:#{ssh_info[:port]}"
-      config.username ||= ssh_info[:username]
-      config.private_key ||= ssh_info[:private_key_path][0]
-      config.host_key_check ||= ssh_info[:verify_host_key]
-    end
+    #   config.node_list ||= "winrm://#{@machine.config.winrm.host}:#{@machine.config.winrm.port}"
+    #   config.username ||= @machine.config.winrm.username
+    #   config.ssl ||= (@machine.config.winrm.transport == :ssl)
+    #   config.ssl_verify ||= @machine.config.winrm.ssl_peer_verification
+    # else
+    #   ssh_info = @machine.ssh_info
+    #   raise Vagrant::Errors::SSHNotReady if ssh_info.nil?
+
+    #   config.node_list ||= "ssh://#{ssh_info[:host]}:#{ssh_info[:port]}"
+    #   config.username ||= ssh_info[:username]
+    #   config.private_key ||= ssh_info[:private_key_path][0]
+    #   config.host_key_check ||= ssh_info[:verify_host_key]
+    # end
     config
   end
 
@@ -97,6 +99,7 @@ class VagrantBolt::Runner
     command << "-u \'#{@boltconfig.username}\'" unless @boltconfig.username.nil?
     command << "-p \'#{@boltconfig.password}\'" unless @boltconfig.password.nil?
 
+    # Not obselete with inventory.yaml as we want to enable overrides
     if windows?(@machine)
       ssl = (@boltconfig.ssl == true) ? "--ssl" : "--no-ssl"
       command << ssl
@@ -107,7 +110,6 @@ class VagrantBolt::Runner
       host_key_check = (@boltconfig.host_key_check == true) ? "--host-key-check" : "--no-host-key-check"
       command << host_key_check
       command << "--sudo-password \'#{@boltconfig.sudo_password}\'" unless @boltconfig.sudo_password.nil?
-
     end
 
     command << "--run_as #{@boltconfig.run_as}" unless @boltconfig.run_as.nil?
