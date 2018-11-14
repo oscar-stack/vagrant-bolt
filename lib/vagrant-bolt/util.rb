@@ -101,7 +101,7 @@ module VagrantBolt::Util
 
       inventory['groups'] << generate_node_group(vm)
     end
-    inventory['config'] = env.vagrantfile.config.bolt.config_hash
+    inventory['config'] = env.vagrantfile.config.bolt.inventory_config
     inventory
   end
 
@@ -112,19 +112,18 @@ module VagrantBolt::Util
     # Only call ssh_info once
     node_group = {}
     node_group['name'] = machine.name.to_s
-    node_group['config'] = machine.config.bolt.config_hash
+    node_group['config'] = machine.config.bolt.inventory_config
 
     vm_ssh_info = machine.ssh_info
     return node_group if vm_ssh_info.nil?
 
-    node_group['nodes'] = [vm_ssh_info[:host]]
     if windows?(@machine)
       transport = 'winrm'
       node_group['config'][transport] ||= {}
       node_group['config'][transport]['ssl'] ||= (machine.config.winrm.transport == :ssl)
       node_group['config'][transport]['ssl_verify'] ||= machine.config.winrm.ssl_peer_verification
       node_group['config'][transport]['port'] ||= machine.config.winrm.port
-      node_group['config'][transport]['port'] ||= machine.config.winrm.username
+      node_group['config'][transport]['user'] ||= machine.config.winrm.username
     else
       transport = 'ssh'
       node_group['config'][transport] ||= {}
@@ -133,6 +132,7 @@ module VagrantBolt::Util
       node_group['config'][transport]['port'] ||= vm_ssh_info[:port]
       node_group['config'][transport]['user'] ||= vm_ssh_info[:username]
     end
+    node_group['nodes'] = ["#{transport}://#{vm_ssh_info[:host]}:#{node_group['config'][transport]['port']}"]
     node_group['config']['transport'] = transport
     node_group
   end

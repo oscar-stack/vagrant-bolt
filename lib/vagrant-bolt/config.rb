@@ -188,7 +188,7 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
 
   # Generate a bolt inventory config hash for this config
   # @return [Hash] A bolt inventory config hash containing the configured parameters
-  def config_hash
+  def inventory_config
     setting_map = {
       'ssh': [
         'user',
