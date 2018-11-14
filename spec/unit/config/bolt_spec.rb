@@ -71,7 +71,7 @@ describe VagrantBolt::Config do
       "type",
       "parameters",
       "node_list",
-      "username",
+      "user",
       "password",
       "sudo_password",
       "private_key",
@@ -84,6 +84,39 @@ describe VagrantBolt::Config do
         subject.finalize!
         expect(subject.send(val)).to eq(nil)
       end
+    end
+  end
+
+  context "inventory config" do
+    let(:default_hash) do
+      {
+        "ssh" => {
+          "host-key-check" => false,
+          "password" => "foo",
+          "port" => "22",
+          "run-as" => "root",
+        },
+        "winrm" => {
+          "password" => "foo",
+          "port" => "22",
+          "run-as" => "root",
+          "ssl" => false,
+          "ssl-verify" => false,
+        },
+      }
+    end
+    before(:each) do
+      subject.password = 'foo'
+      subject.run_as = 'root'
+      subject.port = '22'
+      subject.finalize!
+    end
+
+    it 'generates the basic hash structure' do
+      expect(subject.inventory_config).to include(default_hash)
+    end
+    it 'converts names with _ to -' do
+      expect(subject.inventory_config['ssh']['run-as']).to eq('root')
     end
   end
 end

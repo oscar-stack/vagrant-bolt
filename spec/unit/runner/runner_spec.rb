@@ -13,11 +13,13 @@ describe VagrantBolt::Runner do
     env.vagrantfile <<-VAGRANTFILE
     Vagrant.configure('2') do |config|
       config.vm.define :server
+      config.vm.define :server2
     end
     VAGRANTFILE
     env.create_vagrant_env
   end
   let(:machine) { iso_env.machine(:server, :dummy) }
+  let(:machine2) { iso_env.machine(:server2, :dummy) }
   let(:runner) { double :runner }
   let(:config) { VagrantBolt::Config.new }
   let(:subprocess_result) do
@@ -44,6 +46,7 @@ describe VagrantBolt::Runner do
     before(:each) do
       allow_any_instance_of(VagrantBolt::Util).to receive(:node_uri_list).with(iso_env, [], []).and_return(nil)
       allow_any_instance_of(VagrantBolt::Util).to receive(:node_uri_list).with(iso_env, 'all', []).and_return('allnodes')
+      allow_any_instance_of(VagrantBolt::Util).to receive(:nodes_in_environment).with(iso_env).and_return([machine, machine2])
     end
     it 'adds the type and name to the config' do
       result = subject.send(:setup_overrides, 'task', 'foo')
@@ -51,26 +54,32 @@ describe VagrantBolt::Runner do
       expect(result.name).to eq('foo')
     end
 
-    it 'adds the ssh_info to the config' do
+    it 'uses the server name for the nodes' do
       result = subject.send(:setup_overrides, 'task', 'foo')
-      expect(result.node_list).to eq('ssh://foo:22')
-      expect(result.username).to eq('user')
-      expect(result.private_key).to eq('path')
-      expect(result.host_key_check).to eq(true)
+      expect(result.node_list).to eq('server')
+    end
+
+    it 'allows for using multiple nodes' do
+      config.nodes = ['server', 'server2']
+      config.finalize!
+      result = subject.send(:setup_overrides, 'task', 'foo')
+      expect(result.node_list).to eq('server,server2')
     end
 
     it 'adds all nodes when "all" is specified' do
-      result = subject.send(:setup_overrides, 'task', 'foo', nodes: 'all')
-      expect(result.node_list).to eq('allnodes')
+      config.nodes = 'all'
+      config.finalize!
+      result = subject.send(:setup_overrides, 'task', 'foo')
+      expect(result.node_list).to eq('server,server2')
     end
 
     it 'does not override specified ssh settings' do
       config.node_list = 'ssh://test:22'
-      config.username = 'root'
+      config.user = 'root'
       config.finalize!
       result = subject.send(:setup_overrides, 'task', 'foo')
       expect(result.node_list).to eq('ssh://test:22')
-      expect(result.username).to eq('root')
+      expect(result.user).to eq('root')
     end
 
     it 'allows for specifying additional args' do
