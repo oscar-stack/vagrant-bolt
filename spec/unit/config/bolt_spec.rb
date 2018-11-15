@@ -73,6 +73,7 @@ describe VagrantBolt::Config do
       "node_list",
       "user",
       "password",
+      "port",
       "sudo_password",
       "private_key",
       "tmpdir",

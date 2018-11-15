@@ -135,7 +135,7 @@ class VagrantBolt::Config < Vagrant.plugin('2', :config)
     @name           = nil if @name == UNSET_VALUE
     @node_list      = nil if @node_list == UNSET_VALUE
     @parameters     = nil if @parameters == UNSET_VALUE
-    @port           = nil if @parameters == UNSET_VALUE
+    @port           = nil if @port == UNSET_VALUE
     @password       = nil if @password == UNSET_VALUE
     @private_key    = nil if @private_key == UNSET_VALUE
     @run_as         = nil if @run_as == UNSET_VALUE
