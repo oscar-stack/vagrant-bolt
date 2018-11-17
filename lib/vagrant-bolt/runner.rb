@@ -7,7 +7,7 @@ class VagrantBolt::Runner
     @env = env
     @machine = machine
     @boltconfig = boltconfig.nil? ? machine.config.bolt : boltconfig
-    @inventory_file = nil
+    @inventory_path = nil
   end
 
   # Run a bolt task or plan
@@ -16,7 +16,7 @@ class VagrantBolt::Runner
   # @param [Hash] args A optional hash of bolt config overrides; {run_as: "vagrant"}. No merging will be done with the overrides
   def run(type, name, **args)
     validate_dependencies
-    @inventory_file = update_inventory_file(@env) if @boltconfig.node_list.nil?
+    @inventory_path = update_inventory_file(@env) if @boltconfig.node_list.nil?
     @boltconfig = setup_overrides(type, name, **args)
     validate
     run_bolt
@@ -84,7 +84,7 @@ class VagrantBolt::Runner
     command << "--tmpdir \'#{@boltconfig.tmpdir}\'" unless @boltconfig.tmpdir.nil?
     boltdir = %r{^/.*}.match?(@boltconfig.boltdir) ? @boltconfig.boltdir : "#{@env.root_path}/#{@boltconfig.boltdir}"
     command << "--boltdir \'#{boltdir}\'" unless @boltconfig.boltdir.nil?
-    command << "--inventoryfile \'#{@inventory_file}\'" unless @inventory_file.nil?
+    command << "--inventoryfile \'#{@inventory_path}\'" unless @inventory_path.nil?
 
     ## Configuration items
     command << "-n \'#{@boltconfig.node_list}\'" unless @boltconfig.node_list.nil?
