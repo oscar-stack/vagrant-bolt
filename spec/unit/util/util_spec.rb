@@ -6,8 +6,8 @@ require 'vagrant-bolt/config'
 
 describe VagrantBolt::Util do
   include VagrantBolt::Util
-  let(:global) { VagrantBolt::Config.new }
-  let(:local) { VagrantBolt::Config.new }
+  let(:global) { VagrantBolt::Config::Bolt.new }
+  let(:local) { VagrantBolt::Config::Bolt.new }
 
   before(:each) do
     global.finalize!
@@ -69,14 +69,6 @@ describe VagrantBolt::Util do
             "port" => "22",
             "private-key" => "bar",
             "run-as" => "root",
-            "user" => "vagrant",
-          },
-          "winrm" => {
-            "password" => "foo",
-            "port" => "22",
-            "run-as" => "root",
-            "ssl" => false,
-            "ssl-verify" => false,
             "user" => "vagrant",
           },
           "transport" => "ssh",

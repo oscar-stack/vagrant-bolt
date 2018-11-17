@@ -21,7 +21,7 @@ describe VagrantBolt::Runner do
   let(:machine) { iso_env.machine(:server, :dummy) }
   let(:machine2) { iso_env.machine(:server2, :dummy) }
   let(:runner) { double :runner }
-  let(:config) { VagrantBolt::Config.new }
+  let(:config) { VagrantBolt::Config::Bolt.new }
   let(:subprocess_result) do
     double("subprocess_result").tap do |result|
       allow(result).to receive(:exit_code).and_return(0)

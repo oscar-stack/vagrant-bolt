@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'vagrant-bolt/config'
 
-describe VagrantBolt::Config do
+describe VagrantBolt::Config::Bolt do
   let(:machine) { double("machine") }
 
   context "validation" do
@@ -48,11 +48,6 @@ describe VagrantBolt::Config do
 
   context "defaults" do
     expected_values = {
-      host_key_check: false,
-      ssl: false,
-      ssl_verify: false,
-      verbose: false,
-      debug: false,
       modulepath: "modules",
       bolt_command: "bolt",
       boltdir: ".",
@@ -79,6 +74,11 @@ describe VagrantBolt::Config do
       "tmpdir",
       "run_as",
       "args",
+      "ssl",
+      "ssl_verify",
+      "verbose",
+      "debug",
+      "host_key_check",
     ]
     expected_nil.each do |val|
       it "defaults #{val} to nil" do
@@ -92,17 +92,16 @@ describe VagrantBolt::Config do
     let(:default_hash) do
       {
         "ssh" => {
-          "host-key-check" => false,
           "password" => "foo",
           "port" => "22",
           "run-as" => "root",
+          "host-key-check" => false,
         },
         "winrm" => {
           "password" => "foo",
           "port" => "22",
           "run-as" => "root",
           "ssl" => false,
-          "ssl-verify" => false,
         },
       }
     end
@@ -110,6 +109,8 @@ describe VagrantBolt::Config do
       subject.password = 'foo'
       subject.run_as = 'root'
       subject.port = '22'
+      subject.ssl = false
+      subject.host_key_check = false
       subject.finalize!
     end
 
