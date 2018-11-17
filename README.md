@@ -21,7 +21,6 @@ Ruby triggers, implemented in Vagrant 2.2.0, allow for specifying a block of rub
 require 'vagrant-bolt'
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
-  config.ssh.insert_key = false
 
   # Using a global bolt trigger for a plan
   # This will fire on all machines after :up
@@ -43,7 +42,6 @@ vagrant-bolt also provides a traditional provisioner which can be added to a mac
 require 'vagrant-bolt'
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
-  config.ssh.insert_key = false
 
   config.vm.define 'server' do |node|
     node.vm.provision :bolt do |bolt|
@@ -67,7 +65,6 @@ The plugin provides a `bolt` config object at the `root`, `vm`, and `provisioner
 require 'vagrant-bolt'
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
-  config.ssh.insert_key = false
   # Root level config will be applied to all bolt provisioners and triggers
   config.bolt.verbose   = true
 
@@ -91,7 +88,6 @@ The config object applies to the triggers as well. The example Vagrantfile will 
 require 'vagrant-bolt'
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
-  config.ssh.insert_key = false
   # Root level config will be applied to all bolt provisioners and triggers
   config.bolt.verbose   = true
 
@@ -115,7 +111,6 @@ In addition to the config objects, the trigger method takes options for addition
 require 'vagrant-bolt'
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
-  config.ssh.insert_key = false
   # Root level config will be applied to all bolt provisioners and triggers
   config.bolt.verbose   = true
 
@@ -196,11 +191,11 @@ The settings available in the triggers and the provisioner are the same.
   * Default: `bolt`
 * `boltdir`
   * Description: A string containing the bolt working directory
-  * Default: `.`
+  * Default: The vagrant root
 * `node_list`
   * Description: A string containing bolt node list in URI format
     * This will override `nodes` and `excludes`
-  * Default: `%{protocol}://%{ssh_ip}:%{ssh_port}`
+  * Default: `%{protocol}://%{ssh_ip}:%{ssh_port}` if `nodes` is not specified
 * `nodes`
   * Description: An array of machine names to run the task or plan on
     * The `node_list` will override this setting.
@@ -237,21 +232,17 @@ The settings available in the triggers and the provisioner are the same.
   * Default: The key vagrant uses to connect to the machine
 * `ssl`
   * Description: A boolean which controls if the connection should use SSL on with WinRM (Windows)
-  * Default: `false`
 * `ssl_verify`
   * Description: A boolean which controls if the connection should verify SSL on with WinRM (Windows)
-  * Default: `false`
 * `modulepath`
   * Description: A string containing the path to bolt modules
-  * Default: `modules`
+  * Default: `modules` in the vagrant root
 * `tmpdir`
   * Description: A string containing the directory to upload and execute temporary files on the target
 * `verbose`
   * Description: A boolean which controls if bolt will output verbose logs
-  * Default: `false`
 * `debug`
   * Description: A boolean which controls if bolt will output debug logs
-  * Default: `false`
 * `run_as`
   * Description: A string containing the user to run commands as on the machine
 * `args`
