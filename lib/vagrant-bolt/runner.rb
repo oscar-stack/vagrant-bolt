@@ -35,6 +35,8 @@ class VagrantBolt::Runner
     config = @boltconfig.dup
     config.type = type
     config.name = name
+    # Merge the root config to get the defaults for the environment
+    config = merge_config(config, @env.vagrantfile.config.bolt)
     # Add any additional arguments to the config object
     config.set_options(args) unless args.nil?
     # Configure the node_list based on the config
@@ -76,33 +78,39 @@ class VagrantBolt::Runner
     command = []
     command << @boltconfig.bolt_command
     command << "#{@boltconfig.type} run \'#{@boltconfig.name}\'"
-    command << "-u \'#{@boltconfig.user}\'" unless @boltconfig.user.nil?
-    command << "-p \'#{@boltconfig.password}\'" unless @boltconfig.password.nil?
 
-    # Not obselete with inventory.yaml as we want to enable overrides
-    if windows?(@machine)
-      ssl = (@boltconfig.ssl == true) ? "--ssl" : "--no-ssl"
-      command << ssl
-      ssl_verify = (@boltconfig.ssl_verify == true) ? "--ssl-verify" : "--no-ssl-verify"
-      command << ssl_verify
-    else
-      command << "--private-key \'#{@boltconfig.private_key}\'" unless @boltconfig.private_key.nil?
-      host_key_check = (@boltconfig.host_key_check == true) ? "--host-key-check" : "--no-host-key-check"
-      command << host_key_check
-      command << "--sudo-password \'#{@boltconfig.sudo_password}\'" unless @boltconfig.sudo_password.nil?
-    end
-
-    command << "--run_as #{@boltconfig.run_as}" unless @boltconfig.run_as.nil?
     modulepath = %r{^/.*}.match?(@boltconfig.modulepath) ? @boltconfig.modulepath : "#{@env.root_path}/#{@boltconfig.modulepath}"
     command << "--modulepath \'#{modulepath}\'"
     command << "--tmpdir \'#{@boltconfig.tmpdir}\'" unless @boltconfig.tmpdir.nil?
     boltdir = %r{^/.*}.match?(@boltconfig.boltdir) ? @boltconfig.boltdir : "#{@env.root_path}/#{@boltconfig.boltdir}"
     command << "--boltdir \'#{boltdir}\'" unless @boltconfig.boltdir.nil?
-    command << "-n \'#{@boltconfig.node_list}\'"
+    command << "--inventoryfile \'#{@inventory_file}\'" unless @inventory_file.nil?
+
+    ## Configuration items
+    command << "-n \'#{@boltconfig.node_list}\'" unless @boltconfig.node_list.nil?
     command << "--params \'#{@boltconfig.parameters.to_json}\'" unless @boltconfig.parameters.nil?
+
+    ## Auth Settings
+    command << "-u \'#{@boltconfig.user}\'" unless @boltconfig.user.nil?
+    command << "-p \'#{@boltconfig.password}\'" unless @boltconfig.password.nil?
+    command << "--run_as #{@boltconfig.run_as}" unless @boltconfig.run_as.nil?
+
+    ## Connection Settings
+    if windows?(@machine)
+      ssl = (@boltconfig.ssl == true) ? "--ssl" : "--no-ssl"
+      command << ssl unless @boltconfig.ssl.nil?
+      ssl_verify = (@boltconfig.ssl_verify == true) ? "--ssl-verify" : "--no-ssl-verify"
+      command << ssl_verify unless @boltconfig.ssl_verify.nil?
+    else
+      command << "--private-key \'#{@boltconfig.private_key}\'" unless @boltconfig.private_key.nil?
+      host_key_check = (@boltconfig.host_key_check == true) ? "--host-key-check" : "--no-host-key-check"
+      command << host_key_check unless @boltconfig.host_key_check.nil?
+      command << "--sudo-password \'#{@boltconfig.sudo_password}\'" unless @boltconfig.sudo_password.nil?
+    end
+
+    ## Additional Options
     command << "--verbose" if @boltconfig.verbose
     command << "--debug" if @boltconfig.debug
-    command << "--inventoryfile \'#{@inventory_file}\'" unless @inventory_file.nil?
     command << @boltconfig.args unless @boltconfig.args.nil?
     command.flatten.join(" ")
   end

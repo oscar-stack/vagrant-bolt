@@ -3,54 +3,27 @@
 require 'spec_helper'
 require 'vagrant-bolt/config'
 
-describe VagrantBolt::Config::Bolt do
+describe VagrantBolt::Config::Global do
   let(:machine) { double("machine") }
 
   context "validation" do
     it "validates with the defaults" do
       subject.finalize!
-      expect(subject.validate(machine)).to eq("Bolt" => [])
+      expect(subject.validate(machine)).to eq("GlobalBolt" => [])
     end
 
     it "reports invalid options" do
       subject.foo = "bar"
       subject.finalize!
-      expect(subject.validate(machine)["Bolt"][0]).to eq("The following settings shouldn't exist: foo")
-    end
-
-    it "reports an error when the type is invalid" do
-      subject.type = "bar"
-      subject.name = "foo"
-      subject.finalize!
-      expect(subject.validate(machine)["Bolt"][0]).to eq("Type can only be task or plan, not bar")
-    end
-
-    it "reports an error when the name is not specified" do
-      subject.type = "task"
-      subject.name = nil
-      subject.finalize!
-      expect(subject.validate(machine)["Bolt"][0]).to eq("No name set. A task or a plan must be specified to use the bolt provisioner")
-    end
-
-    it "reports an error when the type is not specified" do
-      subject.type = nil
-      subject.name = "foo"
-      subject.finalize!
-      expect(subject.validate(machine)["Bolt"][0]).to eq("No type set. Please specify either task or plan")
-    end
-
-    it "reports an error when depenencies is not an array" do
-      subject.dependencies = "foo"
-      subject.finalize!
-      expect(subject.validate(machine)["Bolt"][0]).to match(%r{Invalid data type for})
+      expect(subject.validate(machine)["GlobalBolt"][0]).to eq("The following settings shouldn't exist: foo")
     end
   end
 
   context "defaults" do
     expected_values = {
-      dependencies: [],
-      nodes: [],
-      excludes: [],
+      modulepath: "modules",
+      bolt_command: "bolt",
+      boltdir: ".",
     }
     expected_values.each do |val, expected|
       it "defaults #{val} to #{expected}" do
@@ -60,10 +33,6 @@ describe VagrantBolt::Config::Bolt do
     end
 
     expected_nil = [
-      "name",
-      "type",
-      "parameters",
-      "node_list",
       "user",
       "password",
       "port",
@@ -71,15 +40,9 @@ describe VagrantBolt::Config::Bolt do
       "private_key",
       "tmpdir",
       "run_as",
-      "args",
       "ssl",
       "ssl_verify",
-      "verbose",
-      "debug",
       "host_key_check",
-      "modulepath",
-      "bolt_command",
-      "boltdir",
     ]
     expected_nil.each do |val|
       it "defaults #{val} to nil" do

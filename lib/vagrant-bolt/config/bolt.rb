@@ -63,14 +63,26 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
   end
 
   def finalize!
-    super
-    @args       = nil if @args == UNSET_VALUE
-    @debug      = nil if @debug == UNSET_VALUE
-    @name       = nil if @name == UNSET_VALUE
-    @node_list  = nil if @node_list == UNSET_VALUE
-    @parameters = nil if @parameters == UNSET_VALUE
-    @type       = nil if @type == UNSET_VALUE
-    @verbose    = nil if @verbose == UNSET_VALUE
+    @bolt_command   = nil if @bolt_command == UNSET_VALUE
+    @boltdir        = nil if @boltdir == UNSET_VALUE
+    @host_key_check = nil if @host_key_check == UNSET_VALUE
+    @modulepath     = nil if @modulepath == UNSET_VALUE
+    @port           = nil if @port == UNSET_VALUE
+    @password       = nil if @password == UNSET_VALUE
+    @private_key    = nil if @private_key == UNSET_VALUE
+    @run_as         = nil if @run_as == UNSET_VALUE
+    @ssl            = nil if @ssl == UNSET_VALUE
+    @ssl_verify     = nil if @ssl_verify == UNSET_VALUE
+    @sudo_password  = nil if @sudo_password == UNSET_VALUE
+    @tmpdir         = nil if @tmpdir == UNSET_VALUE
+    @user           = nil if @user == UNSET_VALUE
+    @args           = nil if @args == UNSET_VALUE
+    @debug          = nil if @debug == UNSET_VALUE
+    @name           = nil if @name == UNSET_VALUE
+    @node_list      = nil if @node_list == UNSET_VALUE
+    @parameters     = nil if @parameters == UNSET_VALUE
+    @type           = nil if @type == UNSET_VALUE
+    @verbose        = nil if @verbose == UNSET_VALUE
   end
 
   def merge(other)

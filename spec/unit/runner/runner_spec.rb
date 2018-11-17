@@ -94,9 +94,12 @@ describe VagrantBolt::Runner do
     it 'creates a shell execution' do
       config.type = 'task'
       config.name = 'foo'
+      config.bolt_command = 'bolt'
+      config.modulepath = 'modules'
+      config.boltdir = '.'
       config.node_list = 'ssh://test:22'
       config.finalize!
-      command = "bolt task run 'foo' --no-host-key-check --modulepath '#{root_path}/modules' --boltdir '#{root_path}/.' -n 'ssh://test:22'"
+      command = "bolt task run 'foo' --modulepath '#{root_path}/modules' --boltdir '#{root_path}/.' -n 'ssh://test:22'"
       expect(Vagrant::Util::Subprocess).to receive(:execute).with('bash', '-c', command, options).and_return(subprocess_result)
       subject.send(:run_bolt)
     end

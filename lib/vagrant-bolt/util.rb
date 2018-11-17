@@ -22,6 +22,7 @@ module VagrantBolt::Util
         result.instance_variable_set(key, value) if value != Vagrant::Plugin::V2::Config::UNSET_VALUE && !value.nil?
       end
     end
+    result.finalize!
     result
   end
 
