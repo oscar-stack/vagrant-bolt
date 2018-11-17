@@ -39,8 +39,6 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
   #   @return [Symbol] Whether bolt should use a task or plan
   attr_accessor :type
 
-
-
   def initialize
     super
     @args         = UNSET_VALUE
