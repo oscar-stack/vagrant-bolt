@@ -5,10 +5,6 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
   #   @return [String] Additional arguments for the bolt command
   attr_accessor :args
 
-  # @!attribute [rw] dependencies
-  #   @return [Array<Symbol>] Machine names that should be online prior to running this task
-  attr_accessor :dependencies
-
   # @!attribute [rw] name
   #   @return [String] The name of task or plan to run
   attr_accessor :name
@@ -42,7 +38,6 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
   def initialize
     super
     @args         = UNSET_VALUE
-    @dependencies = []
     @name         = UNSET_VALUE
     @nodes        = []
     @excludes     = []
@@ -77,8 +72,6 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
 
   def merge(other)
     super.tap do |result|
-      new_dependencies = (dependencies + other.dependencies.dup).flatten.uniq
-      result.instance_variable_set(:@dependencies, new_dependencies.to_a)
       new_excludes = (excludes + other.excludes.dup).flatten.uniq
       result.instance_variable_set(:@excludes, new_excludes.to_a)
       unless nodes.to_s.casecmp("all").zero?
@@ -91,12 +84,6 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
   def validate(_machine)
     errors = _detected_errors
     errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_type', type: @type.to_s) if !@type.nil? && !['task', 'plan'].include?(@type.to_s)
-
-    if @dependencies.nil? || !(@dependencies.is_a? Array)
-      errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_data_type',
-                       item: 'dependencies',
-                       type: 'array')
-    end
 
     if @nodes.nil? || (!(@nodes.is_a? Array) && !@nodes.to_s.casecmp("all").zero?)
       errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_data_type',

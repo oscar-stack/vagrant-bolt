@@ -15,7 +15,6 @@ class VagrantBolt::Runner
   # @param [String] name The name of the bolt task or plan to run
   # @param [Hash] args A optional hash of bolt config overrides; {run_as: "vagrant"}. No merging will be done with the overrides
   def run(type, name, **args)
-    validate_dependencies
     @inventory_path = update_inventory_file(@env) if @boltconfig.node_list.nil?
     @boltconfig = setup_overrides(type, name, **args)
     validate
@@ -143,23 +142,5 @@ class VagrantBolt::Runner
     errors << I18n.t('vagrant-bolt.config.bolt.errors.type_not_specified') if @boltconfig.type.nil?
     errors << I18n.t('vagrant-bolt.config.bolt.errors.no_task_or_plan') if @boltconfig.name.nil?
     { "Bolt" => errors }
-  end
-
-  # Raise an exception if dependent machines are not online
-  def validate_dependencies
-    return if @boltconfig.dependencies.nil? || @boltconfig.dependencies.empty?
-
-    @boltconfig.dependencies.each do |dep|
-      # Find the machine object from the active machines
-      vm = machine_by_name(@env, dep)
-      # Ensure it is running
-      next if !vm.nil? && running?(vm)
-
-      @machine.ui.error(
-        I18n.t('vagrant-bolt.provisioner.bolt.error.dependent_machines_offline',
-               name: dep),
-      )
-      raise Vagrant::Errors::SSHNotReady
-    end
   end
 end

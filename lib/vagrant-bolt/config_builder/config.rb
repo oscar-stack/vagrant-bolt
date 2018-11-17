@@ -19,10 +19,6 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
   #   @return [Boolean] Shows debug logging
   def_model_attribute :debug
 
-  # @!attribute [rw] dependencies
-  #   @return [Array<Symbol>] Machine names that should be online prior to running this task
-  def_model_attribute :dependencies
-
   # @!attribute [rw] host_key_check
   #   @return [Boolean] If the connection should check the host key on the remote host (linux)
   def_model_attribute :host_key_check
@@ -110,7 +106,6 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
       with_attr(:bolt_type)      { |val| bolt.type           = val }
       with_attr(:boltdir)        { |val| bolt.boltdir        = val }
       with_attr(:debug)          { |val| bolt.debug          = val }
-      with_attr(:dependencies)   { |val| bolt.dependencies   = val }
       with_attr(:host_key_check) { |val| bolt.host_key_check = val }
       with_attr(:modulepath)     { |val| bolt.modulepath     = val }
       with_attr(:name)           { |val| bolt.name           = val }

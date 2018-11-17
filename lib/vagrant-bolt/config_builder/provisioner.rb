@@ -19,10 +19,6 @@ class VagrantBolt::ConfigBuilder::Provisioner < ConfigBuilder::Model::Provisione
   #   @return [Boolean] Shows debug logging
   def_model_attribute :debug
 
-  # @!attribute [rw] dependencies
-  #   @return [Array<Symbol>] Machine names that should be online prior to running this task
-  def_model_attribute :dependencies
-
   # @!attribute [rw] host_key_check
   #   @return [Boolean] If the connection should check the host key on the remote host (linux)
   def_model_attribute :host_key_check

@@ -208,10 +208,6 @@ The settings available in the triggers and the provisioner are the same.
     * This setting will take precidence over `nodes`
   * Valid Values: An array of machine symbols
   * Default: `[]`
-* `dependencies`
-  * Description: An array of machine names that should be online prior to running the task or plan
-    * An exception is raised when the machines are not available
-  * Default: `[]`
 * `parameters`
   * Description: A hash of the parameters for the bolt task or plan
 * `password`

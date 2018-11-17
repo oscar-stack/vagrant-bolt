@@ -38,17 +38,10 @@ describe VagrantBolt::Config::Bolt do
       subject.finalize!
       expect(subject.validate(machine)["Bolt"][0]).to eq("No type set. Please specify either task or plan")
     end
-
-    it "reports an error when depenencies is not an array" do
-      subject.dependencies = "foo"
-      subject.finalize!
-      expect(subject.validate(machine)["Bolt"][0]).to match(%r{Invalid data type for})
-    end
   end
 
   context "defaults" do
     expected_values = {
-      dependencies: [],
       nodes: [],
       excludes: [],
     }

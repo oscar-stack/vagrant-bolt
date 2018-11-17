@@ -121,11 +121,5 @@ describe VagrantBolt::Runner do
     it 'raises an exception if the name is not specified' do
       expect { subject.run('task', nil) }.to raise_error(Vagrant::Errors::ConfigInvalid, %r{No name set})
     end
-
-    it 'raises an exception if the dependencies are not ready' do
-      config.dependencies = [:bar]
-      config.finalize!
-      expect { subject.run('task', 'foo') }.to raise_error(Vagrant::Errors::SSHNotReady)
-    end
   end
 end

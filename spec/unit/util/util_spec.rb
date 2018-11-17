@@ -41,12 +41,12 @@ describe VagrantBolt::Util do
     end
 
     it 'merges arrays' do
-      global.dependencies = ['foo']
+      global.excludes = ['foo']
       global.finalize!
-      local.dependencies = ['bar']
+      local.excludes = ['bar']
       local.finalize!
       result = merge_config(local, global)
-      expect(result.dependencies).to eq(['bar', 'foo'])
+      expect(result.excludes).to eq(['bar', 'foo'])
     end
   end
 
