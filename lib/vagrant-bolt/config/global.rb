@@ -53,6 +53,14 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
   #   @return [String] The directory to upload and execute temporary files on the target
   attr_accessor :tmpdir
 
+  # @!attribute [rw] verbose
+  #   @return [Boolean] Shows verbose logging
+  attr_accessor :verbose
+
+  # @!attribute [rw] debug
+  #   @return [Boolean] Shows debug logging
+  attr_accessor :debug
+
   def initialize
     @bolt_command   = UNSET_VALUE
     @boltdir        = UNSET_VALUE
@@ -67,6 +75,8 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
     @sudo_password  = UNSET_VALUE
     @tmpdir         = UNSET_VALUE
     @user           = UNSET_VALUE
+    @verbose        = UNSET_VALUE
+    @debug          = UNSET_VALUE
   end
 
   def finalize!
@@ -83,6 +93,8 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
     @sudo_password  = nil if @sudo_password == UNSET_VALUE
     @tmpdir         = nil if @tmpdir == UNSET_VALUE
     @user           = nil if @user == UNSET_VALUE
+    @verbose        = nil if @verbose == UNSET_VALUE
+    @debug          = nil if @debug == UNSET_VALUE
   end
 
   def validate(_machine)

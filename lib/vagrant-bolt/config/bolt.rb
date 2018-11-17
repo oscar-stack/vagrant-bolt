@@ -5,10 +5,6 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
   #   @return [String] Additional arguments for the bolt command
   attr_accessor :args
 
-  # @!attribute [rw] debug
-  #   @return [Boolean] Shows debug logging
-  attr_accessor :debug
-
   # @!attribute [rw] dependencies
   #   @return [Array<Symbol>] Machine names that should be online prior to running this task
   attr_accessor :dependencies
@@ -43,14 +39,11 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
   #   @return [Symbol] Whether bolt should use a task or plan
   attr_accessor :type
 
-  # @!attribute [rw] verbose
-  #   @return [Boolean] Shows verbose logging
-  attr_accessor :verbose
+
 
   def initialize
     super
     @args         = UNSET_VALUE
-    @debug        = UNSET_VALUE
     @dependencies = []
     @name         = UNSET_VALUE
     @nodes        = []
@@ -58,7 +51,6 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
     @node_list    = UNSET_VALUE
     @parameters   = UNSET_VALUE
     @type         = UNSET_VALUE
-    @verbose      = UNSET_VALUE
   end
 
   def finalize!
@@ -75,13 +67,14 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
     @sudo_password  = nil if @sudo_password == UNSET_VALUE
     @tmpdir         = nil if @tmpdir == UNSET_VALUE
     @user           = nil if @user == UNSET_VALUE
-    @args           = nil if @args == UNSET_VALUE
+    @verbose        = nil if @verbose == UNSET_VALUE
     @debug          = nil if @debug == UNSET_VALUE
+
+    @args           = nil if @args == UNSET_VALUE
     @name           = nil if @name == UNSET_VALUE
     @node_list      = nil if @node_list == UNSET_VALUE
     @parameters     = nil if @parameters == UNSET_VALUE
     @type           = nil if @type == UNSET_VALUE
-    @verbose        = nil if @verbose == UNSET_VALUE
   end
 
   def merge(other)
