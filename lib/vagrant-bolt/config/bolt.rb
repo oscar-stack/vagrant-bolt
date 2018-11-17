@@ -52,7 +52,6 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
     @args         = UNSET_VALUE
     @debug        = UNSET_VALUE
     @dependencies = []
-    @modulepath   = UNSET_VALUE
     @name         = UNSET_VALUE
     @nodes        = []
     @excludes     = []
