@@ -6,8 +6,8 @@ class VagrantBolt::Runner
   def initialize(env, machine, boltconfig = nil)
     @env = env
     @machine = machine
-    @boltconfig = boltconfig.nil? ? machine.config.bolt : boltconfig
-    @inventory_path = nil
+    @boltconfig = boltconfig.nil? ? VagrantBolt::Config::Bolt.new : boltconfig
+    @inventory_path = File.join(env.local_data_path, 'bolt_inventory.yaml')
   end
 
   # Run a bolt task or plan
