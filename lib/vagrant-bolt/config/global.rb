@@ -115,6 +115,7 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
         'private_key',
         'host_key_check',
         'sudo_password',
+        'tmpdir',
       ],
       'winrm': [
         'user',
@@ -123,19 +124,20 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
         'ssl',
         'ssl_verify',
         'port',
+        'tmpdir',
       ],
     }
-    configs = {}
+    config = {}
     instance_variables_hash.each do |key, value|
       next if value.nil?
 
       setting_map.each do |transport, settings|
         next unless settings.include?(key)
 
-        configs[transport.to_s] ||= {}
-        configs[transport.to_s][key.tr('_', '-')] = value
+        config[transport.to_s] ||= {}
+        config[transport.to_s][key.tr('_', '-')] = value
       end
     end
-    configs
+    config
   end
 end
