@@ -129,25 +129,35 @@ end
 
 class ConfigBuilder::Model::Root
   def_model_delegator :bolt
-  def eval_bolt(root_config)
-    # Configure the root bolt object if the options exist
+  def eval_bolt(config)
     with_attr(:bolt) do |bolt_config|
       f = VagrantBolt::ConfigBuilder::Config.new_from_hash(bolt_config)
-      f.call(root_config)
+      f.call(config)
     end
   end
 end
 
-# VM level will require overriding to_proc to allow access to the node config object
-# class ConfigBuilder::Model::VM
-#   def_model_delegator :bolt
-#   def eval_bolt(vm_config)
-#     require 'pry'
-#     binding.pry
-#     # Configure the vm bolt object if the options exist
-#     with_attr(:bolt) do |bolt_config|
-#       f = VagrantBolt::ConfigBuilder::Config.new_from_hash(bolt_config)
-#       f.call(vm_config)
-#     end
-#   end
-# end
+# VM level requires overriding to_proc to allow access to the node config object
+class ConfigBuilder::Model::VM
+  def_model_delegator :bolt
+  def to_proc
+    proc do |config|
+      vm_config = config.vm
+      configure!(vm_config)
+      eval_models(vm_config)
+      eval_bolt_root(config)
+    end
+  end
+
+  def eval_bolt(config)
+    # noop
+  end
+
+  def eval_bolt_root(vm_root_config)
+    # Configure the vm bolt object if the options exist
+    with_attr(:bolt) do |bolt_config|
+      f = VagrantBolt::ConfigBuilder::Config.new_from_hash(bolt_config)
+      f.call(vm_root_config)
+    end
+  end
+end
