@@ -2,7 +2,7 @@
 
 require 'vagrant'
 require 'vagrant/errors'
-require 'vagrant-bolt/util'
+require_relative 'util'
 
 class VagrantBolt::Provisioner < Vagrant.plugin('2', :provisioner)
   # Provision VMs with Bolt

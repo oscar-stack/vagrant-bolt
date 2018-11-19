@@ -29,8 +29,10 @@ describe VagrantBolt::Runner do
     end
   end
   let(:root_path) { '/root/path' }
+  let(:local_data_path) { '/local/data/path' }
   before(:each) do
     allow(iso_env).to receive(:root_path).and_return(root_path)
+    allow(iso_env).to receive(:local_data_path).and_return(local_data_path)
     allow(machine).to receive(:env).and_return(:iso_env)
     allow(machine).to receive(:ssh_info).and_return(
       host: 'foo',
@@ -99,7 +101,7 @@ describe VagrantBolt::Runner do
       config.boltdir = '.'
       config.node_list = 'ssh://test:22'
       config.finalize!
-      command = "bolt task run 'foo' --modulepath '#{root_path}/modules' --boltdir '#{root_path}/.' -n 'ssh://test:22'"
+      command = "bolt task run 'foo' --modulepath '#{root_path}/modules' --boltdir '#{root_path}/.' --inventoryfile '#{local_data_path}/bolt_inventory.yaml' -n 'ssh://test:22'"
       expect(Vagrant::Util::Subprocess).to receive(:execute).with('bash', '-c', command, options).and_return(subprocess_result)
       subject.send(:run_bolt)
     end
@@ -108,6 +110,8 @@ describe VagrantBolt::Runner do
   context 'run' do
     before(:each) do
       allow(Vagrant::Util::Subprocess).to receive(:execute).and_return(subprocess_result)
+      config.node_list = 'ssh://test:22'
+      config.finalize!
     end
 
     it 'does not raise an exeption when all parameters are specified' do

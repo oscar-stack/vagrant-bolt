@@ -244,7 +244,77 @@ The settings available in the triggers and the provisioner are the same.
 * `args`
   * Description: A string containing additional arguments to be passed into the bolt command
 
+Config Builder
+--------------
+This module also supports the [oscar/config_builder](https://github.com/oscar-stack/vagrant-config_builder) plugin for configuration. If [oscar/config_builder](https://github.com/oscar-stack/vagrant-config_builder) is installed, bolt can be configured similar to the [Configuration Options section](#configuration-options) with a few small differences. 
 
+### Configuration
+The configuration can be specified at the root, VM, and Provisioner levels. The configuration options above are the same with the exception of the following which have been renamed.
+
+* `bolt_type`
+  * Description: A string containing the bolt type. This option is renamed from `task` in the options above due to a name collision. 
+  * Valid Values: `task` or `plan`
+
+An example of this configuration is below.
+
+~~~ruby
+---
+# Root level config
+bolt:
+  run_as: root
+vms:
+ - name: server
+    # VM level config
+    bolt:
+      user: vagrant
+      tmpdir: /tmp
+      port: 1234
+    provisioners:
+      # Bolt provisioner
+      - type: bolt
+        bolt_type: task
+        name: facts
+~~~
+
+### Trigger Configuration
+Bolt triggers cab be configured at the root or within a VM object. To configure a bolt trigger a few additional parameters are required. 
+
+* `trigger_type`
+  * Description: A symbol of the trigger type. 
+  * Valid Values: `:before` or `:after`
+* `trigger_commands`
+  * Description: An array of symbols for the commands to run the trigger on
+  * Valid Values: An array of symbols such as `[:up, :provision, :halt]`
+
+These will live under the `bolt_triggers` namespace which exists at the root and VM levels. `bolt_triggers` accepts an array of bolt triggers. Below is an example of using a VM level trigger for a specific VM.
+
+~~~ruby
+---
+vms:
+ - name: server
+    bolt_triggers:
+      - trigger_type: :after
+        trigger_commands: 
+          - :provision
+          - :up
+        bolt_type: task
+        name: facts
+~~~
+
+Below is an example of using a root trigger, which will apply to all machines.
+
+~~~ruby
+---
+bolt_triggers:
+  - trigger_type: :after
+    trigger_commands: 
+      - :provision
+      - :up
+    bolt_type: task
+    name: facts
+vms:
+  - name: server
+~~~
 
 Installation
 ------------
