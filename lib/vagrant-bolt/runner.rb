@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'vagrant-bolt/util'
+require_relative 'util'
 
 class VagrantBolt::Runner
   def initialize(env, machine, boltconfig = nil)

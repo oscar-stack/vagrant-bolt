@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'vagrant'
-require 'vagrant-bolt/version'
+require_relative 'version'
 
 raise "vagrant-bolt version #{VagrantBolt::VERSION} requires Vagrant 2.2 or later" if Vagrant::VERSION < "2.2.0"
 
