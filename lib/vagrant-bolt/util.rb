@@ -26,6 +26,31 @@ module VagrantBolt::Util
     result
   end
 
+  # Run a command locally with an execute
+  # @param [String] The command to run
+  # @param [Object] the UI object to write to
+  def run_command(command, localui)
+    localui.info(
+      I18n.t('vagrant-bolt.provisioner.bolt.info.running_bolt',
+             command: command),
+    )
+
+    # TODO: Update this so it works on windows platforms
+    Vagrant::Util::Subprocess.execute(
+      'bash',
+      '-c',
+      command,
+      notify: [:stdout, :stderr],
+      env: { PATH: ENV["VAGRANT_OLD_ENV_PATH"] },
+    ) do |io_name, data|
+      if io_name == :stdout
+        localui.info data
+      elsif io_name == :stderr
+        localui.warn data
+      end
+    end
+  end
+
   # Generate a list of active machines in the environment
   # @param [Object] env The Environment
   # @return [Array<Object>]
@@ -119,12 +144,19 @@ module VagrantBolt::Util
     node_group.compact
   end
 
+  # Return the path to the inventory file
+  # @param [Object] The environment
+  # @return [String] The path to the inventory file
+  def inventory_file(env)
+    File.join(env.local_data_path, 'bolt_inventory.yaml')
+  end
+
   # Update and write the inventory file for the current running machines
   # @param [Object] env The envionment object
   # @return path to the inventory file
   def update_inventory_file(env)
     inventory = generate_inventory_hash(env).to_yaml
-    inventory_file = Pathname.new(File.join(env.local_data_path, 'bolt_inventory.yaml'))
+    inventory_file = Pathname.new(inventory_file(env))
     # TODO: This lock should be global
     lock = Mutex.new
     lock.synchronize do
