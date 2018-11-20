@@ -110,8 +110,7 @@ describe VagrantBolt::Runner do
   context 'run' do
     before(:each) do
       allow(Vagrant::Util::Subprocess).to receive(:execute).and_return(subprocess_result)
-      config.node_list = 'ssh://test:22'
-      config.finalize!
+      allow_any_instance_of(VagrantBolt::Util).to receive(:update_inventory_file).and_return("#{local_data_path}/bolt_inventory.yaml")
     end
 
     it 'does not raise an exeption when all parameters are specified' do
