@@ -17,6 +17,10 @@ class VagrantBolt::Runner
   def run(type, name, **args)
     @inventory_path = update_inventory_file(@env) if @boltconfig.node_list.nil?
     @boltconfig = setup_overrides(type, name, **args)
+    # Don't run anything if there are nodes to run it on
+    # TODO: Gate this in a more efficient manner. It is possible to run plans without a node list.
+    return if @boltconfig.node_list.nil?
+
     validate
     run_bolt
   end
@@ -40,8 +44,8 @@ class VagrantBolt::Runner
     config.set_options(args) unless args.nil?
     # Configure the node_list based on the config
     config.node_list ||= [config.nodes - config.excludes].flatten.join(',') unless config.nodes.empty? || config.nodes.to_s.casecmp("all").zero?
-    config.node_list ||= nodes_in_environment(@env).map(&:name).join(',') if config.nodes.to_s.casecmp("all").zero?
-    config.node_list ||= @machine.name.to_s
+    config.node_list ||= [nodes_in_environment(@env).map(&:name) - config.excludes].flatten.join(',') if config.nodes.to_s.casecmp("all").zero?
+    config.node_list ||= @machine.name.to_s unless config.excludes.include?(@machine.name.to_s)
 
     config
   end
