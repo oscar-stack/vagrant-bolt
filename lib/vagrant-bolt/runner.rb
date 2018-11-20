@@ -15,7 +15,7 @@ class VagrantBolt::Runner
   # @param [String] name The name of the bolt task or plan to run
   # @param [Hash] args A optional hash of bolt config overrides; {run_as: "vagrant"}. No merging will be done with the overrides
   def run(type, name, **args)
-    @inventory_path = update_inventory_file(@env) if @boltconfig.node_list.nil?
+    @inventory_path = update_inventory_file(@env) # if @boltconfig.node_list.nil?
     @boltconfig = setup_overrides(type, name, **args)
     # Don't run anything if there are nodes to run it on
     # TODO: Gate this in a more efficient manner. It is possible to run plans without a node list.
