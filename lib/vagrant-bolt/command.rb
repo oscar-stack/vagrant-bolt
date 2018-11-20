@@ -1,0 +1,65 @@
+# frozen_string_literal: true
+
+require_relative 'util'
+
+class VagrantBolt::Command < Vagrant.plugin('2', :command)
+  def self.synopsis
+    "Calls the bolt executable with the given options"
+  end
+
+  include VagrantBolt::Util
+
+  def execute
+    options = {}
+    options[:update] = false
+
+    parser = OptionParser.new do |o|
+      o.banner = "Usage: vagrant bolt <options> [bolt options]"
+      o.separator ""
+      o.separator "Options:"
+      o.separator ""
+
+      o.on("-u", "--[no-]updateinventory", "Update the inventory file (defaults to false)") do |u|
+        options[:update] = u
+      end
+    end
+
+    # This is a hack. We are passing everything to bolt, but still allow for bolt options.
+    # We just remove them from @argv here and use the rest.
+    # This allows for not having to define a seperator as long as there are no argument colisions
+    return if @argv.empty?
+
+    args = @argv.dup
+    begin
+      parser.parse!(args)
+    rescue OptionParser::InvalidOption
+      retry
+    end
+    bolt_args = @argv - ['-u', '--updateinventory', '--no-updateinventory']
+
+    update_inventory_file(@env) if options[:update]
+
+    execute_bolt_command(bolt_args)
+  end
+
+  # Run a bolt command with the inventory path, module path, and boltdir
+  # @param [Array<String] An array containing the bolt arguments
+  def execute_bolt_command(args)
+    bolt_command = @env.vagrantfile.config.bolt.bolt_command
+    modulepath = @env.vagrantfile.config.bolt.modulepath
+    boltdir = @env.vagrantfile.config.bolt.boltdir
+    inventoryfile = inventory_file(@env)
+    command = [
+      bolt_command,
+      args.flatten.compact,
+      "--modulepath",
+      modulepath,
+      "--boltdir",
+      boltdir,
+      "--inventoryfile",
+      inventoryfile,
+    ].join(" ")
+
+    run_command(command, @env.ui)
+  end
+end

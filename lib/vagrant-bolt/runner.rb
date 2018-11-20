@@ -7,7 +7,7 @@ class VagrantBolt::Runner
     @env = env
     @machine = machine
     @boltconfig = boltconfig.nil? ? VagrantBolt::Config::Bolt.new : boltconfig
-    @inventory_path = File.join(env.local_data_path, 'bolt_inventory.yaml')
+    @inventory_path = inventory_file(@env)
   end
 
   # Run a bolt task or plan
@@ -22,7 +22,7 @@ class VagrantBolt::Runner
     return if @boltconfig.node_list.nil?
 
     validate
-    run_bolt
+    run_command(create_command, @machine.ui)
   end
 
   private
@@ -48,30 +48,6 @@ class VagrantBolt::Runner
     config.node_list ||= @machine.name.to_s unless config.excludes.include?(@machine.name.to_s)
 
     config
-  end
-
-  # Run bolt locally with an execute
-  def run_bolt
-    command = create_command
-    @machine.ui.info(
-      I18n.t('vagrant-bolt.provisioner.bolt.info.running_bolt',
-             command: command),
-    )
-
-    # TODO: Update this so it works on windows platforms
-    Vagrant::Util::Subprocess.execute(
-      'bash',
-      '-c',
-      command,
-      notify: [:stdout, :stderr],
-      env: { PATH: ENV["VAGRANT_OLD_ENV_PATH"] },
-    ) do |io_name, data|
-      if io_name == :stdout
-        @machine.ui.info data
-      elsif io_name == :stderr
-        @machine.ui.warn data
-      end
-    end
   end
 
   # Create a bolt command from the config

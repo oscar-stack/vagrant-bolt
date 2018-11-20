@@ -316,6 +316,40 @@ vms:
   - name: server
 ~~~
 
+Commands
+--------
+Vagrant bolt comes with a single command that helps to run ad-hoc bolt commands. The `vagrant bolt` command is available to run bolt commands locally using the inventory file for the vagrant machines. 
+
+The format of the command is below. 
+
+~~~
+Usage: vagrant bolt <options> [bolt options]
+
+Options:
+
+    -u, --[no-]updateinventory       Update the inventory file (defaults to false)
+~~~
+
+The command can be used to deploy the Puppetfile, for example. 
+
+~~~
+vagrant bolt puppetfile install
+~~~
+
+It can be used to run ad-hoc tasks on a node by specifying the node by its machine name.
+
+~~~
+vagrant bolt -u task run facts -n server
+~~~
+
+The `--updateinventory` flag will regenerate the inventory file from the active running machines, however it defaults to being off. In the example above, the inventory file will be updated prior to running the task.
+
+All parameters execpt for the `-u` will be passed to bolt, so a bolt command like the exaple below can be run. 
+
+~~~
+vagrant bolt command run 'date' -n agent,master
+~~~
+
 Installation
 ------------
 

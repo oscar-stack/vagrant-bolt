@@ -27,6 +27,11 @@ class VagrantBolt::Plugin < Vagrant.plugin('2')
     VagrantBolt::Provisioner
   end
 
+  command(:bolt) do
+    require_relative 'command'
+    VagrantBolt::Command
+  end
+
   def self.config_builder_hook
     require_relative 'config_builder'
   end

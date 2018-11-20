@@ -88,26 +88,8 @@ describe VagrantBolt::Runner do
     end
   end
 
-  context 'run_bolt' do
-    let(:options) { { notify: [:stdout, :stderr], env: { PATH: nil } } }
-    before(:each) do
-      allow(Vagrant::Util::Subprocess).to receive(:execute).and_return(subprocess_result)
-    end
-    it 'creates a shell execution' do
-      config.type = 'task'
-      config.name = 'foo'
-      config.bolt_command = 'bolt'
-      config.modulepath = 'modules'
-      config.boltdir = '.'
-      config.node_list = 'ssh://test:22'
-      config.finalize!
-      command = "bolt task run 'foo' --modulepath '#{root_path}/modules' --boltdir '#{root_path}/.' --inventoryfile '#{local_data_path}/bolt_inventory.yaml' -n 'ssh://test:22'"
-      expect(Vagrant::Util::Subprocess).to receive(:execute).with('bash', '-c', command, options).and_return(subprocess_result)
-      subject.send(:run_bolt)
-    end
-  end
-
   context 'run' do
+    let(:options) { { notify: [:stdout, :stderr], env: { PATH: nil } } }
     before(:each) do
       allow(Vagrant::Util::Subprocess).to receive(:execute).and_return(subprocess_result)
       allow_any_instance_of(VagrantBolt::Util).to receive(:update_inventory_file).and_return("#{local_data_path}/bolt_inventory.yaml")
@@ -123,6 +105,17 @@ describe VagrantBolt::Runner do
 
     it 'raises an exception if the name is not specified' do
       expect { subject.run('task', nil) }.to raise_error(Vagrant::Errors::ConfigInvalid, %r{No name set})
+    end
+
+    it 'creates a shell execution' do
+      config.bolt_command = 'bolt'
+      config.modulepath = 'modules'
+      config.boltdir = '.'
+      config.node_list = 'ssh://test:22'
+      config.finalize!
+      command = "bolt task run 'foo' --modulepath '#{root_path}/modules' --boltdir '#{root_path}/.' --inventoryfile '#{local_data_path}/bolt_inventory.yaml' -n 'ssh://test:22'"
+      expect(Vagrant::Util::Subprocess).to receive(:execute).with('bash', '-c', command, options).and_return(subprocess_result)
+      subject.run('task', 'foo')
     end
   end
 end
