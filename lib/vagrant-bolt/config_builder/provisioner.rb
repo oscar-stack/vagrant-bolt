@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'config_builder/model'
+require_relative 'monkey_patches'
 
 class VagrantBolt::ConfigBuilder::Provisioner < ConfigBuilder::Model::Provisioner::Base
   # @!attribute [rw] args

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'config_builder/model'
+require_relative 'monkey_patches'
 
 class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
   # @!attribute [rw] args
@@ -123,41 +124,6 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
       with_attr(:ssl_verify)     { |val| bolt.ssl_verify     = val }
       with_attr(:tmpdir)         { |val| bolt.tmpdir         = val }
       with_attr(:verbose)        { |val| bolt.verbose        = val }
-    end
-  end
-end
-
-class ConfigBuilder::Model::Root
-  def_model_delegator :bolt
-  def eval_bolt(config)
-    with_attr(:bolt) do |bolt_config|
-      f = VagrantBolt::ConfigBuilder::Config.new_from_hash(bolt_config)
-      f.call(config)
-    end
-  end
-end
-
-# VM level requires overriding to_proc to allow access to the node config object
-class ConfigBuilder::Model::VM
-  def_model_delegator :bolt
-  def to_proc
-    proc do |config|
-      vm_config = config.vm
-      configure!(vm_config)
-      eval_models(vm_config)
-      eval_bolt_root(config)
-    end
-  end
-
-  def eval_bolt(config)
-    # noop
-  end
-
-  def eval_bolt_root(vm_root_config)
-    # Configure the vm bolt object if the options exist
-    with_attr(:bolt) do |bolt_config|
-      f = VagrantBolt::ConfigBuilder::Config.new_from_hash(bolt_config)
-      f.call(vm_root_config)
     end
   end
 end
