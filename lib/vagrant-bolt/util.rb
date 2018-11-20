@@ -101,20 +101,22 @@ module VagrantBolt::Util
       config_transport['ssl_verify'] = machine.config.winrm.ssl_peer_verification
       config_transport['port'] = machine.config.winrm.port
       config_transport['user'] = machine.config.winrm.username
+      config_transport['password'] = machine.config.winrm.password
     else
       transport = 'ssh'
       config_transport['private-key'] = vm_ssh_info[:private_key_path][0] unless vm_ssh_info[:private_key_path].nil?
       config_transport['host-key-check'] = (vm_ssh_info[:verify_host_key] == true)
       config_transport['port'] = vm_ssh_info[:port]
       config_transport['user'] = vm_ssh_info[:username]
+      config_transport['password'] = vm_ssh_info[:password]
     end
     machine_config = machine.config.bolt.inventory_config
     config_transport.merge!(machine_config[transport]) unless machine_config.empty?
     node_group['config'] = {}
-    node_group['config'][transport] = config_transport
+    node_group['config'][transport] = config_transport.compact
     node_group['nodes'] = ["#{transport}://#{vm_ssh_info[:host]}:#{node_group['config'][transport]['port']}"]
     node_group['config']['transport'] = transport
-    node_group
+    node_group.compact
   end
 
   # Update and write the inventory file for the current running machines
