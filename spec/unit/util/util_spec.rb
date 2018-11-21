@@ -62,26 +62,29 @@ describe VagrantBolt::Util do
     end
     let(:machine_hash) do
       {
+        "name" => "machine",
         "config" => {
           "ssh" => {
             "host-key-check" => false,
-            "password" => "foo",
             "port" => "22",
+            "user" => "vagrant",
+            "password" => "foo",
             "private-key" => "bar",
             "run-as" => "root",
-            "user" => "vagrant",
           },
           "transport" => "ssh",
         },
-        "name" => "machine",
         "nodes" => ["ssh://machine:22"],
+        "facts" => { 'a' => 'b' },
+        "vars" => { 'foo' => 'bar' },
+        "features" => ['foo'],
       }
     end
-    let(:config_hash) { 'nothing' }
+    let(:config_hash) { { 'config' => { 'a' => 'b' } } }
     let(:group_hash) do
       {
         'groups' => [machine_hash],
-        'config' => config_hash,
+        'config' => config_hash['config'],
       }
     end
     before(:each) do
@@ -91,6 +94,9 @@ describe VagrantBolt::Util do
       local.private_key = 'bar'
       local.host_key_check = false
       local.user = 'vagrant'
+      local.facts = { 'a' => 'b' }
+      local.features = ['foo']
+      local.vars = { 'foo' => 'bar' }
       local.finalize!
       allow(machine).to receive_message_chain("config.bolt.inventory_config").and_return(local.inventory_config)
       allow(machine).to receive_message_chain("config.vm.communicator").and_return(:ssh)

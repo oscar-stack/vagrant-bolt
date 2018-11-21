@@ -243,6 +243,12 @@ The settings available in the triggers and the provisioner are the same.
   * Description: A string containing the user to run commands as on the machine
 * `args`
   * Description: A string containing additional arguments to be passed into the bolt command
+* `features`
+  * Description: An array containing the capabilities of the target that can be used to select a specific task implementation.
+* `vars`
+  * Description: A hash containing arbitrary data that may be passed to run_* functions or used for logic in plans
+* `facts`
+  * Description: A hash containing observed information about the node including what can be collected by Facter
 
 Config Builder
 --------------

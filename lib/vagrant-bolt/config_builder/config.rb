@@ -98,10 +98,22 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
   #   @return [Boolean] Shows verbose logging
   def_model_attribute :verbose
 
+  # @!attribute [rw] facts
+  #   @return [Hash] A hash of facts for the machine
+  def_model_attribute :facts
+
+  # @!attribute [rw] vars
+  #   @return [Hash] A hash of vars for the machine
+  def_model_attribute :vars
+
+  # @!attribute [rw] features
+  #   @return [Array<String>] An array containing the features for this machine
+  def_model_attribute :features
+
+  # rubocop:disable Metrics/BlockLength
   def to_proc
     proc do |config|
       bolt = config.bolt
-
       with_attr(:args)           { |val| bolt.args           = val }
       with_attr(:bolt_command)   { |val| bolt.bolt_command   = val }
       with_attr(:bolt_type)      { |val| bolt.type           = val }
@@ -124,6 +136,10 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
       with_attr(:ssl_verify)     { |val| bolt.ssl_verify     = val }
       with_attr(:tmpdir)         { |val| bolt.tmpdir         = val }
       with_attr(:verbose)        { |val| bolt.verbose        = val }
+      with_attr(:facts)          { |val| bolt.facts          = val }
+      with_attr(:features)       { |val| bolt.features       = val }
+      with_attr(:vars)           { |val| bolt.vars           = val }
     end
   end
+  # rubocop:enable Metrics/BlockLength
 end

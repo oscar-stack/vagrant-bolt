@@ -18,6 +18,9 @@ module VagrantBolt::Util
         if value.is_a? Array
           res_value = result.instance_variable_get(key)
           value = (value + res_value).uniq if res_value.is_a? Array
+        elsif value.is_a? Hash
+          res_value = result.instance_variable_get(key)
+          value = res_value.merge(value) if res_value.is_a? Hash
         end
         result.instance_variable_set(key, value) if value != Vagrant::Plugin::V2::Config::UNSET_VALUE && !value.nil?
       end
@@ -99,13 +102,13 @@ module VagrantBolt::Util
   # @return [Hash] The hash of config options for the inventory.yaml
   def generate_inventory_hash(env)
     inventory = { 'groups' => [] }
+    inventory.merge!(env.vagrantfile.config.bolt.inventory_config.compact)
     nodes_in_environment(env).each do |vm|
       next unless running?(vm)
 
       inventory['groups'] << generate_node_group(vm)
     end
-    inventory['config'] = env.vagrantfile.config.bolt.inventory_config
-    inventory
+    inventory.compact
   end
 
   # Generate a bolt inventory group hash from the VM config
@@ -136,11 +139,16 @@ module VagrantBolt::Util
       config_transport['password'] = vm_ssh_info[:password]
     end
     machine_config = machine.config.bolt.inventory_config
-    config_transport.merge!(machine_config[transport]) unless machine_config.empty?
+    config_transport.merge!(machine_config['config'][transport]) if machine_config.dig('config', transport)
     node_group['config'] = {}
     node_group['config'][transport] = config_transport.compact
     node_group['nodes'] = ["#{transport}://#{vm_ssh_info[:host]}:#{node_group['config'][transport]['port']}"]
     node_group['config']['transport'] = transport
+    machine_config.each do |key, value|
+      next if key == 'config' || value.nil? || value.empty?
+
+      node_group[key] = value
+    end
     node_group.compact
   end
 
