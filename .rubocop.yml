@@ -100,10 +100,11 @@ Metrics/MethodLength:
     - initialize
     - finalize!
     - validate
+  Max: 30
 Metrics/ClassLength:
   Enabled: false
 Metrics/ModuleLength:
-  Enabled: false
+  Enabled: true
 Style/StringLiterals:
   Enabled: false
 Naming/FileName:

@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-require_relative 'util'
+require_relative 'util/bolt'
+require_relative 'util/machine'
 
 class VagrantBolt::Command < Vagrant.plugin('2', :command)
   def self.synopsis
     "Calls the bolt executable with the given options"
   end
-
-  include VagrantBolt::Util
 
   def execute
     options = {}
@@ -37,7 +36,7 @@ class VagrantBolt::Command < Vagrant.plugin('2', :command)
     end
     bolt_args = @argv - ['-u', '--updateinventory', '--no-updateinventory']
 
-    update_inventory_file(@env) if options[:update]
+    VagrantBolt::Util::Bolt.update_inventory_file(@env) if options[:update]
 
     execute_bolt_command(bolt_args)
   end
@@ -48,7 +47,7 @@ class VagrantBolt::Command < Vagrant.plugin('2', :command)
     bolt_command = @env.vagrantfile.config.bolt.bolt_command
     modulepath = @env.vagrantfile.config.bolt.modulepath
     boltdir = @env.vagrantfile.config.bolt.boltdir
-    inventoryfile = inventory_file(@env)
+    inventoryfile = VagrantBolt::Util::Bolt.inventory_file(@env)
     command = [
       bolt_command,
       args.flatten.compact,
@@ -60,6 +59,6 @@ class VagrantBolt::Command < Vagrant.plugin('2', :command)
       inventoryfile,
     ].join(" ")
 
-    run_command(command, @env.ui)
+    VagrantBolt::Util::Machine.run_command(command, @env.ui)
   end
 end

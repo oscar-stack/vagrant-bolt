@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
-require_relative 'util'
+require_relative 'util/bolt'
+require_relative 'util/config'
+require_relative 'util/machine'
 
 class VagrantBolt::Runner
   def initialize(env, machine, boltconfig = nil)
     @env = env
     @machine = machine
     @boltconfig = boltconfig.nil? ? VagrantBolt::Config::Bolt.new : boltconfig
-    @inventory_path = inventory_file(@env)
+    @inventory_path = VagrantBolt::Util::Bolt.inventory_file(@env)
   end
 
   # Run a bolt task or plan
@@ -20,14 +22,13 @@ class VagrantBolt::Runner
     # TODO: Gate this in a more efficient manner. It is possible to run plans without a node list.
     return if @boltconfig.node_list.nil?
 
-    @inventory_path = update_inventory_file(@env)
+    @inventory_path = VagrantBolt::Util::Bolt.update_inventory_file(@env)
     validate
-    run_command(create_command, @machine.ui)
+    command = VagrantBolt::Util::Bolt.create_bolt_command(@boltconfig, @inventory_path)
+    VagrantBolt::Util::Machine.run_command(command, @machine.ui)
   end
 
   private
-
-  include VagrantBolt::Util
 
   # Set up config overrides
   # @param [Symbol, String] type The type of bolt to run; task or plan
@@ -39,12 +40,12 @@ class VagrantBolt::Runner
     config.type = type
     config.name = name
     # Merge the root config to get the defaults for the environment
-    config = merge_config(config, @env.vagrantfile.config.bolt)
+    config = VagrantBolt::Util::Config.merge_config(config, @env.vagrantfile.config.bolt)
     # Add any additional arguments to the config object
     config.set_options(args) unless args.nil?
     # Configure the node_list based on the config
     config.node_list ||= [config.nodes - config.excludes].flatten.join(',') unless config.nodes.empty? || config.nodes.to_s.casecmp("all").zero?
-    config.node_list ||= [nodes_in_environment(@env).map(&:name) - config.excludes].flatten.join(',') if config.nodes.to_s.casecmp("all").zero?
+    config.node_list ||= [VagrantBolt::Util::Machine.nodes_in_environment(@env).map(&:name) - config.excludes].flatten.join(',') if config.nodes.to_s.casecmp("all").zero?
     config.node_list ||= @machine.name.to_s unless config.excludes.include?(@machine.name.to_s)
 
     # Ensure these are absolute paths to allow for running vagrant commands outside of the root dir
@@ -52,39 +53,6 @@ class VagrantBolt::Runner
     config.boltdir = %r{^/.*}.match?(config.boltdir) ? config.boltdir : "#{@env.root_path}/#{config.boltdir}"
 
     config
-  end
-
-  # Create a bolt command from the config
-  # @return [String] The bolt command
-  def create_command
-    command = []
-    command << @boltconfig.bolt_command
-    command << "#{@boltconfig.type} run \'#{@boltconfig.name}\'"
-
-    @boltconfig.instance_variables_hash.each do |key, value|
-      next if key.to_s.start_with?('__')
-      next if @boltconfig.blacklist.include?(key)
-      next if value.nil?
-
-      key = key.tr('_', '-')
-      case value
-      when TrueClass, FalseClass
-        # Verbose and debug do not have --no flags so exclude them
-        next if ['verbose', 'debug'].include?(key) && !value
-
-        arg = value ? "--#{key}" : "--no-#{key}"
-        command << arg
-      when String
-        command << "--#{key} \'#{value}\'"
-      when Hash
-        command << "--#{key} \'#{value.to_json}\'" unless value.empty?
-      end
-    end
-
-    command << "--inventoryfile \'#{@inventory_path}\'" unless @inventory_path.nil?
-    command << "--nodes \'#{@boltconfig.node_list}\'" unless @boltconfig.node_list.nil?
-    command << @boltconfig.args unless @boltconfig.args.nil?
-    command.flatten.join(" ")
   end
 
   # Validate the config object for configuration issues

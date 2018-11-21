@@ -30,7 +30,9 @@ describe VagrantBolt::Runner do
   end
   let(:root_path) { '/root/path' }
   let(:local_data_path) { '/local/data/path' }
+  let(:inventory_path) { "#{local_data_path}/bolt_inventory.yaml" }
   before(:each) do
+    allow(VagrantBolt::Util::Bolt).to receive(:update_inventory_file).with(iso_env).and_return(inventory_path)
     allow(iso_env).to receive(:root_path).and_return(root_path)
     allow(iso_env).to receive(:local_data_path).and_return(local_data_path)
     allow(machine).to receive(:env).and_return(:iso_env)
@@ -46,7 +48,7 @@ describe VagrantBolt::Runner do
 
   context 'setup_overrides' do
     before(:each) do
-      allow_any_instance_of(VagrantBolt::Util).to receive(:nodes_in_environment).with(iso_env).and_return([machine, machine2])
+      allow(VagrantBolt::Util::Machine).to receive(:nodes_in_environment).with(iso_env).and_return([machine, machine2])
     end
     it 'adds the type and name to the config' do
       result = subject.send(:setup_overrides, 'task', 'foo')
@@ -88,66 +90,10 @@ describe VagrantBolt::Runner do
     end
   end
 
-  context 'create command' do
-    before(:each) do
-      config.bolt_command = 'bolt'
-      config.type = 'task'
-      config.name = 'foo'
-      config.finalize!
-    end
-
-    it 'contains the bolt command' do
-      config.node_list = 'ssh://test:22'
-      config.user = 'user'
-      config.finalize!
-      expected = "bolt task run 'foo' --user \'user\' --inventoryfile '#{local_data_path}/bolt_inventory.yaml' --nodes \'ssh://test:22\'"
-      expect(subject.send(:create_command)).to eq(expected)
-    end
-
-    it 'appends args to the end of the command' do
-      config.args = 'bar'
-      config.finalize!
-      expected = "bolt task run 'foo' --inventoryfile '#{local_data_path}/bolt_inventory.yaml' bar"
-      expect(subject.send(:create_command)).to eq(expected)
-    end
-
-    it 'adds directories to the command' do
-      config.modulepath = 'baz'
-      config.boltdir = 'foo'
-      config.finalize!
-      expected = "bolt task run 'foo' --boltdir 'foo' --modulepath 'baz' --inventoryfile '#{local_data_path}/bolt_inventory.yaml'"
-      expect(subject.send(:create_command)).to eq(expected)
-    end
-
-    it 'adds booleans to the command' do
-      config.verbose = true
-      config.ssl = false
-      config.finalize!
-      expected = "bolt task run 'foo' --no-ssl --verbose --inventoryfile '#{local_data_path}/bolt_inventory.yaml'"
-      expect(subject.send(:create_command)).to eq(expected)
-    end
-
-    it 'adds params to the command' do
-      config.params = { 'a' => 'b' }
-      config.finalize!
-      expected = "bolt task run 'foo' --params '{\"a\":\"b\"}' --inventoryfile '#{local_data_path}/bolt_inventory.yaml'"
-      expect(subject.send(:create_command)).to eq(expected)
-    end
-
-    it 'debug and verbose are omitted when false' do
-      config.debug = false
-      config.verbose = false
-      config.finalize!
-      expected = "bolt task run 'foo' --inventoryfile '#{local_data_path}/bolt_inventory.yaml'"
-      expect(subject.send(:create_command)).to eq(expected)
-    end
-  end
-
   context 'run' do
     let(:options) { { notify: [:stdout, :stderr], env: { PATH: nil } } }
     before(:each) do
       allow(Vagrant::Util::Subprocess).to receive(:execute).and_return(subprocess_result)
-      allow_any_instance_of(VagrantBolt::Util).to receive(:update_inventory_file).and_return("#{local_data_path}/bolt_inventory.yaml")
     end
 
     it 'does not raise an exeption when all parameters are specified' do
@@ -168,7 +114,7 @@ describe VagrantBolt::Runner do
       config.boltdir = '.'
       config.node_list = 'ssh://test:22'
       config.finalize!
-      command = "bolt task run 'foo' --boltdir '#{root_path}/.' --modulepath '#{root_path}/modules' --inventoryfile '#{local_data_path}/bolt_inventory.yaml' --nodes 'ssh://test:22'"
+      command = "bolt task run 'foo' --boltdir '#{root_path}/.' --modulepath '#{root_path}/modules' --inventoryfile '#{inventory_path}' --nodes 'ssh://test:22'"
       expect(Vagrant::Util::Subprocess).to receive(:execute).with('bash', '-c', command, options).and_return(subprocess_result)
       subject.run('task', 'foo')
     end
