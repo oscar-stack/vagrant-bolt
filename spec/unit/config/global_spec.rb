@@ -45,6 +45,9 @@ describe VagrantBolt::Config::Global do
       "host_key_check",
       "verbose",
       "debug",
+      "facts",
+      "vars",
+      "features",
     ]
     expected_nil.each do |val|
       it "defaults #{val} to nil" do
