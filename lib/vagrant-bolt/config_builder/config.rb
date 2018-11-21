@@ -50,9 +50,9 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
   #   @return [String] The bolt node list. This defaults to the currnet node.
   def_model_attribute :node_list
 
-  # @!attribute [rw] parameters
+  # @!attribute [rw] params
   #   @return [Hash] The paramater hash for the task or plan
-  def_model_attribute :parameters
+  def_model_attribute :params
 
   # @!attribute [rw] bolt_type
   #   @return [Symbol] Whether bolt should use a task or plan
@@ -125,7 +125,7 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
       with_attr(:nodes)          { |val| bolt.nodes          = val }
       with_attr(:excludes)       { |val| bolt.excludes       = val }
       with_attr(:node_list)      { |val| bolt.node_list      = val }
-      with_attr(:parameters)     { |val| bolt.parameters     = val }
+      with_attr(:params)         { |val| bolt.params         = val }
       with_attr(:user)           { |val| bolt.user           = val }
       with_attr(:password)       { |val| bolt.password       = val }
       with_attr(:port)           { |val| bolt.port           = val }

@@ -55,7 +55,7 @@ describe VagrantBolt::Config::Bolt do
     expected_nil = [
       "name",
       "type",
-      "parameters",
+      "params",
       "node_list",
       "user",
       "password",

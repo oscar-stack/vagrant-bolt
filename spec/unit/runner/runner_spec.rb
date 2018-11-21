@@ -88,6 +88,61 @@ describe VagrantBolt::Runner do
     end
   end
 
+  context 'create command' do
+    before(:each) do
+      config.bolt_command = 'bolt'
+      config.type = 'task'
+      config.name = 'foo'
+      config.finalize!
+    end
+
+    it 'contains the bolt command' do
+      config.node_list = 'ssh://test:22'
+      config.user = 'user'
+      config.finalize!
+      expected = "bolt task run 'foo' --user \'user\' --inventoryfile '#{local_data_path}/bolt_inventory.yaml' --nodes \'ssh://test:22\'"
+      expect(subject.send(:create_command)).to eq(expected)
+    end
+
+    it 'appends args to the end of the command' do
+      config.args = 'bar'
+      config.finalize!
+      expected = "bolt task run 'foo' --inventoryfile '#{local_data_path}/bolt_inventory.yaml' bar"
+      expect(subject.send(:create_command)).to eq(expected)
+    end
+
+    it 'adds directories to the command' do
+      config.modulepath = 'baz'
+      config.boltdir = 'foo'
+      config.finalize!
+      expected = "bolt task run 'foo' --boltdir 'foo' --modulepath 'baz' --inventoryfile '#{local_data_path}/bolt_inventory.yaml'"
+      expect(subject.send(:create_command)).to eq(expected)
+    end
+
+    it 'adds booleans to the command' do
+      config.verbose = true
+      config.ssl = false
+      config.finalize!
+      expected = "bolt task run 'foo' --no-ssl --verbose --inventoryfile '#{local_data_path}/bolt_inventory.yaml'"
+      expect(subject.send(:create_command)).to eq(expected)
+    end
+
+    it 'adds params to the command' do
+      config.params = { 'a' => 'b' }
+      config.finalize!
+      expected = "bolt task run 'foo' --params '{\"a\":\"b\"}' --inventoryfile '#{local_data_path}/bolt_inventory.yaml'"
+      expect(subject.send(:create_command)).to eq(expected)
+    end
+
+    it 'debug and verbose are omitted when false' do
+      config.debug = false
+      config.verbose = false
+      config.finalize!
+      expected = "bolt task run 'foo' --inventoryfile '#{local_data_path}/bolt_inventory.yaml'"
+      expect(subject.send(:create_command)).to eq(expected)
+    end
+  end
+
   context 'run' do
     let(:options) { { notify: [:stdout, :stderr], env: { PATH: nil } } }
     before(:each) do
@@ -113,7 +168,7 @@ describe VagrantBolt::Runner do
       config.boltdir = '.'
       config.node_list = 'ssh://test:22'
       config.finalize!
-      command = "bolt task run 'foo' --modulepath '#{root_path}/modules' --boltdir '#{root_path}/.' --inventoryfile '#{local_data_path}/bolt_inventory.yaml' -n 'ssh://test:22'"
+      command = "bolt task run 'foo' --boltdir '#{root_path}/.' --modulepath '#{root_path}/modules' --inventoryfile '#{local_data_path}/bolt_inventory.yaml' --nodes 'ssh://test:22'"
       expect(Vagrant::Util::Subprocess).to receive(:execute).with('bash', '-c', command, options).and_return(subprocess_result)
       subject.run('task', 'foo')
     end

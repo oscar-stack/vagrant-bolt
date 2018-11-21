@@ -47,7 +47,7 @@ Vagrant.configure("2") do |config|
     node.vm.provision :bolt do |bolt|
       bolt.type         = :task
       bolt.name         = "service::linux"
-      bolt.parameters   = { name: "cron", action: "restart" }
+      bolt.params       = { name: "cron", action: "restart" }
       bolt.run_as       = "root"
     end
   end
@@ -162,7 +162,7 @@ Run the `facts` plan on `server1` and `server2`.
 VagrantBolt.plan('facts', env, machine, nodes: [:server1, :server2])
 ~~~
 
-Run the `service::linux` task as `root` to restart `cron` with a specific path to the bolt executable. This configuration specifies parameters for the `service::linux` task.
+Run the `service::linux` task as `root` to restart `cron` with a specific path to the bolt executable. This configuration specifies params for the `service::linux` task.
 
 ~~~ruby
 VagrantBolt.task('service::linux',
@@ -170,7 +170,7 @@ VagrantBolt.task('service::linux',
                  machine,
                  run_as: 'root',
                  bolt_command: '/usr/local/bin/bolt',
-                 parameters:  { name: "cron", action: "restart" },
+                 params: { name: "cron", action: "restart" },
                  )
 ~~~
 
@@ -208,8 +208,8 @@ The settings available in the triggers and the provisioner are the same.
     * This setting will take precidence over `nodes`
   * Valid Values: An array of machine symbols
   * Default: `[]`
-* `parameters`
-  * Description: A hash of the parameters for the bolt task or plan
+* `params`
+  * Description: A hash of the params for the bolt task or plan
 * `password`
   * Description: A string containing the password bolt will use to connect to the machine
 * `user`
@@ -283,7 +283,7 @@ vms:
 ~~~
 
 ### Trigger Configuration
-Bolt triggers cab be configured at the root or within a VM object. To configure a bolt trigger a few additional parameters are required. 
+Bolt triggers cab be configured at the root or within a VM object. To configure a bolt trigger a few additional params are required. 
 
 * `trigger_type`
   * Description: A symbol of the trigger type. 
@@ -350,7 +350,7 @@ vagrant bolt -u task run facts -n server
 
 The `--updateinventory` flag will regenerate the inventory file from the active running machines, however it defaults to being off. In the example above, the inventory file will be updated prior to running the task.
 
-All parameters execpt for the `-u` will be passed to bolt, so a bolt command like the exaple below can be run. 
+All arguments except for the `-u` will be passed to bolt, so a bolt command like the exaple below can be run. 
 
 ~~~
 vagrant bolt command run 'date' -n agent,master
