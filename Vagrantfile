@@ -33,7 +33,7 @@ Vagrant.configure("2") do |config|
     node.vm.provision :bolt do |bolt|
       bolt.type         = :task
       bolt.name         = "service::linux"
-      bolt.parameters   = { name: "cron", action: "restart" }
+      bolt.params = { name: "cron", action: "restart" }
       bolt.nodes        = 'ALL'
       bolt.run_as       = "root"
     end

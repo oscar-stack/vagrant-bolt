@@ -27,9 +27,9 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
   #   @return [String] The bolt node list. This defaults to the currnet node.
   attr_accessor :node_list
 
-  # @!attribute [rw] parameters
+  # @!attribute [rw] params
   #   @return [Hash] The paramater hash for the task or plan
-  attr_accessor :parameters
+  attr_accessor :params
 
   # @!attribute [rw] type
   #   @return [Symbol] Whether bolt should use a task or plan
@@ -42,7 +42,7 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
     @nodes        = []
     @excludes     = []
     @node_list    = UNSET_VALUE
-    @parameters   = UNSET_VALUE
+    @params       = UNSET_VALUE
     @type         = UNSET_VALUE
   end
 
@@ -66,7 +66,7 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
     @args           = nil if @args == UNSET_VALUE
     @name           = nil if @name == UNSET_VALUE
     @node_list      = nil if @node_list == UNSET_VALUE
-    @parameters     = nil if @parameters == UNSET_VALUE
+    @params         = nil if @params == UNSET_VALUE
     @type           = nil if @type == UNSET_VALUE
   end
 
@@ -104,5 +104,22 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
     end
 
     { "Bolt" => errors }
+  end
+
+  # Return a list of settings that are not applicable to the bolt command line options
+  # @return [Array<String>] An array of settings to ignore when creating a bolt command
+  def blacklist
+    [
+      'nodes',
+      'excludes',
+      'node_list',
+      'bolt_command',
+      'args',
+      'type',
+      'name',
+      'vars',
+      'facts',
+      'features',
+    ]
   end
 end

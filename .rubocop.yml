@@ -95,15 +95,17 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
   Enabled: false
 Metrics/MethodLength:
-  Enabled: false
+  Enabled: true
   ExcludedMethods:
     - initialize
     - finalize!
     - validate
+    - to_proc
+  Max: 25
 Metrics/ClassLength:
   Enabled: false
 Metrics/ModuleLength:
-  Enabled: false
+  Enabled: true
 Style/StringLiterals:
   Enabled: false
 Naming/FileName:

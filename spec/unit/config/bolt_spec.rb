@@ -55,7 +55,7 @@ describe VagrantBolt::Config::Bolt do
     expected_nil = [
       "name",
       "type",
-      "parameters",
+      "params",
       "node_list",
       "user",
       "password",
@@ -85,17 +85,19 @@ describe VagrantBolt::Config::Bolt do
   context "inventory config" do
     let(:default_hash) do
       {
-        "ssh" => {
-          "password" => "foo",
-          "port" => "22",
-          "run-as" => "root",
-          "host-key-check" => false,
-        },
-        "winrm" => {
-          "password" => "foo",
-          "port" => "22",
-          "run-as" => "root",
-          "ssl" => false,
+        "config" => {
+          "ssh" => {
+            "password" => "foo",
+            "port" => "22",
+            "run-as" => "root",
+            "host-key-check" => false,
+          },
+          "winrm" => {
+            "password" => "foo",
+            "port" => "22",
+            "run-as" => "root",
+            "ssl" => false,
+          },
         },
       }
     end
@@ -112,7 +114,7 @@ describe VagrantBolt::Config::Bolt do
       expect(subject.inventory_config).to include(default_hash)
     end
     it 'converts names with _ to -' do
-      expect(subject.inventory_config['ssh']['run-as']).to eq('root')
+      expect(subject.inventory_config['config']['ssh']['run-as']).to eq('root')
     end
   end
 end
