@@ -94,14 +94,14 @@ describe VagrantBolt::Util::Bolt do
       config.user = 'user'
       config.finalize!
       expected = "bolt task run 'foo' --user \'user\' --inventoryfile '#{inventory_path}' --nodes \'ssh://test:22\'"
-      expect(subject.create_bolt_command(config, inventory_path)).to eq(expected)
+      expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
     end
 
     it 'appends args to the end of the command' do
       config.args = 'bar'
       config.finalize!
       expected = "bolt task run 'foo' --inventoryfile '#{inventory_path}' bar"
-      expect(subject.create_bolt_command(config, inventory_path)).to eq(expected)
+      expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
     end
 
     it 'adds directories to the command' do
@@ -109,7 +109,7 @@ describe VagrantBolt::Util::Bolt do
       config.boltdir = 'foo'
       config.finalize!
       expected = "bolt task run 'foo' --boltdir 'foo' --modulepath 'baz' --inventoryfile '#{inventory_path}'"
-      expect(subject.create_bolt_command(config, inventory_path)).to eq(expected)
+      expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
     end
 
     it 'adds booleans to the command' do
@@ -117,14 +117,14 @@ describe VagrantBolt::Util::Bolt do
       config.ssl = false
       config.finalize!
       expected = "bolt task run 'foo' --no-ssl --verbose --inventoryfile '#{inventory_path}'"
-      expect(subject.create_bolt_command(config, inventory_path)).to eq(expected)
+      expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
     end
 
     it 'adds params to the command' do
       config.params = { 'a' => 'b' }
       config.finalize!
       expected = "bolt task run 'foo' --params '{\"a\":\"b\"}' --inventoryfile '#{inventory_path}'"
-      expect(subject.create_bolt_command(config, inventory_path)).to eq(expected)
+      expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
     end
 
     it 'debug and verbose are omitted when false' do
@@ -132,7 +132,7 @@ describe VagrantBolt::Util::Bolt do
       config.verbose = false
       config.finalize!
       expected = "bolt task run 'foo' --inventoryfile '#{inventory_path}'"
-      expect(subject.create_bolt_command(config, inventory_path)).to eq(expected)
+      expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
     end
   end
 end

@@ -24,7 +24,7 @@ class VagrantBolt::Runner
 
     @inventory_path = VagrantBolt::Util::Bolt.update_inventory_file(@env)
     validate
-    command = VagrantBolt::Util::Bolt.create_bolt_command(@boltconfig, @inventory_path)
+    command = VagrantBolt::Util::Bolt.generate_bolt_command(@boltconfig, @inventory_path)
     VagrantBolt::Util::Machine.run_command(command, @machine.ui)
   end
 

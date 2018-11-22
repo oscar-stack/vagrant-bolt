@@ -10,7 +10,7 @@ module VagrantBolt::Util
     # @param [Object] config The config objects
     # @param [String] inventory_path The path of the inventory file
     # @return [String] The bolt command
-    def self.create_bolt_command(config, inventory_path = nil)
+    def self.generate_bolt_command(config, inventory_path = nil)
       command = []
       command << config.bolt_command
       command << "#{config.type} run \'#{config.name}\'"
@@ -61,39 +61,47 @@ module VagrantBolt::Util
     def self.generate_node_group(machine)
       # Only call ssh_info once
       node_group = {}
+      ssh_info = machine.ssh_info
+      return node_group if ssh_info.nil?
+
       node_group['name'] = machine.name.to_s
-
-      vm_ssh_info = machine.ssh_info
-      return node_group if vm_ssh_info.nil?
-
-      config_transport = {}
-      if VagrantBolt::Util::Machine.windows?(machine)
-        transport = 'winrm'
-        config_transport['ssl'] = (machine.config.winrm.transport == :ssl)
-        config_transport['ssl_verify'] = machine.config.winrm.ssl_peer_verification
-        config_transport['port'] = machine.config.winrm.port
-        config_transport['user'] = machine.config.winrm.username
-        config_transport['password'] = machine.config.winrm.password
-      else
-        transport = 'ssh'
-        config_transport['private-key'] = vm_ssh_info[:private_key_path][0] unless vm_ssh_info[:private_key_path].nil?
-        config_transport['host-key-check'] = (vm_ssh_info[:verify_host_key] == true)
-        config_transport['port'] = vm_ssh_info[:port]
-        config_transport['user'] = vm_ssh_info[:username]
-        config_transport['password'] = vm_ssh_info[:password]
-      end
       machine_config = machine.config.bolt.inventory_config
-      config_transport.merge!(machine_config['config'][transport]) if machine_config.dig('config', transport)
       node_group['config'] = {}
-      node_group['config'][transport] = config_transport.compact
-      node_group['nodes'] = ["#{transport}://#{vm_ssh_info[:host]}:#{node_group['config'][transport]['port']}"]
+      transport = VagrantBolt::Util::Machine.windows?(machine) ? 'winrm' : 'ssh'
+      node_group['config'][transport] = machine_transport_hash(machine, machine_config, ssh_info).compact
       node_group['config']['transport'] = transport
+      node_group['nodes'] = ["#{transport}://#{ssh_info[:host]}:#{node_group['config'][transport]['port']}"]
       machine_config.each do |key, value|
         next if key == 'config' || value.nil? || value.empty?
 
         node_group[key] = value
       end
       node_group.compact
+    end
+
+    # Return a transport config hash for a node
+    # @param [Object] machine The machine
+    # @param [Hash] machine_config A hash of the machine config options
+    # @param [Hash] ssh_info The ssh hash for the machine
+    def self.machine_transport_hash(machine, machine_config = {}, ssh_info = nil)
+      config = {}
+      if VagrantBolt::Util::Machine.windows?(machine)
+        transport = 'winrm'
+        config['ssl'] = (machine.config.winrm.transport == :ssl)
+        config['ssl_verify'] = machine.config.winrm.ssl_peer_verification
+        config['port'] = machine.config.winrm.port
+        config['user'] = machine.config.winrm.username
+        config['password'] = machine.config.winrm.password
+      else
+        transport = 'ssh'
+        config['private-key'] = ssh_info[:private_key_path][0] unless ssh_info[:private_key_path].nil?
+        config['host-key-check'] = (ssh_info[:verify_host_key] == true)
+        config['port'] = ssh_info[:port]
+        config['user'] = ssh_info[:username]
+        config['password'] = ssh_info[:password]
+      end
+      config.merge!(machine_config['config'][transport]) if machine_config.dig('config', transport)
+      config
     end
 
     # Return the path to the inventory file

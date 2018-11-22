@@ -124,7 +124,30 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
   # Generate a bolt inventory config hash for this config
   # @return [Hash] A bolt inventory config hash containing the configured params
   def inventory_config
-    setting_map = {
+    group_objects = ['facts', 'features', 'vars']
+    config = {}
+    instance_variables_hash.each do |key, value|
+      next if value.nil?
+
+      if group_objects.include?(key)
+        config[key] = value
+      else
+        setting_map.each do |transport, settings|
+          next unless settings.include?(key)
+
+          config['config'] ||= {}
+          config['config'][transport.to_s] ||= {}
+          config['config'][transport.to_s][key.tr('_', '-')] = value
+        end
+      end
+    end
+    config
+  end
+
+  # Return the setting map for the config hash
+  # @return [Hash] A map of the settings to the transport
+  def setting_map
+    {
       'ssh': [
         'user',
         'password',
@@ -145,23 +168,5 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
         'tmpdir',
       ],
     }
-    group_objects = ['facts', 'features', 'vars']
-    config = {}
-    instance_variables_hash.each do |key, value|
-      next if value.nil?
-
-      if group_objects.include?(key)
-        config[key] = value
-      else
-        setting_map.each do |transport, settings|
-          next unless settings.include?(key)
-
-          config['config'] ||= {}
-          config['config'][transport.to_s] ||= {}
-          config['config'][transport.to_s][key.tr('_', '-')] = value
-        end
-      end
-    end
-    config
   end
 end
