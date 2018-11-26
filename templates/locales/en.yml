@@ -6,12 +6,12 @@ en:
         errors:
           no_task_or_plan: |-
             No name set. A task or a plan must be specified to use the bolt provisioner
-          type_not_specified: |-
-            No type set. Please specify either task or plan
-          invalid_type: |-
-            Type can only be task or plan, not %{type}
-          invalid_data_type: |-
-            Invalid data type for %{item} must be %{type}
+          command_not_specified: |-
+            No command set. Please specify either task or plan
+          invalid_command: |-
+            Type can only be task or plan, not %{command}
+          invalid_data_command: |-
+            Invalid data command for %{item} must be %{command}
     provisioner:
       bolt:
         info:

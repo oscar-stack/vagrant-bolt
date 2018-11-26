@@ -18,25 +18,25 @@ describe VagrantBolt::Config::Bolt do
       expect(subject.validate(machine)["Bolt"][0]).to eq("The following settings shouldn't exist: foo")
     end
 
-    it "reports an error when the type is invalid" do
-      subject.type = "bar"
+    it "reports an error when the command is invalid" do
+      subject.command = "bar"
       subject.name = "foo"
       subject.finalize!
       expect(subject.validate(machine)["Bolt"][0]).to eq("Type can only be task or plan, not bar")
     end
 
     it "reports an error when the name is not specified" do
-      subject.type = "task"
+      subject.command = "task"
       subject.name = nil
       subject.finalize!
       expect(subject.validate(machine)["Bolt"][0]).to eq("No name set. A task or a plan must be specified to use the bolt provisioner")
     end
 
-    it "reports an error when the type is not specified" do
-      subject.type = nil
+    it "reports an error when the command is not specified" do
+      subject.command = nil
       subject.name = "foo"
       subject.finalize!
-      expect(subject.validate(machine)["Bolt"][0]).to eq("No type set. Please specify either task or plan")
+      expect(subject.validate(machine)["Bolt"][0]).to eq("No command set. Please specify either task or plan")
     end
   end
 
@@ -54,7 +54,7 @@ describe VagrantBolt::Config::Bolt do
 
     expected_nil = [
       "name",
-      "type",
+      "command",
       "params",
       "node_list",
       "user",
@@ -71,7 +71,7 @@ describe VagrantBolt::Config::Bolt do
       "debug",
       "host_key_check",
       "modulepath",
-      "bolt_command",
+      "bolt_exe",
       "boltdir",
     ]
     expected_nil.each do |val|

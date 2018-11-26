@@ -45,7 +45,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define 'server' do |node|
     node.vm.provision :bolt do |bolt|
-      bolt.type         = :task
+      bolt.command      = :task
       bolt.name         = "service::linux"
       bolt.params       = { name: "cron", action: "restart" }
       bolt.run_as       = "root"
@@ -73,7 +73,7 @@ Vagrant.configure("2") do |config|
     node.bolt.run_as    = "root"
     node.vm.provision :bolt do |bolt|
       # Provisioner level config is only applied to this provisioner
-      bolt.type         = :task
+      bolt.command      = :task
       bolt.name         = "facts"
     end
   end
@@ -169,7 +169,7 @@ VagrantBolt.task('service::linux',
                  env,
                  machine,
                  run_as: 'root',
-                 bolt_command: '/usr/local/bin/bolt',
+                 bolt_exe: '/usr/local/bin/bolt',
                  params: { name: "cron", action: "restart" },
                  )
 ~~~
@@ -179,14 +179,14 @@ Plugin Settings
 The settings available in the triggers and the provisioner are the same.
 
 **Required Settings**
-* `type`
+* `command`
   * Description: A string containing plan or task to determine which will be used
   * Valid Values: `task` and `plan`
 * `name`
   * Description: A string containing name of the task or plan to run
 
 **Optional Settings**
-* `bolt_command`
+* `bolt_exe`
   * Description: A string containing the full path to the bolt executable
   * Default: `bolt`
 * `boltdir`
@@ -255,11 +255,7 @@ Config Builder
 This module also supports the [oscar/config_builder](https://github.com/oscar-stack/vagrant-config_builder) plugin for configuration. If [oscar/config_builder](https://github.com/oscar-stack/vagrant-config_builder) is installed, bolt can be configured similar to the [Configuration Options section](#configuration-options) with a few small differences. 
 
 ### Configuration
-The configuration can be specified at the root, VM, and Provisioner levels. The configuration options above are the same with the exception of the following which have been renamed.
-
-* `bolt_type`
-  * Description: A string containing the bolt type. This option is renamed from `task` in the options above due to a name collision. 
-  * Valid Values: `task` or `plan`
+The configuration can be specified at the root, VM, and Provisioner levels.
 
 An example of this configuration is below.
 
@@ -278,7 +274,7 @@ vms:
     provisioners:
       # Bolt provisioner
       - type: bolt
-        bolt_type: task
+        command: task
         name: facts
 ~~~
 
@@ -303,7 +299,7 @@ vms:
         trigger_commands: 
           - :provision
           - :up
-        bolt_type: task
+        command: task
         name: facts
 ~~~
 
@@ -316,7 +312,7 @@ bolt_triggers:
     trigger_commands: 
       - :provision
       - :up
-    bolt_type: task
+    command: task
     name: facts
 vms:
   - name: server

@@ -31,9 +31,9 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
   #   @return [Hash] The paramater hash for the task or plan
   attr_accessor :params
 
-  # @!attribute [rw] type
+  # @!attribute [rw] command
   #   @return [Symbol] Whether bolt should use a task or plan
-  attr_accessor :type
+  attr_accessor :command
 
   def initialize
     super
@@ -43,11 +43,11 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
     @excludes     = []
     @node_list    = UNSET_VALUE
     @params       = UNSET_VALUE
-    @type         = UNSET_VALUE
+    @command      = UNSET_VALUE
   end
 
   def finalize!
-    @bolt_command   = nil if @bolt_command == UNSET_VALUE
+    @bolt_exe       = nil if @bolt_exe == UNSET_VALUE
     @boltdir        = nil if @boltdir == UNSET_VALUE
     @host_key_check = nil if @host_key_check == UNSET_VALUE
     @modulepath     = nil if @modulepath == UNSET_VALUE
@@ -67,7 +67,7 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
     @name           = nil if @name == UNSET_VALUE
     @node_list      = nil if @node_list == UNSET_VALUE
     @params         = nil if @params == UNSET_VALUE
-    @type           = nil if @type == UNSET_VALUE
+    @command        = nil if @command == UNSET_VALUE
   end
 
   def merge(other)
@@ -83,23 +83,23 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
 
   def validate(_machine)
     errors = _detected_errors
-    errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_type', type: @type.to_s) if !@type.nil? && !['task', 'plan'].include?(@type.to_s)
+    errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_command', command: @command.to_s) if !@command.nil? && !['task', 'plan'].include?(@command.to_s)
 
     if @nodes.nil? || (!(@nodes.is_a? Array) && !@nodes.to_s.casecmp("all").zero?)
-      errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_data_type',
+      errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_data_command',
                        item: 'nodes',
-                       type: 'array')
+                       command: 'array')
     end
 
     if @excludes.nil? || !(@excludes.is_a? Array)
-      errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_data_type',
+      errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_data_command',
                        item: 'excludes',
-                       type: 'array')
+                       command: 'array')
     end
 
-    if @type.nil? && !@name.nil?
-      errors << I18n.t('vagrant-bolt.config.bolt.errors.type_not_specified')
-    elsif !@type.nil? && @name.nil?
+    if @command.nil? && !@name.nil?
+      errors << I18n.t('vagrant-bolt.config.bolt.errors.command_not_specified')
+    elsif !@command.nil? && @name.nil?
       errors << I18n.t('vagrant-bolt.config.bolt.errors.no_task_or_plan')
     end
 
@@ -113,9 +113,9 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
       'nodes',
       'excludes',
       'node_list',
-      'bolt_command',
+      'bolt_exe',
       'args',
-      'type',
+      'command',
       'name',
       'vars',
       'facts',

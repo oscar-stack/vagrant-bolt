@@ -44,12 +44,12 @@ class VagrantBolt::Command < Vagrant.plugin('2', :command)
   # Run a bolt command with the inventory path, module path, and boltdir
   # @param [Array<String] An array containing the bolt arguments
   def execute_bolt_command(args)
-    bolt_command = @env.vagrantfile.config.bolt.bolt_command
+    bolt_exe = @env.vagrantfile.config.bolt.bolt_exe
     modulepath = @env.vagrantfile.config.bolt.modulepath
     boltdir = @env.vagrantfile.config.bolt.boltdir
     inventoryfile = VagrantBolt::Util::Bolt.inventory_file(@env)
     command = [
-      bolt_command,
+      bolt_exe,
       args.flatten.compact,
       "--modulepath",
       modulepath,

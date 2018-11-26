@@ -50,9 +50,9 @@ describe VagrantBolt::Runner do
     before(:each) do
       allow(VagrantBolt::Util::Machine).to receive(:nodes_in_environment).with(iso_env).and_return([machine, machine2])
     end
-    it 'adds the type and name to the config' do
+    it 'adds the command and name to the config' do
       result = subject.send(:setup_overrides, 'task', 'foo')
-      expect(result.type).to eq('task')
+      expect(result.command).to eq('task')
       expect(result.name).to eq('foo')
     end
 
@@ -100,8 +100,8 @@ describe VagrantBolt::Runner do
       expect { subject.run('task', 'foo') }.to_not raise_error
     end
 
-    it 'raises an exception if the type is not specified' do
-      expect { subject.run(nil, 'foo') }.to raise_error(Vagrant::Errors::ConfigInvalid, %r{No type set})
+    it 'raises an exception if the command is not specified' do
+      expect { subject.run(nil, 'foo') }.to raise_error(Vagrant::Errors::ConfigInvalid, %r{No command set})
     end
 
     it 'raises an exception if the name is not specified' do
@@ -109,7 +109,7 @@ describe VagrantBolt::Runner do
     end
 
     it 'creates a shell execution' do
-      config.bolt_command = 'bolt'
+      config.bolt_exe = 'bolt'
       config.modulepath = 'modules'
       config.boltdir = '.'
       config.node_list = 'ssh://test:22'

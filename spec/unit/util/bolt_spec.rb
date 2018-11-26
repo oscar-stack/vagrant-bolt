@@ -83,8 +83,8 @@ describe VagrantBolt::Util::Bolt do
 
   context 'create bolt command' do
     before(:each) do
-      config.bolt_command = 'bolt'
-      config.type = 'task'
+      config.bolt_exe = 'bolt'
+      config.command = 'task'
       config.name = 'foo'
       config.finalize!
     end

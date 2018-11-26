@@ -31,11 +31,11 @@ Vagrant.configure("2") do |config|
   config.vm.define 'server2' do |node|
     # Using the Bolt provisioner instead of a trigger
     node.vm.provision :bolt do |bolt|
-      bolt.type         = :task
-      bolt.name         = "service::linux"
-      bolt.params = { name: "cron", action: "restart" }
-      bolt.nodes        = 'ALL'
-      bolt.run_as       = "root"
+      bolt.command = :task
+      bolt.name    = "service::linux"
+      bolt.params  = { name: "cron", action: "restart" }
+      bolt.nodes   = 'ALL'
+      bolt.run_as  = "root"
     end
   end
 end

@@ -8,9 +8,9 @@ class VagrantBolt::ConfigBuilder::Provisioner < ConfigBuilder::Model::Provisione
   #   @return [String] Additional arguments for the bolt command
   def_model_attribute :args
 
-  # @!attribute [rw] bolt_command
+  # @!attribute [rw] bolt_exe
   #   @return [String] The full path to the bolt command. If not passed in, the default from PATH will be used.
-  def_model_attribute :bolt_command
+  def_model_attribute :bolt_exe
 
   # @!attribute [rw] boltdir
   #   @return [String] The bolt working directory. Defaults to `.`
@@ -54,9 +54,9 @@ class VagrantBolt::ConfigBuilder::Provisioner < ConfigBuilder::Model::Provisione
   #   @return [Hash] The paramater hash for the task or plan
   def_model_attribute :params
 
-  # @!attribute [rw] bolt_type
+  # @!attribute [rw] command
   #   @return [Symbol] Whether bolt should use a task or plan
-  def_model_attribute :bolt_type
+  def_model_attribute :command
 
   # @!attribute [rw] user
   #   @return [String] The user to authenticate on the machine.
@@ -97,11 +97,6 @@ class VagrantBolt::ConfigBuilder::Provisioner < ConfigBuilder::Model::Provisione
   # @!attribute [rw] verbose
   #   @return [Boolean] Shows verbose logging
   def_model_attribute :verbose
-
-  # @private
-  def configure_bolt_type(config, value)
-    config.type = value
-  end
 
   ConfigBuilder::Model::Provisioner.register('bolt', self)
 end

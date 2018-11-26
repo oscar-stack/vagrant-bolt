@@ -12,8 +12,8 @@ module VagrantBolt::Util
     # @return [String] The bolt command
     def self.generate_bolt_command(config, inventory_path = nil)
       command = []
-      command << config.bolt_command
-      command << "#{config.type} run \'#{config.name}\'"
+      command << config.bolt_exe
+      command << "#{config.command} run \'#{config.name}\'"
 
       config.instance_variables_hash.each do |key, value|
         next if key.to_s.start_with?('__')
