@@ -12,6 +12,27 @@ describe VagrantBolt::Config::Bolt do
       expect(subject.validate(machine)).to eq("Bolt" => [])
     end
 
+    it "allows for a task" do
+      subject.command = :task
+      subject.name = "foo"
+      subject.finalize!
+      expect(subject.validate(machine)).to eq("Bolt" => [])
+    end
+
+    it "allows for a plan" do
+      subject.command = :plan
+      subject.name = "foo"
+      subject.finalize!
+      expect(subject.validate(machine)).to eq("Bolt" => [])
+    end
+
+    it "allows for a command" do
+      subject.command = :command
+      subject.name = "foo"
+      subject.finalize!
+      expect(subject.validate(machine)).to eq("Bolt" => [])
+    end
+
     it "reports invalid options" do
       subject.foo = "bar"
       subject.finalize!
@@ -22,21 +43,21 @@ describe VagrantBolt::Config::Bolt do
       subject.command = "bar"
       subject.name = "foo"
       subject.finalize!
-      expect(subject.validate(machine)["Bolt"][0]).to eq("Type can only be task or plan, not bar")
+      expect(subject.validate(machine)["Bolt"][0]).to match(%r{Type can only be})
     end
 
     it "reports an error when the name is not specified" do
       subject.command = "task"
       subject.name = nil
       subject.finalize!
-      expect(subject.validate(machine)["Bolt"][0]).to eq("No name set. A task or a plan must be specified to use the bolt provisioner")
+      expect(subject.validate(machine)["Bolt"][0]).to match(%r{No name set})
     end
 
     it "reports an error when the command is not specified" do
       subject.command = nil
       subject.name = "foo"
       subject.finalize!
-      expect(subject.validate(machine)["Bolt"][0]).to eq("No command set. Please specify either task or plan")
+      expect(subject.validate(machine)["Bolt"][0]).to match(%r{No command set})
     end
   end
 

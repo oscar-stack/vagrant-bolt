@@ -33,7 +33,7 @@ Vagrant.configure("2") do |config|
 end
 ~~~
 
-Both tasks and plans can be configured using the appropiate methods. `VagrantBolt.task` for tasks and `VagrantBolt.plan` for plans.
+Tasks, plans, and commands can be configured using the appropiate methods. `VagrantBolt.task` for tasks, `VagrantBolt.plan` for plans, and `VagrantBolt.command` for commands.
 
 ### Provisioner
 vagrant-bolt also provides a traditional provisioner which can be added to a machine. Below is an example Vagrantfile which runs a bolt task on a machine.
@@ -131,7 +131,7 @@ end
 The configuration above would result in the `facts` task being run on the VM with `run_as = root`, `host_key_check = false`, and `verbose = false`. The `verbose` defined in the method will override the root level `verbose` option.
 
 #### Trigger Methods
-The methods for a bolt command in a trigger allow for a task and a plan. Both methods take the same arguments. 
+The methods for a bolt command in a trigger allow for a task, plan, or command. All methods take the same arguments.
 
 * **VagrantBolt.task**
   * Description: Run a bolt task based on the config and arguments
@@ -144,6 +144,13 @@ The methods for a bolt command in a trigger allow for a task and a plan. Both me
   * Description: Run a bolt plan based on the config and arguments
   * Parameters:
     * Required: `name` A string containing the name of the plan to run
+    * Required: `env` The env object
+    * Required: `machine` The machine object
+    * Optional: `**args` A hash of [Plugin Settings](#plugin-settings) which override any previous config
+* **VagrantBolt.command**
+  * Description: Run a bolt command based on the config and arguments
+  * Parameters:
+    * Required: `name` A string containing the command to run
     * Required: `env` The env object
     * Required: `machine` The machine object
     * Optional: `**args` A hash of [Plugin Settings](#plugin-settings) which override any previous config
@@ -160,6 +167,12 @@ Run the `facts` plan on `server1` and `server2`.
 
 ~~~ruby
 VagrantBolt.plan('facts', env, machine, nodes: [:server1, :server2])
+~~~
+
+Run the `hostname` command on all nodes.
+
+~~~ruby
+VagrantBolt.command('/bin/hostname', env, machine, nodes: 'all')
 ~~~
 
 Run the `service::linux` task as `root` to restart `cron` with a specific path to the bolt executable. This configuration specifies params for the `service::linux` task.
@@ -181,9 +194,9 @@ The settings available in the triggers and the provisioner are the same.
 **Required Settings**
 * `command`
   * Description: A string containing plan or task to determine which will be used
-  * Valid Values: `task` and `plan`
+  * Valid Values: `task`, `plan`, and `command`
 * `name`
-  * Description: A string containing name of the task or plan to run
+  * Description: A string containing name of the task, plan, or command to run
 
 **Optional Settings**
 * `bolt_exe`

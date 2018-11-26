@@ -83,7 +83,7 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
 
   def validate(_machine)
     errors = _detected_errors
-    errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_command', command: @command.to_s) if !@command.nil? && !['task', 'plan'].include?(@command.to_s)
+    errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_command', command: @command.to_s) if !@command.nil? && !['task', 'plan', 'command'].include?(@command.to_s)
 
     if @nodes.nil? || (!(@nodes.is_a? Array) && !@nodes.to_s.casecmp("all").zero?)
       errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_data_command',
