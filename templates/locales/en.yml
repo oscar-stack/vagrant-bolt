@@ -12,6 +12,8 @@ en:
             Type can only be "task", "plan", or "command", not %{command}
           invalid_data_command: |-
             Invalid data command for %{item} must be %{command}
+          noop_compatibility: |-
+            Noop is not compatible with %{command}. Please use a task.
     provisioner:
       bolt:
         info:

@@ -38,6 +38,10 @@ class VagrantBolt::ConfigBuilder::Provisioner < ConfigBuilder::Model::Provisione
   #        Valid values are an array of machine names or the string "ALL".
   def_model_attribute :nodes
 
+  # @!attribute [rw] noop
+  #   @return [Boolean] If the command should be run with noop. Only valid with tasks and apply.
+  def_model_attribute :noop
+
   # @!attribute [rw] excludes
   # Note: The `node_list` will override this setting.
   # Note: This will be merged with `nodes`, with `excludes` taking precidence

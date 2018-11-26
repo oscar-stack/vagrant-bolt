@@ -32,8 +32,12 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
   attr_accessor :params
 
   # @!attribute [rw] command
-  #   @return [Symbol] Whether bolt should use a task or plan
+  #   @return [Symbol] Which command bolt should use. task, plan, command
   attr_accessor :command
+
+  # @!attribute [rw] noop
+  #   @return [Boolean] If the command should be run with noop. Only valid with tasks and apply.
+  attr_accessor :noop
 
   def initialize
     super
@@ -68,6 +72,7 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
     @node_list      = nil if @node_list == UNSET_VALUE
     @params         = nil if @params == UNSET_VALUE
     @command        = nil if @command == UNSET_VALUE
+    @noop           = nil if @noop == UNSET_VALUE
   end
 
   def merge(other)
@@ -101,6 +106,11 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
       errors << I18n.t('vagrant-bolt.config.bolt.errors.command_not_specified')
     elsif !@command.nil? && @name.nil?
       errors << I18n.t('vagrant-bolt.config.bolt.errors.no_task_or_plan')
+    end
+
+    if @command.to_s != 'task' && @noop
+      errors << I18n.t('vagrant-bolt.config.bolt.errors.noop_compatibility',
+                       command: @command)
     end
 
     { "Bolt" => errors }

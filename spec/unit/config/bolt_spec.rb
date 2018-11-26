@@ -59,6 +59,14 @@ describe VagrantBolt::Config::Bolt do
       subject.finalize!
       expect(subject.validate(machine)["Bolt"][0]).to match(%r{No command set})
     end
+
+    it "reports an error when noop is used without a task" do
+      subject.command = :plan
+      subject.name = "foo"
+      subject.noop = true
+      subject.finalize!
+      expect(subject.validate(machine)["Bolt"][0]).to match(%r{Noop is not compatible})
+    end
   end
 
   context "defaults" do
@@ -94,6 +102,7 @@ describe VagrantBolt::Config::Bolt do
       "modulepath",
       "bolt_exe",
       "boltdir",
+      "noop",
     ]
     expected_nil.each do |val|
       it "defaults #{val} to nil" do

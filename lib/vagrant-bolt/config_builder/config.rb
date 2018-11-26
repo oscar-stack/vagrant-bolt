@@ -50,6 +50,10 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
   #   @return [String] The bolt node list. This defaults to the currnet node.
   def_model_attribute :node_list
 
+  # @!attribute [rw] noop
+  #   @return [Boolean] If the command should be run with noop. Only valid with tasks and apply.
+  def_model_attribute :noop
+
   # @!attribute [rw] params
   #   @return [Hash] The paramater hash for the task or plan
   def_model_attribute :params
@@ -123,6 +127,7 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
       with_attr(:modulepath)     { |val| bolt.modulepath     = val }
       with_attr(:name)           { |val| bolt.name           = val }
       with_attr(:nodes)          { |val| bolt.nodes          = val }
+      with_attr(:noop)           { |val| bolt.noop           = val }
       with_attr(:excludes)       { |val| bolt.excludes       = val }
       with_attr(:node_list)      { |val| bolt.node_list      = val }
       with_attr(:params)         { |val| bolt.params         = val }

@@ -127,9 +127,19 @@ describe VagrantBolt::Util::Bolt do
       expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
     end
 
-    it 'debug and verbose are omitted when false' do
+    it 'adds debug, verbose, and noop when true' do
+      config.debug = true
+      config.verbose = true
+      config.noop = true
+      config.finalize!
+      expected = "bolt task run 'foo' --verbose --debug --noop --inventoryfile '#{inventory_path}'"
+      expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
+    end
+
+    it 'debug, verbose, and noop are omitted when false' do
       config.debug = false
       config.verbose = false
+      config.noop = false
       config.finalize!
       expected = "bolt task run 'foo' --inventoryfile '#{inventory_path}'"
       expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)

@@ -24,7 +24,7 @@ module VagrantBolt::Util
         case value
         when TrueClass, FalseClass
           # Verbose and debug do not have --no flags so exclude them
-          next if ['verbose', 'debug'].include?(key) && !value
+          next if ['verbose', 'debug', 'noop'].include?(key) && !value
 
           arg = value ? "--#{key}" : "--no-#{key}"
           command << arg
