@@ -1,0 +1,26 @@
+require 'vagrant-spec/which'
+Vagrant.configure('2') do |config|
+  config.bolt.bolt_exe = Vagrant::Spec::Which.which('bolt')
+  config.bolt.run_as = 'root'
+  config.vm.box = 'box'
+  # Run a trigger on all nodes after provision
+  config.trigger.after :provision do |trigger|
+    trigger.ruby do |env, machine|
+      VagrantBolt.command('/bin/echo "allnodetest"', env, machine, nodes: 'all')
+    end
+  end
+  config.vm.define 'server1' do |node|
+    # Provision a node testing the config options
+    node.vm.provision :bolt do |bolt|
+      bolt.command = :command
+      bolt.name    = '/bin/echo "configtest"'
+      bolt.nodes   = ['server1', 'server2']
+      bolt.excludes = ['server1']
+      bolt.verbose = true
+      bolt.debug = false
+      bolt.run_as = "vagrant"
+    end
+  end
+  config.vm.define 'server2' do |node|
+  end
+end
