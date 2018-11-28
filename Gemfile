@@ -27,6 +27,7 @@ group :test do
   end
 
   gem 'vagrant-spec', git: 'https://github.com/hashicorp/vagrant-spec.git'
+  gem 'bolt'
 end
 
 eval_gemfile "#{__FILE__}.local" if File.exist? "#{__FILE__}.local"

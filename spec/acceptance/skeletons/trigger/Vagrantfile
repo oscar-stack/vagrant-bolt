@@ -1,0 +1,22 @@
+require 'vagrant-spec/which'
+Vagrant.configure('2') do |config|
+  config.bolt.bolt_exe = Vagrant::Spec::Which.which('bolt')
+  config.vm.box = 'box'
+  config.vm.define 'server' do |node|
+    node.trigger.after :up do |trigger|
+      trigger.ruby do |env, machine|
+        VagrantBolt.task("facts", env, machine)
+      end
+    end
+    node.trigger.after :up do |trigger|
+      trigger.ruby do |env, machine|
+        VagrantBolt.plan("facts", env, machine)
+      end
+    end
+    node.trigger.after :up do |trigger|
+      trigger.ruby do |env, machine|
+        VagrantBolt.command("hostname", env, machine)
+      end
+    end
+  end
+end

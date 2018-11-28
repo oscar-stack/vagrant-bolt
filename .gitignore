@@ -12,3 +12,4 @@ Gemfile.local
 *.bak
 .vagrant
 /modules
+*.box

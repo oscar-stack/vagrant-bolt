@@ -4,19 +4,4 @@ forge "http://forge.puppetlabs.com"
 
 moduledir File.join(File.dirname(__FILE__), 'modules')
 
-mod 'puppetlabs-package', '0.3.0'
-mod 'puppetlabs-service', '0.4.0'
-mod 'puppetlabs-puppet_conf', '0.3.0'
 mod 'puppetlabs-facts', '0.3.1'
-
-# Core types and providers for Puppet 6
-mod 'puppetlabs-augeas_core', '1.0.3'
-mod 'puppetlabs-host_core', '1.0.1'
-mod 'puppetlabs-scheduled_task', '1.0.0'
-mod 'puppetlabs-sshkeys_core', '1.0.1'
-mod 'puppetlabs-zfs_core', '1.0.1'
-mod 'puppetlabs-cron_core', '1.0.0'
-mod 'puppetlabs-mount_core', '1.0.2'
-mod 'puppetlabs-selinux_core', '1.0.1'
-mod 'puppetlabs-yumrepo_core', '1.0.1'
-mod 'puppetlabs-zone_core', '1.0.1'

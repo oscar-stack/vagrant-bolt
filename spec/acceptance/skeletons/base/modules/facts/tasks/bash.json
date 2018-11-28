@@ -1,0 +1,5 @@
+{
+  "description": "Gather system facts using bash",
+  "input_method": "environment",
+  "parameters": {}
+}
