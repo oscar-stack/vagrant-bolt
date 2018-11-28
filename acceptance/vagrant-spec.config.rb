@@ -9,7 +9,7 @@ require 'vagrant-spec/acceptance'
 ENV['VAGRANT_DISABLE_PLUGIN_INIT'] = '1'
 
 Vagrant::Spec::Acceptance.configure do |c|
-  acceptance_dir = Pathname.new File.expand_path('acceptance', __dir__)
+  acceptance_dir = Pathname.new File.expand_path(__dir__)
 
   c.component_paths = [(acceptance_dir + 'components').to_s]
   c.skeleton_paths = [(acceptance_dir + 'skeletons').to_s]

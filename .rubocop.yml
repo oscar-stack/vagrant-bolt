@@ -6,6 +6,7 @@ AllCops:
     - "lib/**/*.rb"
     - "**/Vagrantfile"
     - "spec/**/*.rb"
+    - "acceptance/**/*.rb"
     - "**/Rakefile"
     - "**/*.task"
   Exclude:
@@ -118,3 +119,4 @@ Metrics/BlockLength:
   Exclude:
     - "**/Vagrantfile"
     - "spec/**/*.rb"
+    - "acceptance/**/*.rb"
