@@ -23,7 +23,7 @@ describe VagrantBolt::Provisioner do
   before(:each) do
     allow(machine).to receive(:env).and_return(:iso_env)
     allow(config).to receive(:name).and_return('foo')
-    allow(config).to receive(:type).and_return('task')
+    allow(config).to receive(:command).and_return('task')
   end
 
   context 'provision' do

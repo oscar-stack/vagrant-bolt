@@ -22,7 +22,7 @@ describe VagrantBolt::Config::Global do
   context "defaults" do
     expected_values = {
       modulepath: "modules",
-      bolt_command: "bolt",
+      bolt_exe: "bolt",
       boltdir: ".",
     }
     expected_values.each do |val, expected|

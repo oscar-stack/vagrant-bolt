@@ -9,7 +9,7 @@ class VagrantBolt::Provisioner < Vagrant.plugin('2', :provisioner)
 
   def provision
     runner = VagrantBolt::Runner.new(@machine.env, @machine, @config)
-    runner.run(@config.type, @config.name)
+    runner.run(@config.command, @config.name)
   end
 
   def cleanup

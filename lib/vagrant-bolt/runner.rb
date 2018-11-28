@@ -13,11 +13,11 @@ class VagrantBolt::Runner
   end
 
   # Run a bolt task or plan
-  # @param [Symbol, String] type The type of bolt to run; task or plan
+  # @param [Symbol, String] command The command of bolt to run; task or plan
   # @param [String] name The name of the bolt task or plan to run
   # @param [Hash] args A optional hash of bolt config overrides; {run_as: "vagrant"}. No merging will be done with the overrides
-  def run(type, name, **args)
-    @boltconfig = setup_overrides(type, name, **args)
+  def run(command, name, **args)
+    @boltconfig = setup_overrides(command, name, **args)
     # Don't run anything if there are nodes to run it on
     # TODO: Gate this in a more efficient manner. It is possible to run plans without a node list.
     return if @boltconfig.node_list.nil?
@@ -31,13 +31,13 @@ class VagrantBolt::Runner
   private
 
   # Set up config overrides
-  # @param [Symbol, String] type The type of bolt to run; task or plan
+  # @param [Symbol, String] command The command of bolt to run; task or plan
   # @param [String] name The name of the bolt task or plan to run
   # @param [Hash] args A optional hash of bolt config overrides; {run_as: "vagrant"}
   # @return [Object] Bolt config with ssh info populated
-  def setup_overrides(type, name, **args)
+  def setup_overrides(command, name, **args)
     config = @boltconfig.dup
-    config.type = type
+    config.command = command
     config.name = name
     # Merge the root config to get the defaults for the environment
     config = VagrantBolt::Util::Config.merge_config(config, @env.vagrantfile.config.bolt)
@@ -80,7 +80,7 @@ class VagrantBolt::Runner
   # Validate a bolt config object for logical errors
   def validate_config
     errors = []
-    errors << I18n.t('vagrant-bolt.config.bolt.errors.type_not_specified') if @boltconfig.type.nil?
+    errors << I18n.t('vagrant-bolt.config.bolt.errors.command_not_specified') if @boltconfig.command.nil?
     errors << I18n.t('vagrant-bolt.config.bolt.errors.no_task_or_plan') if @boltconfig.name.nil?
     { "Bolt" => errors }
   end

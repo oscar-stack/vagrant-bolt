@@ -1,0 +1,19 @@
+require 'vagrant-spec/which'
+Vagrant.configure('2') do |config|
+  config.bolt.bolt_exe = Vagrant::Spec::Which.which('bolt')
+  config.vm.box = 'box'
+  config.vm.define 'server' do |node|
+    node.vm.provision :bolt do |bolt|
+      bolt.command = :task
+      bolt.name    = "facts"
+    end
+    node.vm.provision :bolt do |bolt|
+      bolt.command = :plan
+      bolt.name    = "facts"
+    end
+    node.vm.provision :bolt do |bolt|
+      bolt.command = :command
+      bolt.name    = "hostname"
+    end
+  end
+end

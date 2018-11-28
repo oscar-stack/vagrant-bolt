@@ -5,13 +5,15 @@ en:
       bolt:
         errors:
           no_task_or_plan: |-
-            No name set. A task or a plan must be specified to use the bolt provisioner
-          type_not_specified: |-
-            No type set. Please specify either task or plan
-          invalid_type: |-
-            Type can only be task or plan, not %{type}
-          invalid_data_type: |-
-            Invalid data type for %{item} must be %{type}
+            No name set. A task, plan, or command name must be specified to use the bolt provisioner
+          command_not_specified: |-
+            No command set. Please specify either "task", "plan", or "command"
+          invalid_command: |-
+            Type can only be "task", "plan", or "command", not %{command}
+          invalid_data_command: |-
+            Invalid data command for %{item} must be %{command}
+          noop_compatibility: |-
+            Noop is not compatible with %{command}. Please use a task.
     provisioner:
       bolt:
         info:

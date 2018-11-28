@@ -16,12 +16,12 @@ class VagrantBolt::ConfigBuilder::Triggers < VagrantBolt::ConfigBuilder::Config
     options = @attrs.dup
     trigger_type = options.delete(:trigger_type)
     trigger_commands = options.delete(:trigger_commands)
-    bolt_type = options.delete(:bolt_type)
+    command = options.delete(:command)
     name = options.delete(:name)
     proc do |config|
       config.trigger.send(trigger_type, trigger_commands) do |trigger|
         trigger.ruby do |env, machine|
-          VagrantBolt.send(bolt_type, name, env, machine, **options)
+          VagrantBolt.send(command, name, env, machine, **options)
         end
       end
     end

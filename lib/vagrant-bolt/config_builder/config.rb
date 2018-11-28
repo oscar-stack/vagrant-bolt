@@ -8,9 +8,9 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
   #   @return [String] Additional arguments for the bolt command
   def_model_attribute :args
 
-  # @!attribute [rw] bolt_command
+  # @!attribute [rw] bolt_exe
   #   @return [String] The full path to the bolt command. If not passed in, the default from PATH will be used.
-  def_model_attribute :bolt_command
+  def_model_attribute :bolt_exe
 
   # @!attribute [rw] boltdir
   #   @return [String] The bolt working directory. Defaults to `.`
@@ -50,13 +50,17 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
   #   @return [String] The bolt node list. This defaults to the currnet node.
   def_model_attribute :node_list
 
+  # @!attribute [rw] noop
+  #   @return [Boolean] If the command should be run with noop. Only valid with tasks and apply.
+  def_model_attribute :noop
+
   # @!attribute [rw] params
   #   @return [Hash] The paramater hash for the task or plan
   def_model_attribute :params
 
-  # @!attribute [rw] bolt_type
+  # @!attribute [rw] command
   #   @return [Symbol] Whether bolt should use a task or plan
-  def_model_attribute :bolt_type
+  def_model_attribute :command
 
   # @!attribute [rw] user
   #   @return [String] The user to authenticate on the machine.
@@ -115,14 +119,15 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
     proc do |config|
       bolt = config.bolt
       with_attr(:args)           { |val| bolt.args           = val }
-      with_attr(:bolt_command)   { |val| bolt.bolt_command   = val }
-      with_attr(:bolt_type)      { |val| bolt.type           = val }
+      with_attr(:bolt_exe)       { |val| bolt.bolt_exe       = val }
+      with_attr(:command)        { |val| bolt.command        = val }
       with_attr(:boltdir)        { |val| bolt.boltdir        = val }
       with_attr(:debug)          { |val| bolt.debug          = val }
       with_attr(:host_key_check) { |val| bolt.host_key_check = val }
       with_attr(:modulepath)     { |val| bolt.modulepath     = val }
       with_attr(:name)           { |val| bolt.name           = val }
       with_attr(:nodes)          { |val| bolt.nodes          = val }
+      with_attr(:noop)           { |val| bolt.noop           = val }
       with_attr(:excludes)       { |val| bolt.excludes       = val }
       with_attr(:node_list)      { |val| bolt.node_list      = val }
       with_attr(:params)         { |val| bolt.params         = val }

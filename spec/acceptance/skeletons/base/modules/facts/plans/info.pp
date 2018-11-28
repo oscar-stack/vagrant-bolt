@@ -1,0 +1,16 @@
+# A plan that prints basic OS information for the specified nodes. It first
+# runs the facts task to retrieve facts from the nodes, then compiles the
+# desired OS information from the os fact value of each nodes.
+#
+# The $nodes parameter is a list of the nodes for which to print the OS
+# information. This plan primarily provides readable formatting, and ignores
+# nodes that error.
+plan facts::info(TargetSpec $nodes) {
+  return run_task('facts', $nodes, '_catch_errors' => true).reduce([]) |$info, $r| {
+    if ($r.ok) {
+      $info + "${r.target.name}: ${r[os][name]} ${r[os][release][full]} (${r[os][family]})"
+    } else {
+      $info # don't include any info for nodes which failed
+    }
+  }
+}

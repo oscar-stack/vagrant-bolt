@@ -12,8 +12,8 @@ module VagrantBolt::Util
     # @return [String] The bolt command
     def self.generate_bolt_command(config, inventory_path = nil)
       command = []
-      command << config.bolt_command
-      command << "#{config.type} run \'#{config.name}\'"
+      command << config.bolt_exe
+      command << "#{config.command} run \'#{config.name}\'"
 
       config.instance_variables_hash.each do |key, value|
         next if key.to_s.start_with?('__')
@@ -24,7 +24,7 @@ module VagrantBolt::Util
         case value
         when TrueClass, FalseClass
           # Verbose and debug do not have --no flags so exclude them
-          next if ['verbose', 'debug'].include?(key) && !value
+          next if ['verbose', 'debug', 'noop'].include?(key) && !value
 
           arg = value ? "--#{key}" : "--no-#{key}"
           command << arg

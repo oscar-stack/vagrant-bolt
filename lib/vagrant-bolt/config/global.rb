@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
-  # @!attribute [rw] bolt_command
+  # @!attribute [rw] bolt_exe
   #   @return [String] The full path to the bolt command. If not passed in, the default from PATH will be used.
-  attr_accessor :bolt_command
+  attr_accessor :bolt_exe
 
   # @!attribute [rw] boltdir
   #   @return [String] The bolt working directory. Defaults to `.`
@@ -74,7 +74,7 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
   attr_accessor :features
 
   def initialize
-    @bolt_command   = UNSET_VALUE
+    @bolt_exe       = UNSET_VALUE
     @boltdir        = UNSET_VALUE
     @host_key_check = UNSET_VALUE
     @modulepath     = UNSET_VALUE
@@ -95,7 +95,7 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
   end
 
   def finalize!
-    @bolt_command   = 'bolt' if @bolt_command == UNSET_VALUE
+    @bolt_exe       = 'bolt' if @bolt_exe == UNSET_VALUE
     @boltdir        = '.' if @boltdir == UNSET_VALUE
     @host_key_check = nil if @host_key_check == UNSET_VALUE
     @modulepath     = 'modules' if @modulepath == UNSET_VALUE

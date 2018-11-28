@@ -27,6 +27,17 @@ module VagrantBolt
     runner.run(:plan, plan, **args)
   end
 
+  # Run a bolt command
+  # @param [String] command The command to run
+  # @param [Object] env The environment
+  # @param [Object] machine The machine
+  # @param [Hash] args A optional hash of bolt config overrides. No merging will be done with these overrides.
+  # @example VagrantBolt.command('/bin/echo "test"', env, machine, run_as: "root")
+  def self.command(command, env, machine, **args)
+    runner = VagrantBolt::Runner.new(env, machine)
+    runner.run(:command, command, **args)
+  end
+
   def self.source_root
     @source_root ||= File.expand_path(__DIR__)
   end
