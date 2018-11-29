@@ -2,6 +2,7 @@
 
 require_relative 'util/bolt'
 require_relative 'util/machine'
+require_relative 'util/config'
 
 class VagrantBolt::Command < Vagrant.plugin('2', :command)
   def self.synopsis
@@ -45,18 +46,18 @@ class VagrantBolt::Command < Vagrant.plugin('2', :command)
   # @param [Array<String] An array containing the bolt arguments
   def execute_bolt_command(args)
     bolt_exe = @env.vagrantfile.config.bolt.bolt_exe
-    modulepath = @env.vagrantfile.config.bolt.modulepath
-    boltdir = @env.vagrantfile.config.bolt.boltdir
+    modulepath = VagrantBolt::Util::Config.full_path(@env.vagrantfile.config.bolt.modulepath, @env.root_path)
+    boltdir = VagrantBolt::Util::Config.full_path(@env.vagrantfile.config.bolt.boltdir, @env.root_path)
     inventoryfile = VagrantBolt::Util::Bolt.inventory_file(@env)
     command = [
       bolt_exe,
       args.flatten.compact,
-      "--modulepath",
-      modulepath,
-      "--boltdir",
-      boltdir,
-      "--inventoryfile",
-      inventoryfile,
+      '--modulepath',
+      "\'#{modulepath}\'",
+      '--boltdir',
+      "\'#{boltdir}\'",
+      '--inventoryfile',
+      "\'#{inventoryfile}\'",
     ].join(" ")
 
     VagrantBolt::Util::Machine.run_command(command, @env.ui)

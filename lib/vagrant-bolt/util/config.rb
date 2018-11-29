@@ -29,5 +29,15 @@ module VagrantBolt::Util
       result.finalize!
       result
     end
+
+    # Convert a path to the full path of the inventory
+    # @param [String] path The path to convert
+    # @param [Object] env The enviornment to get the root path from
+    # @return [String] The absolute path or nil if path is nil
+    def self.full_path(path, root_path)
+      return path if path.nil? || root_path.nil?
+
+      %r{^/.*}.match?(path) ? path : "#{root_path}/#{path}"
+    end
   end
 end
