@@ -1,7 +1,6 @@
 require 'vagrant-bolt'
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/xenial64"
-  config.ssh.insert_key = false
+  config.vm.box = "alpine/alpine64"
   config.bolt.run_as = 'root'
 
   # Using a global bolt trigger for a plan
@@ -33,9 +32,16 @@ Vagrant.configure("2") do |config|
     node.vm.provision :bolt do |bolt|
       bolt.command = :task
       bolt.name    = "service::linux"
-      bolt.params  = { name: "cron", action: "restart" }
+      bolt.params  = { name: "chronyd", action: "restart" }
       bolt.nodes   = 'ALL'
       bolt.run_as  = "root"
+    end
+    # Using a command before the machine is destroyed
+    node.trigger.before :destroy do |trigger|
+      trigger.name = "Bolt \"hostname\" after up"
+      trigger.ruby do |env, machine|
+        VagrantBolt.command("hostname", env, machine)
+      end
     end
   end
 end
