@@ -113,10 +113,11 @@ module VagrantBolt::Util
 
     # Update and write the inventory file for the current running machines
     # @param [Object] env The envionment object
+    # @param [String] inventory_file The path where the inventory_file should be written.
     # @return path to the inventory file
-    def self.update_inventory_file(env)
+    def self.update_inventory_file(env, inventory_file = nil)
       inventory = generate_inventory_hash(env).to_yaml
-      inventory_file = Pathname.new(inventory_file(env))
+      inventory_file ||= Pathname.new(inventory_file(env))
       # TODO: This lock should be global
       lock = Mutex.new
       lock.synchronize do

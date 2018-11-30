@@ -121,7 +121,13 @@ Vagrant.configure("2") do |config|
       trigger.name = "Bolt \"facts\" after up"
       trigger.ruby do |env, machine|
         # Specify additional **options for the task
-        VagrantBolt.task("facts", env, machine, host_key_check: false, verbose: false)
+        VagrantBolt.task(
+          "facts",
+          env,
+          machine,
+          host_key_check: false,
+          verbose: false,
+        )
       end
     end
   end
@@ -178,13 +184,14 @@ VagrantBolt.command('/bin/hostname', env, machine, nodes: 'all')
 Run the `service::linux` task as `root` to restart `cron` with a specific path to the bolt executable. This configuration specifies params for the `service::linux` task.
 
 ~~~ruby
-VagrantBolt.task('service::linux',
-                 env,
-                 machine,
-                 run_as: 'root',
-                 bolt_exe: '/usr/local/bin/bolt',
-                 params: { name: "cron", action: "restart" },
-                 )
+VagrantBolt.task(
+  'service::linux',
+  env,
+  machine,
+  run_as: 'root',
+  bolt_exe: '/usr/local/bin/bolt',
+  params: { name: "cron", action: "restart" },
+)
 ~~~
 
 Plugin Settings
@@ -363,6 +370,29 @@ All arguments except for the `-u` will be passed to bolt, so a bolt command like
 
 ~~~
 vagrant bolt command run 'date' -n agent,master
+~~~
+
+Other Use Cases
+---------------
+
+There are some other use cases for Vagrant Bolt. One of which is to not use the triggers or provisioning to run bolt commands on the nodes, but to manage the inventory file for manual testing. This can easily be accomplished by using a trigger to manage the `inventory.yaml` file and specifying the configuration for the nodes in the config based on the options above. Below is an example trigger that will manage a `./inventory.yaml` file for use with external bolt commands. 
+
+~~~ruby
+require 'vagrant-bolt'
+Vagrant.configure("2") do |config|
+  config.vm.box = "alpine/alpine64"
+
+  config.trigger.after :up, :provision, :halt, :destroy do |trigger|
+    trigger.name = "Manage a seperate inventory file"
+    trigger.ruby do |env, machine|
+      VagrantBolt::Util::Bolt.update_inventory_file(
+        env,
+        File.expand_path('inventory.yaml', File.dirname(__FILE__)),
+      )
+    end
+  end
+config.vm.define 'server'
+end
 ~~~
 
 Installation
