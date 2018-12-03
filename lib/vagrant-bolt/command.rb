@@ -49,6 +49,7 @@ class VagrantBolt::Command < Vagrant.plugin('2', :command)
     modulepath = VagrantBolt::Util::Config.full_path(@env.vagrantfile.config.bolt.modulepath, @env.root_path)
     boltdir = VagrantBolt::Util::Config.full_path(@env.vagrantfile.config.bolt.boltdir, @env.root_path)
     inventoryfile = VagrantBolt::Util::Bolt.inventory_file(@env)
+
     quoted_args = args.flatten.compact.map { |a| "'#{a}'" }
     command = [
       bolt_exe,
@@ -57,10 +58,8 @@ class VagrantBolt::Command < Vagrant.plugin('2', :command)
       "\'#{modulepath}\'",
       '--boltdir',
       "\'#{boltdir}\'",
-      '--inventoryfile',
-      "\'#{inventoryfile}\'",
-    ].join(" ")
-
-    VagrantBolt::Util::Machine.run_command(command, @env.ui)
+    ]
+    command << ['--inventoryfile', "\'#{inventoryfile}\'"] if File.exist?(inventoryfile)
+    VagrantBolt::Util::Machine.run_command(command.flatten.join(" "), @env.ui)
   end
 end
