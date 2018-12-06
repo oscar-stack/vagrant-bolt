@@ -3,7 +3,6 @@ vagrant-bolt
 
 Manage [vagrant](https://www.vagrantup.com) machines with [Puppet Bolt](https://puppet.com/docs/bolt).
 
-
 Synopsis
 --------
 
@@ -15,6 +14,7 @@ Usage
 The vagrant-bolt plugin can be used either as a provisioner or in a ruby block trigger. Both methods can use the bolt config object to inherit configuration options. The provisioner and trigger can provision bolt tasks and plans using the locally installed bolt command and modules.
 
 ### Ruby Triggers
+
 Ruby triggers, implemented in Vagrant 2.2.0, allow for specifying a block of ruby code as the trigger. See the [trigger documentation](https://www.vagrantup.com/docs/triggers/) for more information around triggers. Below is an example Vagrantfile to add a bolt ruby trigger at the root.
 
 ~~~ruby
@@ -36,6 +36,7 @@ end
 Tasks, plans, and commands can be configured using the appropiate methods. `VagrantBolt.task` for tasks, `VagrantBolt.plan` for plans, and `VagrantBolt.command` for commands.
 
 ### Provisioner
+
 vagrant-bolt also provides a traditional provisioner which can be added to a machine. Below is an example Vagrantfile which runs a bolt task on a machine.
 
 ~~~ruby
@@ -56,9 +57,11 @@ end
 
 Configuration Options
 ---------------------
+
 Configuring the vagrant-bolt plugin can be done through the provisioner config and in the trigger method. Each way has different capabilities, so they may fit different use cases.
 
 ### Config Objects
+
 The plugin provides a `bolt` config object at the `root`, `vm`, and `provisioner` levels. Each level inherits from the parent and are all merged into the final configuration. An example Vagrantfile has all three levels included.
 
 ~~~ruby
@@ -105,6 +108,7 @@ end
 ~~~
 
 ### Trigger options
+
 In addition to the config objects, the trigger method takes options for additional configuration. Unlike the config objects, the options specified in the method strictly override the config objects and are not merged. Below is an example of using the config objects with method overrides.
 
 ~~~ruby
@@ -137,6 +141,7 @@ end
 The configuration above would result in the `facts` task being run on the VM with `run_as = root`, `host_key_check = false`, and `verbose = false`. The `verbose` defined in the method will override the root level `verbose` option.
 
 #### Trigger Methods
+
 The methods for a bolt command in a trigger allow for a task, plan, or command. All methods take the same arguments.
 
 * **VagrantBolt.task**
@@ -196,9 +201,11 @@ VagrantBolt.task(
 
 Plugin Settings
 ---------------
+
 The settings available in the triggers and the provisioner are the same.
 
 **Required Settings**
+
 * `command`
   * Description: A string containing plan or task to determine which will be used
   * Valid Values: `task`, `plan`, and `command`
@@ -206,6 +213,7 @@ The settings available in the triggers and the provisioner are the same.
   * Description: A string containing name of the task, plan, or command to run
 
 **Optional Settings**
+
 * `bolt_exe`
   * Description: A string containing the full path to the bolt executable
   * Default: `bolt`
@@ -272,18 +280,21 @@ The settings available in the triggers and the provisioner are the same.
 
 Config Builder
 --------------
-This module also supports the [oscar/config_builder](https://github.com/oscar-stack/vagrant-config_builder) plugin for configuration. If [oscar/config_builder](https://github.com/oscar-stack/vagrant-config_builder) is installed, bolt can be configured similar to the [Configuration Options section](#configuration-options) with a few small differences. 
+
+This module also supports the [oscar/config_builder](https://github.com/oscar-stack/vagrant-config_builder) plugin for configuration. If [oscar/config_builder](https://github.com/oscar-stack/vagrant-config_builder) is installed, bolt can be configured similar to the [Configuration Options section](#configuration-options) with a few small differences.
 
 ### Configuration
+
 The configuration can be specified at the root, VM, and Provisioner levels.
 
 An example of this configuration is below.
 
 ~~~ruby
 ---
-# Root level config
-bolt:
-  run_as: root
+# VM Default level config
+vm_defaults:
+  bolt:
+    run_as: root
 vms:
  - name: server
     # VM level config
@@ -299,6 +310,7 @@ vms:
 ~~~
 
 ### Trigger Configuration
+
 Bolt triggers cab be configured at the root or within a VM object. To configure a bolt trigger a few additional params are required. 
 
 * `trigger_type`
@@ -316,35 +328,37 @@ vms:
  - name: server
     bolt_triggers:
       - trigger_type: :after
-        trigger_commands: 
+        trigger_commands:
           - :provision
           - :up
         command: task
         name: facts
 ~~~
 
-Below is an example of using a root trigger, which will apply to all machines.
+Below is an example of using a VM default trigger, which will apply to all machines.
 
 ~~~ruby
 ---
-bolt_triggers:
-  - trigger_type: :after
-    trigger_commands: 
-      - :provision
-      - :up
-    command: task
-    name: facts
+vm_defaults:
+  bolt_triggers:
+    - trigger_type: :after
+      trigger_commands:
+        - :provision
+        - :up
+      command: task
+      name: facts
 vms:
   - name: server
 ~~~
 
 Commands
 --------
-Vagrant bolt comes with a single command that helps to run ad-hoc bolt commands. The `vagrant bolt` command is available to run bolt commands locally using the inventory file for the vagrant machines. 
 
-The format of the command is below. 
+Vagrant bolt comes with a single command that helps to run ad-hoc bolt commands. The `vagrant bolt` command is available to run bolt commands locally using the inventory file for the vagrant machines.
 
-~~~
+The format of the command is below.
+
+~~~shell
 Usage: vagrant bolt <options> [bolt options]
 
 Options:
@@ -354,13 +368,13 @@ Options:
 
 The command can be used to deploy the Puppetfile, for example. 
 
-~~~
+~~~shell
 vagrant bolt puppetfile install
 ~~~
 
 It can be used to run ad-hoc tasks on a node by specifying the node by its machine name.
 
-~~~
+~~~shell
 vagrant bolt -u task run facts -n server
 ~~~
 
@@ -368,7 +382,7 @@ The `--updateinventory` flag will regenerate the inventory file from the active 
 
 All arguments except for the `-u` will be passed to bolt, so a bolt command like the exaple below can be run. 
 
-~~~
+~~~shell
 vagrant bolt command run 'date' -n agent,master
 ~~~
 
@@ -398,9 +412,9 @@ end
 Installation
 ------------
 
-
 Requirements
 ------------
+
 * Vagrant 2.2.0+ is required for this plugin. 
 * Bolt 1.x+ needs to be installed on the platform machine.
 * Ruby 2.3+

@@ -1,38 +1,10 @@
 # frozen_string_literal: true
 
-module VagrantBolt::ConfigBuilder::MonkeyPatches
-end
-
-class ConfigBuilder::Model::Root
-  def_model_delegator :bolt
-  def_model_delegator :bolt_triggers
-
-  def eval_bolt(config)
-    with_attr(:bolt) do |bolt_config|
-      f = VagrantBolt::ConfigBuilder::Config.new_from_hash(bolt_config)
-      f.call(config)
-    end
-  end
-
-  def eval_bolt_triggers(config)
-    triggers = attr(:bolt_triggers) || [] # rubocop:disable Style/Attr
-    triggers.each do |trigger_config|
-      f = VagrantBolt::ConfigBuilder::Triggers.new_from_hash(trigger_config)
-      f.call(config)
-    end
-  end
-end
-
 # VM level requires overriding to_proc to allow access to the node config object
-class ConfigBuilder::Model::VM
-  def_model_delegator :bolt
-  def_model_delegator :bolt_triggers
-
+module VagrantBolt::ConfigBuilder::MonkeyPatches
   def to_proc
     proc do |config|
-      vm_config = config.vm
-      configure!(vm_config)
-      eval_models(vm_config)
+      super.call(config)
       eval_bolt_root(config)
       eval_bolt_triggers_root(config)
     end
@@ -63,3 +35,35 @@ class ConfigBuilder::Model::VM
     end
   end
 end
+
+class ConfigBuilder::Model::VM
+  def_model_delegator :bolt
+  def_model_delegator :bolt_triggers
+end
+
+ConfigBuilder::Model::VM.prepend(VagrantBolt::ConfigBuilder::MonkeyPatches)
+
+# Allow for the role filter to handle bolt configs and bolt_triggers
+module VagrantBolt::ConfigBuilder::MonkeyPatches::FilterRoles
+  def merge_nodes!(left, right)
+    super.tap do |result|
+      array_keys = ['bolt_triggers']
+      array_keys.each do |key|
+        next unless right.key?(key)
+
+        result[key] ||= []
+        result[key].unshift(*right[key])
+      end
+
+      hash_keys = ['bolt']
+      hash_keys.each do |key|
+        next unless right.key?(key)
+
+        result[key] ||= {}
+        result[key] = right[key].merge(result[key])
+      end
+    end
+  end
+end
+
+ConfigBuilder::Filter::Roles.prepend(VagrantBolt::ConfigBuilder::MonkeyPatches::FilterRoles)
