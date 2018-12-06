@@ -52,15 +52,15 @@ shared_examples 'provider/virtualbox' do |provider, options|
       expect(@result.exit_code).to eq(0)
       result = assert_execute('vagrant', 'bolt', 'task', 'run', 'facts', '-n', 'server')
       expect(result.exit_code).to eq(0)
-      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt task run facts})
+      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: '\/[^\ ]+bolt' 'task' 'run' 'facts'})
       expect(result.stdout.scan(%r{Successful on 1 node}).size).to eq(1)
       result = assert_execute('vagrant', 'bolt', 'plan', 'run', 'facts', '-n', 'server')
       expect(result.exit_code).to eq(0)
-      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt plan run facts})
+      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: '\/[^\ ]+bolt' 'plan' 'run' 'facts'})
       expect(result.stdout.scan(%r{Successful on 1 node}).size).to eq(1)
       result = assert_execute('vagrant', 'bolt', 'command', 'run', 'hostname', '-n', 'server')
       expect(result.exit_code).to eq(0)
-      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run})
+      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: '\/[^\ ]+bolt' 'command' 'run'})
       expect(result.stdout.scan(%r{Successful on 1 node}).size).to eq(1)
     end
   end

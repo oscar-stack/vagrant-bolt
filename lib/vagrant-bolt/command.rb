@@ -52,7 +52,7 @@ class VagrantBolt::Command < Vagrant.plugin('2', :command)
 
     quoted_args = args.flatten.compact.map { |a| "'#{a}'" }
     command = [
-      bolt_exe,
+      "\'#{bolt_exe}\'",
       quoted_args,
       '--modulepath',
       "\'#{modulepath}\'",
