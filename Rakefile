@@ -16,4 +16,4 @@ Dir["#{task_dir}/**/*.rake"].each do |task_file|
   load task_file
 end
 
-task default: :spec
+task default: [:rubocop, :spec]
