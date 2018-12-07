@@ -55,9 +55,7 @@ module VagrantBolt::Util
     def self.running?(machine)
       # Taken from https://github.com/oscar-stack/vagrant-hosts/blob/master/lib/vagrant-hosts/provisioner/hosts.rb
       machine.communicate.ready?
-    rescue Vagrant::Errors::VagrantError
-      # WinRM will raise an error if the VM isn't running instead of
-      # returning false (hashicorp/vagrant#6356).
+    rescue
       false
     end
 
