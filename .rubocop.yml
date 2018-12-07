@@ -120,3 +120,5 @@ Metrics/BlockLength:
     - "**/Vagrantfile"
     - "spec/**/*.rb"
     - "acceptance/**/*.rb"
+Style/RescueStandardError:
+  EnforcedStyle: implicit
