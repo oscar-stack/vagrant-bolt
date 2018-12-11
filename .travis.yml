@@ -9,12 +9,20 @@ before_install:
   - gem update --system
   - gem --version
   - bundle -v
+notifications:
+  email: false
 script:
-  - 'bundle exec rake $CHECK'
+  - 'bundle exec rake rubocop spec'
 bundler_args: --without system_tests
+env:
+  global:
+    - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
 rvm:
   - 2.5.0
 matrix:
   fast_finish: true
   include:
-    - env: CHECK="rubocop spec"
+    - rvm: 2.4.4
+      env: TEST_VAGRANT_VERSION=v2.2.2
+    - rvm: 2.5.0
+      env: TEST_VAGRANT_VERSION=HEAD
