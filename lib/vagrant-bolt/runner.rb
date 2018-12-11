@@ -15,7 +15,8 @@ class VagrantBolt::Runner
   # Run a bolt task or plan
   # @param [Symbol, String] command The command of bolt to run; task or plan
   # @param [String] name The name of the bolt task or plan to run
-  # @param [Hash] args A optional hash of bolt config overrides; {run_as: "vagrant"}. No merging will be done with the overrides
+  # @param [Hash] args A optional hash of bolt config overrides. No merging will be done with the overrides
+  # @example run('task', 'facts', {node_list: "machinename"})
   def run(command, name, **args)
     @boltconfig = setup_overrides(command, name, **args)
     # Don't run anything if there are nodes to run it on

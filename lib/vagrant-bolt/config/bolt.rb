@@ -2,41 +2,41 @@
 
 class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
   # @!attribute [rw] args
-  #   @return [String] Additional arguments for the bolt command
+  # @return [String] Additional arguments for the bolt command
   attr_accessor :args
 
   # @!attribute [rw] name
-  #   @return [String] The name of task or plan to run
+  # @return [String] The name of task or plan to run
   attr_accessor :name
 
   # @!attribute [rw] nodes
   # Note: The `node_list` will override this setting.
-  #   @return [Array<String, Symbol>, "ALL"] The nodes to run the task or plan on.
-  #        Valid values are an array of machine names or the string "ALL".
+  # @return [Array<String, Symbol>, "ALL"] The nodes to run the task or plan on.
+  # Valid values are an array of machine names or the string "ALL".
   attr_accessor :nodes
 
   # @!attribute [rw] excludes
   # Note: The `node_list` will override this setting.
-  # Note: This will be merged with `nodes`, with `excludes` taking precidence
-  #   @return [Array<String, Symbol>] The nodes to exclude from running this task or plan on.
-  #        Valid values are an array of machine names.
+  # Note: This will be merged with `nodes`, with `excludes` taking precidence.
+  # @return [Array<String, Symbol>] The nodes to exclude from running this task or plan on.
+  # Valid values are an array of machine names.
   attr_accessor :excludes
 
   # @!attribute [rw] node_list
-  # This setting overrides `nodes` and needs to be in the `protocol://ipaddress:port` URI format
-  #   @return [String] The bolt node list. This defaults to the currnet node.
+  # This setting overrides `nodes` and needs to be in the `protocol://ipaddress:port` URI format.
+  # @return [String] The bolt node list. This defaults to the currnet node.
   attr_accessor :node_list
 
   # @!attribute [rw] params
-  #   @return [Hash] The paramater hash for the task or plan
+  # @return [Hash] The paramater hash for the task or plan
   attr_accessor :params
 
   # @!attribute [rw] command
-  #   @return [Symbol] Which command bolt should use. task, plan, command
+  # @return [Symbol] Which command bolt should use. task, plan, command
   attr_accessor :command
 
   # @!attribute [rw] noop
-  #   @return [Boolean] If the command should be run with noop. Only valid with tasks and apply.
+  # @return [Boolean] If the command should be run with noop. Only valid with tasks and apply.
   attr_accessor :noop
 
   def initialize

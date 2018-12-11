@@ -32,6 +32,7 @@ class VagrantBolt::Plugin < Vagrant.plugin('2')
     VagrantBolt::Command
   end
 
+  # Enables config builder loading of this plugin
   def self.config_builder_hook
     require_relative 'config_builder'
   end

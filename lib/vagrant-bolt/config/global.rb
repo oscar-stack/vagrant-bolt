@@ -2,75 +2,75 @@
 
 class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
   # @!attribute [rw] bolt_exe
-  #   @return [String] The full path to the bolt command. If not passed in, the default from PATH will be used.
+  # @return [String] The full path to the bolt command. If not passed in, the default from PATH will be used.
   attr_accessor :bolt_exe
 
   # @!attribute [rw] boltdir
-  #   @return [String] The bolt working directory. Defaults to `.`
+  # @return [String] The bolt working directory. Defaults to `.`
   attr_accessor :boltdir
 
   # @!attribute [rw] host_key_check
-  #   @return [Boolean] If the connection should check the host key on the remote host (linux)
+  # @return [Boolean] If the connection should check the host key on the remote host (linux)
   attr_accessor :host_key_check
 
   # @!attribute [rw] modulepath
-  #   @return [String] The path to the modules. Defaults to `modules`.
+  # @return [String] The path to the modules. Defaults to `modules`.
   attr_accessor :modulepath
 
   # @!attribute [rw] user
-  #   @return [String] The user to authenticate on the machine.
+  # @return [String] The user to authenticate on the machine.
   attr_accessor :user
 
   # @!attribute [rw] password
-  #   @return [String] The password to authenticate on the machine.
+  # @return [String] The password to authenticate on the machine.
   attr_accessor :password
 
   # @!attribute [rw] port
-  #   @return [String] The port to connect to the machine.
+  # @return [String] The port to connect to the machine.
   attr_accessor :port
 
   # @!attribute [rw] private_key
-  #   @return [String] The path of the private_key to authenticate on the machine.
+  # @return [String] The path of the private_key to authenticate on the machine.
   attr_accessor :private_key
 
   # @!attribute [rw] run_as
-  #   @return [String] User to run as using privilege escalation.
+  # @return [String] User to run as using privilege escalation.
   attr_accessor :run_as
 
   # @!attribute [rw] sudo_password
-  #   @return [String] The password to authenticate sudo on the machine.
+  # @return [String] The password to authenticate sudo on the machine.
   attr_accessor :sudo_password
 
   # @!attribute [rw] ssl
-  #   @return [Boolean] If the connection should use SSL on with WinRM (Windows)
+  # @return [Boolean] If the connection should use SSL on with WinRM (Windows)
   attr_accessor :ssl
 
   # @!attribute [rw] ssl_verify
-  #   @return [Boolean] If the connection should verify SSL on with WinRM (Windows)
+  # @return [Boolean] If the connection should verify SSL on with WinRM (Windows)
   attr_accessor :ssl_verify
 
   # @!attribute [rw] tmpdir
-  #   @return [String] The directory to upload and execute temporary files on the target
+  # @return [String] The directory to upload and execute temporary files on the target
   attr_accessor :tmpdir
 
   # @!attribute [rw] verbose
-  #   @return [Boolean] Shows verbose logging
+  # @return [Boolean] Shows verbose logging
   attr_accessor :verbose
 
   # @!attribute [rw] debug
-  #   @return [Boolean] Shows debug logging
+  # @return [Boolean] Shows debug logging
   attr_accessor :debug
 
   # @!attribute [rw] facts
-  #   @return [Hash] A hash of facts for the machine
+  # @return [Hash] A hash of facts for the machine
   attr_accessor :facts
 
   # @!attribute [rw] vars
-  #   @return [Hash] A hash of vars for the machine
+  # @return [Hash] A hash of vars for the machine
   attr_accessor :vars
 
   # @!attribute [rw] features
-  #   @return [Array<String>] An array containing the features for this machine
+  # @return [Array<String>] An array containing the features for this machine
   attr_accessor :features
 
   def initialize

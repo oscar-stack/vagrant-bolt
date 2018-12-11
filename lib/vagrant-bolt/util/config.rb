@@ -8,9 +8,9 @@ module VagrantBolt::Util
     # Since the configs have been finalized they will have `nil` values
     # Arrays will be merged and override parent non arrays
     # instead of UNSET_VALUE
-    # @param [Object] local The local config object
-    # @param [Object] other The other config object
-    # @return [Object] a merged result with local overriding other
+    # @param local [Object] The local config object
+    # @param other [Object] The other config object
+    # @return [Object] A merged result with local overriding other
     def self.merge_config(local, other)
       result = local.class.new
       [other, local].each do |obj|
@@ -30,9 +30,9 @@ module VagrantBolt::Util
       result
     end
 
-    # Convert a path to the full path of the inventory
-    # @param [String] path The path to convert
-    # @param [Object] env The enviornment to get the root path from
+    # Convert a path to the absolute path of the inventory if it is relative
+    # @param path [String] The path to convert
+    # @param root_path [Object] The root path to append
     # @return [String] The absolute path or nil if path is nil
     def self.full_path(path, root_path)
       return path if path.nil? || root_path.nil?

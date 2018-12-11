@@ -7,8 +7,8 @@ module VagrantBolt::Util
     # Bolt Centric Utility Functions
 
     # Create a bolt command from the config
-    # @param [Object] config The config objects
-    # @param [String] inventory_path The path of the inventory file
+    # @param config [Object] The config objects
+    # @param inventory_path [String] The path of the inventory file
     # @return [String] The bolt command
     def self.generate_bolt_command(config, inventory_path = nil)
       command = []
@@ -42,7 +42,7 @@ module VagrantBolt::Util
     end
 
     # Generate a bolt inventory hash for the environment
-    # @param [Object] env The env object
+    # @param env [Object] The env object
     # @return [Hash] The hash of config options for the inventory.yaml
     def self.generate_inventory_hash(env)
       inventory = { 'nodes' => [] }
@@ -56,7 +56,7 @@ module VagrantBolt::Util
     end
 
     # Generate a bolt inventory node hash from the VM config
-    # @param [Object] machine The machine object
+    # @param machine [Object] The machine object
     # @return [Hash] The hash of config options for the VM
     def self.generate_node_hash(machine)
       # Only call ssh_info once
@@ -80,9 +80,9 @@ module VagrantBolt::Util
     end
 
     # Return a transport config hash for a node
-    # @param [Object] machine The machine
-    # @param [Hash] machine_config A hash of the machine config options
-    # @param [Hash] ssh_info The ssh hash for the machine
+    # @param machine [Object] The machine
+    # @param machine_config [Hash] A hash of the machine config options
+    # @param ssh_info [Hash] The ssh hash for the machine
     def self.machine_transport_hash(machine, machine_config = {}, ssh_info = nil)
       config = {}
       if VagrantBolt::Util::Machine.windows?(machine)
@@ -105,15 +105,15 @@ module VagrantBolt::Util
     end
 
     # Return the path to the inventory file
-    # @param [Object] The environment
+    # @param env [Object] The environment
     # @return [String] The path to the inventory file
     def self.inventory_file(env)
       File.join(env.local_data_path, 'bolt_inventory.yaml')
     end
 
     # Update and write the inventory file for the current running machines
-    # @param [Object] env The envionment object
-    # @param [String] inventory_file The path where the inventory_file should be written.
+    # @param env [Object] The envionment object
+    # @param inventory_file [String] The path where the inventory_file should be written.
     # @return path to the inventory file
     def self.update_inventory_file(env, inventory_file = nil)
       inventory = generate_inventory_hash(env).to_yaml

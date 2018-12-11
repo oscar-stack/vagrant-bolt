@@ -5,8 +5,8 @@ module VagrantBolt::Util
     # Machine based Utility Functions
 
     # Run a command locally with an execute
-    # @param [String] The command to run
-    # @param [Object] the UI object to write to
+    # @param command [String] The command to run
+    # @param localui [Object] The UI object to write to
     def self.run_command(command, localui)
       localui.info(
         I18n.t('vagrant-bolt.provisioner.bolt.info.running_bolt',
@@ -30,7 +30,7 @@ module VagrantBolt::Util
     end
 
     # Generate a list of active machines in the environment
-    # @param [Object] env The Environment
+    # @param env [Object] The Environment
     # @return [Array<Object>]
     def self.nodes_in_environment(env)
       env.active_machines.map { |vm|
@@ -43,14 +43,14 @@ module VagrantBolt::Util
     end
 
     # Return if the guest is windows. This only works for online machines
-    # @param [Object] machine The machine
+    # @param machine [Object] The machine
     # @return [Boolean]
     def self.windows?(machine)
       machine.config.vm.communicator == :winrm
     end
 
     # Return if the guest is running by checking the communicator
-    # @param [Object] machine The machine
+    # @param machine [Object] The machine
     # @return [Boolean]
     def self.running?(machine)
       # Taken from https://github.com/oscar-stack/vagrant-hosts/blob/master/lib/vagrant-hosts/provisioner/hosts.rb
@@ -60,8 +60,8 @@ module VagrantBolt::Util
     end
 
     # Get the running machine object by the machine name
-    # @param [Object] environment The enviornment to look in
-    # @param [String, Symbol] name The name of the machine in the environment
+    # @param env [Object] The enviornment to look in
+    # @param name [String, Symbol] The name of the machine in the environment
     # @return [Object, nil] The object or nil if it is not found
     def self.machine_by_name(env, name)
       vm = env.active_machines.find { |m| m[0] == name.to_sym }
