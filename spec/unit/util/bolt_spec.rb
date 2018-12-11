@@ -26,7 +26,7 @@ describe VagrantBolt::Util::Bolt do
     end
     let(:machine_hash) do
       {
-        "name" => "machine",
+        "alias" => "machine",
         "config" => {
           "ssh" => {
             "host-key-check" => false,
@@ -38,16 +38,16 @@ describe VagrantBolt::Util::Bolt do
           },
           "transport" => "ssh",
         },
-        "nodes" => ["ssh://machine:22"],
+        "name" => "ssh://machine:22",
         "facts" => { 'a' => 'b' },
         "vars" => { 'foo' => 'bar' },
         "features" => ['foo'],
       }
     end
     let(:config_hash) { { 'config' => { 'a' => 'b' } } }
-    let(:group_hash) do
+    let(:node_hash) do
       {
-        'groups' => [machine_hash],
+        'nodes' => [machine_hash],
         'config' => config_hash['config'],
       }
     end
@@ -73,11 +73,11 @@ describe VagrantBolt::Util::Bolt do
     end
 
     it 'creates a node group hash' do
-      expect(subject.generate_node_group(machine)).to eq(machine_hash)
+      expect(subject.generate_node_hash(machine)).to eq(machine_hash)
     end
 
     it 'creates an inventory hash with groups' do
-      expect(subject.generate_inventory_hash(env)).to eq(group_hash)
+      expect(subject.generate_inventory_hash(env)).to eq(node_hash)
     end
   end
 

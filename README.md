@@ -415,6 +415,11 @@ Installation
 Requirements
 ------------
 
-* Vagrant 2.2.0+ is required for this plugin. 
-* Bolt 1.x+ needs to be installed on the platform machine.
+* Vagrant 2.2.0+ is required for this plugin.
+* Bolt 1.5+ needs to be installed on the platform machine.
 * Ruby 2.3+
+
+Known Issues
+------------
+
+* Machine names with hyphens in them are not valid in bolt 1.5.0. This is because of <https://tickets.puppetlabs.com/browse/BOLT-1022>.

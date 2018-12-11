@@ -45,38 +45,38 @@ module VagrantBolt::Util
     # @param [Object] env The env object
     # @return [Hash] The hash of config options for the inventory.yaml
     def self.generate_inventory_hash(env)
-      inventory = { 'groups' => [] }
+      inventory = { 'nodes' => [] }
       inventory.merge!(env.vagrantfile.config.bolt.inventory_config.compact)
       VagrantBolt::Util::Machine.nodes_in_environment(env).each do |vm|
         next unless VagrantBolt::Util::Machine.running?(vm)
 
-        inventory['groups'] << generate_node_group(vm)
+        inventory['nodes'] << generate_node_hash(vm)
       end
       inventory.compact
     end
 
-    # Generate a bolt inventory group hash from the VM config
+    # Generate a bolt inventory node hash from the VM config
     # @param [Object] machine The machine object
     # @return [Hash] The hash of config options for the VM
-    def self.generate_node_group(machine)
+    def self.generate_node_hash(machine)
       # Only call ssh_info once
-      node_group = {}
+      node_hash = {}
       ssh_info = machine.ssh_info
-      return node_group if ssh_info.nil?
+      return node_hash if ssh_info.nil?
 
-      node_group['name'] = machine.name.to_s
+      node_hash['alias'] = machine.name.to_s
       machine_config = machine.config.bolt.inventory_config
-      node_group['config'] = {}
+      node_hash['config'] = {}
       transport = VagrantBolt::Util::Machine.windows?(machine) ? 'winrm' : 'ssh'
-      node_group['config'][transport] = machine_transport_hash(machine, machine_config, ssh_info).compact
-      node_group['config']['transport'] = transport
-      node_group['nodes'] = ["#{transport}://#{ssh_info[:host]}:#{node_group['config'][transport]['port']}"]
+      node_hash['config'][transport] = machine_transport_hash(machine, machine_config, ssh_info).compact
+      node_hash['config']['transport'] = transport
+      node_hash['name'] = "#{transport}://#{ssh_info[:host]}:#{node_hash['config'][transport]['port']}"
       machine_config.each do |key, value|
         next if key == 'config' || value.nil? || value.empty?
 
-        node_group[key] = value
+        node_hash[key] = value
       end
-      node_group.compact
+      node_hash.compact
     end
 
     # Return a transport config hash for a node
