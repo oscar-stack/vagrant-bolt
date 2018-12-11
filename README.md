@@ -412,11 +412,17 @@ end
 Installation
 ------------
 
+The plugin can be installed through vagrant's plugin manager. Please ensure to meet the requirements prior to installing `vagrant-bolt`.
+
+~~~shell
+vagrant plugin install vagrant-bolt
+~~~
+
 Requirements
 ------------
 
 * Vagrant 2.2.0+ is required for this plugin.
-* Bolt 1.5+ needs to be installed on the platform machine.
+* Bolt 1.5+ needs to be installed on the platform machine and accessible on the path. Use the `bolt_exe` config parameter if it is not on the path.
 * Ruby 2.3+
 
 Known Issues

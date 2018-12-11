@@ -13,13 +13,9 @@ Gem::Specification.new do |gem|
   Vagrant provisioning with Puppet Bolt
   DESC
 
-  gem.authors  = ['Jarret Lavallee', 'Charlie Sharpsteen']
-  gem.email    = ['jarret@puppet.com']
-  gem.homepage = 'https://github.com/jarretlavallee/vagrant-bolt'
-
-# net-ssh has some version differences between bolt and vagrant
-  # We require bolt to be installed in PATH
-#  gem.add_dependency 'bolt', '~> 1.0'
+  gem.authors  = ['Jarret Lavallee']
+  gem.email    = ['jarret.lavallee@gmail.com']
+  gem.homepage = 'https://github.com/oscar-stack/vagrant-bolt'
 
   gem.files        = %x{git ls-files -z}.split("\0")
   gem.require_path = 'lib'
