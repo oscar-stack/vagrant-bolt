@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'pathname'
+
 module VagrantBolt::Util
   module Config
     # Config Utility Functions
@@ -37,7 +39,7 @@ module VagrantBolt::Util
     def self.full_path(path, root_path)
       return path if path.nil? || root_path.nil?
 
-      %r{^/.*}.match?(path) ? path : "#{root_path}/#{path}"
+      (Pathname.new path).absolute? ? path : File.expand_path(path, root_path)
     end
   end
 end
