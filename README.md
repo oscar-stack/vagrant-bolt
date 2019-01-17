@@ -166,7 +166,7 @@ The methods for a bolt command in a trigger allow for a task, plan, or command. 
     * Required: `machine` The machine object
     * Optional: `**args` A hash of [Plugin Settings](#plugin-settings) which override any previous config
 
-Example of the arguments can be seen below. 
+An example of the arguments can be seen below.
 
 Run the `facts` task using a specific user and password.
 
@@ -311,10 +311,10 @@ vms:
 
 ### Trigger Configuration
 
-Bolt triggers cab be configured at the root or within a VM object. To configure a bolt trigger a few additional params are required. 
+Bolt triggers cab be configured at the root or within a VM object. To configure a bolt trigger a few additional params are required.
 
 * `trigger_type`
-  * Description: A symbol of the trigger type. 
+  * Description: A symbol of the trigger type.
   * Valid Values: `:before` or `:after`
 * `trigger_commands`
   * Description: An array of symbols for the commands to run the trigger on
@@ -366,7 +366,7 @@ Options:
     -u, --[no-]updateinventory       Update the inventory file (defaults to false)
 ~~~
 
-The command can be used to deploy the Puppetfile, for example. 
+The command can be used to deploy the Puppetfile, for example.
 
 ~~~shell
 vagrant bolt puppetfile install
@@ -380,7 +380,7 @@ vagrant bolt -u task run facts -n server
 
 The `--updateinventory` flag will regenerate the inventory file from the active running machines, however it defaults to being off. In the example above, the inventory file will be updated prior to running the task.
 
-All arguments except for the `-u` will be passed to bolt, so a bolt command like the exaple below can be run. 
+All arguments except for the `-u` will be passed to bolt, so a bolt command like the example below can be run.
 
 ~~~shell
 vagrant bolt command run 'date' -n agent,master
@@ -389,7 +389,7 @@ vagrant bolt command run 'date' -n agent,master
 Other Use Cases
 ---------------
 
-There are some other use cases for Vagrant Bolt. One of which is to not use the triggers or provisioning to run bolt commands on the nodes, but to manage the inventory file for manual testing. This can easily be accomplished by using a trigger to manage the `inventory.yaml` file and specifying the configuration for the nodes in the config based on the options above. Below is an example trigger that will manage a `./inventory.yaml` file for use with external bolt commands. 
+There are some other use cases for Vagrant Bolt. One of which is to not use the triggers or provisioning to run bolt commands on the nodes, but to manage the inventory file for manual testing. This can easily be accomplished by using a trigger to manage the `inventory.yaml` file and specifying the configuration for the nodes in the config based on the options above. Below is an example trigger that will manage a `./inventory.yaml` file for use with external bolt commands.
 
 ~~~ruby
 require 'vagrant-bolt'
@@ -422,10 +422,10 @@ Requirements
 ------------
 
 * Vagrant 2.2.0+ is required for this plugin.
-* Bolt 1.5+ needs to be installed on the platform machine and accessible on the path. Use the `bolt_exe` config parameter if it is not on the path.
+* Bolt 1.10+ needs to be installed on the platform machine and accessible on the path. Use the `bolt_exe` config parameter if it is not on the path.
 * Ruby 2.3+
 
 Known Issues
 ------------
 
-* Machine names with hyphens in them are not valid in bolt 1.5.0. This is because of <https://tickets.puppetlabs.com/browse/BOLT-1022>.
+* Machine names with hyphens in them are not valid until bolt 1.10.0. Please upgrade to Bolt 1.10.0+ to use hyphens in the machine names.
