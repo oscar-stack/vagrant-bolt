@@ -20,6 +20,10 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
   # @return [Boolean] Shows debug logging
   def_model_attribute :debug
 
+  # @!attribute [rw] connect_timeout
+  # @return [String] The timeout for the ssh connection (linux)
+  def_model_attribute :connect_timeout
+
   # @!attribute [rw] host_key_check
   # @return [Boolean] If the connection should check the host key on the remote host (linux)
   def_model_attribute :host_key_check
@@ -118,32 +122,33 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
   def to_proc
     proc do |config|
       bolt = config.bolt
-      with_attr(:args)           { |val| bolt.args           = val }
-      with_attr(:bolt_exe)       { |val| bolt.bolt_exe       = val }
-      with_attr(:command)        { |val| bolt.command        = val }
-      with_attr(:boltdir)        { |val| bolt.boltdir        = val }
-      with_attr(:debug)          { |val| bolt.debug          = val }
-      with_attr(:host_key_check) { |val| bolt.host_key_check = val }
-      with_attr(:modulepath)     { |val| bolt.modulepath     = val }
-      with_attr(:name)           { |val| bolt.name           = val }
-      with_attr(:nodes)          { |val| bolt.nodes          = val }
-      with_attr(:noop)           { |val| bolt.noop           = val }
-      with_attr(:excludes)       { |val| bolt.excludes       = val }
-      with_attr(:node_list)      { |val| bolt.node_list      = val }
-      with_attr(:params)         { |val| bolt.params         = val }
-      with_attr(:user)           { |val| bolt.user           = val }
-      with_attr(:password)       { |val| bolt.password       = val }
-      with_attr(:port)           { |val| bolt.port           = val }
-      with_attr(:private_key)    { |val| bolt.private_key    = val }
-      with_attr(:run_as)         { |val| bolt.run_as         = val }
-      with_attr(:sudo_password)  { |val| bolt.sudo_password  = val }
-      with_attr(:ssl)            { |val| bolt.ssl            = val }
-      with_attr(:ssl_verify)     { |val| bolt.ssl_verify     = val }
-      with_attr(:tmpdir)         { |val| bolt.tmpdir         = val }
-      with_attr(:verbose)        { |val| bolt.verbose        = val }
-      with_attr(:facts)          { |val| bolt.facts          = val }
-      with_attr(:features)       { |val| bolt.features       = val }
-      with_attr(:vars)           { |val| bolt.vars           = val }
+      with_attr(:args)            { |val| bolt.args            = val }
+      with_attr(:bolt_exe)        { |val| bolt.bolt_exe        = val }
+      with_attr(:command)         { |val| bolt.command         = val }
+      with_attr(:boltdir)         { |val| bolt.boltdir         = val }
+      with_attr(:debug)           { |val| bolt.debug           = val }
+      with_attr(:connect_timeout) { |val| bolt.connect_timeout = val }
+      with_attr(:host_key_check)  { |val| bolt.host_key_check  = val }
+      with_attr(:modulepath)      { |val| bolt.modulepath      = val }
+      with_attr(:name)            { |val| bolt.name            = val }
+      with_attr(:nodes)           { |val| bolt.nodes           = val }
+      with_attr(:noop)            { |val| bolt.noop            = val }
+      with_attr(:excludes)        { |val| bolt.excludes        = val }
+      with_attr(:node_list)       { |val| bolt.node_list       = val }
+      with_attr(:params)          { |val| bolt.params          = val }
+      with_attr(:user)            { |val| bolt.user            = val }
+      with_attr(:password)        { |val| bolt.password        = val }
+      with_attr(:port)            { |val| bolt.port            = val }
+      with_attr(:private_key)     { |val| bolt.private_key     = val }
+      with_attr(:run_as)          { |val| bolt.run_as          = val }
+      with_attr(:sudo_password)   { |val| bolt.sudo_password   = val }
+      with_attr(:ssl)             { |val| bolt.ssl             = val }
+      with_attr(:ssl_verify)      { |val| bolt.ssl_verify      = val }
+      with_attr(:tmpdir)          { |val| bolt.tmpdir          = val }
+      with_attr(:verbose)         { |val| bolt.verbose         = val }
+      with_attr(:facts)           { |val| bolt.facts           = val }
+      with_attr(:features)        { |val| bolt.features        = val }
+      with_attr(:vars)            { |val| bolt.vars            = val }
     end
   end
   # rubocop:enable Metrics/BlockLength

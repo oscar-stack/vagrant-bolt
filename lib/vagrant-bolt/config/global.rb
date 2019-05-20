@@ -10,6 +10,10 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
   attr_accessor :boltdir
 
   # @!attribute [rw] host_key_check
+  # @return [String] If the connection should check the host key on the remote host (linux)
+  attr_accessor :connect_timeout
+
+  # @!attribute [rw] host_key_check
   # @return [Boolean] If the connection should check the host key on the remote host (linux)
   attr_accessor :host_key_check
 
@@ -74,45 +78,47 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
   attr_accessor :features
 
   def initialize
-    @bolt_exe       = UNSET_VALUE
-    @boltdir        = UNSET_VALUE
-    @host_key_check = UNSET_VALUE
-    @modulepath     = UNSET_VALUE
-    @password       = UNSET_VALUE
-    @port           = UNSET_VALUE
-    @private_key    = UNSET_VALUE
-    @run_as         = UNSET_VALUE
-    @ssl            = UNSET_VALUE
-    @ssl_verify     = UNSET_VALUE
-    @sudo_password  = UNSET_VALUE
-    @tmpdir         = UNSET_VALUE
-    @user           = UNSET_VALUE
-    @verbose        = UNSET_VALUE
-    @debug          = UNSET_VALUE
-    @facts          = UNSET_VALUE
-    @vars           = UNSET_VALUE
-    @features       = UNSET_VALUE
+    @bolt_exe        = UNSET_VALUE
+    @boltdir         = UNSET_VALUE
+    @connect_timeout = UNSET_VALUE
+    @host_key_check  = UNSET_VALUE
+    @modulepath      = UNSET_VALUE
+    @password        = UNSET_VALUE
+    @port            = UNSET_VALUE
+    @private_key     = UNSET_VALUE
+    @run_as          = UNSET_VALUE
+    @ssl             = UNSET_VALUE
+    @ssl_verify      = UNSET_VALUE
+    @sudo_password   = UNSET_VALUE
+    @tmpdir          = UNSET_VALUE
+    @user            = UNSET_VALUE
+    @verbose         = UNSET_VALUE
+    @debug           = UNSET_VALUE
+    @facts           = UNSET_VALUE
+    @vars            = UNSET_VALUE
+    @features        = UNSET_VALUE
   end
 
   def finalize!
-    @bolt_exe       = 'bolt' if @bolt_exe == UNSET_VALUE
-    @boltdir        = '.' if @boltdir == UNSET_VALUE
-    @host_key_check = nil if @host_key_check == UNSET_VALUE
-    @modulepath     = 'modules' if @modulepath == UNSET_VALUE
-    @port           = nil if @port == UNSET_VALUE
-    @password       = nil if @password == UNSET_VALUE
-    @private_key    = nil if @private_key == UNSET_VALUE
-    @run_as         = nil if @run_as == UNSET_VALUE
-    @ssl            = nil if @ssl == UNSET_VALUE
-    @ssl_verify     = nil if @ssl_verify == UNSET_VALUE
-    @sudo_password  = nil if @sudo_password == UNSET_VALUE
-    @tmpdir         = nil if @tmpdir == UNSET_VALUE
-    @user           = nil if @user == UNSET_VALUE
-    @verbose        = nil if @verbose == UNSET_VALUE
-    @debug          = nil if @debug == UNSET_VALUE
-    @facts          = nil if @facts == UNSET_VALUE
-    @features       = nil if @features == UNSET_VALUE
-    @vars           = nil if @vars == UNSET_VALUE
+    @bolt_exe        = 'bolt' if @bolt_exe == UNSET_VALUE
+    @boltdir         = '.' if @boltdir == UNSET_VALUE
+    @connect_timeout = nil if @connect_timeout == UNSET_VALUE
+    @host_key_check  = nil if @host_key_check == UNSET_VALUE
+    @modulepath      = 'modules' if @modulepath == UNSET_VALUE
+    @port            = nil if @port == UNSET_VALUE
+    @password        = nil if @password == UNSET_VALUE
+    @private_key     = nil if @private_key == UNSET_VALUE
+    @run_as          = nil if @run_as == UNSET_VALUE
+    @ssl             = nil if @ssl == UNSET_VALUE
+    @ssl_verify      = nil if @ssl_verify == UNSET_VALUE
+    @sudo_password   = nil if @sudo_password == UNSET_VALUE
+    @tmpdir          = nil if @tmpdir == UNSET_VALUE
+    @user            = nil if @user == UNSET_VALUE
+    @verbose         = nil if @verbose == UNSET_VALUE
+    @debug           = nil if @debug == UNSET_VALUE
+    @facts           = nil if @facts == UNSET_VALUE
+    @features        = nil if @features == UNSET_VALUE
+    @vars            = nil if @vars == UNSET_VALUE
   end
 
   def validate(_machine)
@@ -127,7 +133,7 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
     group_objects = ['facts', 'features', 'vars']
     config = {}
     instance_variables_hash.each do |key, value|
-      next if value.nil?
+      next if value.nil? || (value == UNSET_VALUE)
 
       if group_objects.include?(key)
         config[key] = value
@@ -154,6 +160,7 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
         'run_as',
         'port',
         'private_key',
+        'connect_timeout',
         'host_key_check',
         'sudo_password',
         'tmpdir',

@@ -42,6 +42,7 @@ describe VagrantBolt::Config::Global do
       "run_as",
       "ssl",
       "ssl_verify",
+      "connect_timeout",
       "host_key_check",
       "verbose",
       "debug",

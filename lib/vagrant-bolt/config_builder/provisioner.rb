@@ -20,6 +20,10 @@ class VagrantBolt::ConfigBuilder::Provisioner < ConfigBuilder::Model::Provisione
   # @return [Boolean] Shows debug logging
   def_model_attribute :debug
 
+  # @!attribute [rw] connect_timeout
+  # @return [String] The ssh connection timeout (linux)
+  def_model_attribute :connect_timeout
+
   # @!attribute [rw] host_key_check
   # @return [Boolean] If the connection should check the host key on the remote host (linux)
   def_model_attribute :host_key_check
