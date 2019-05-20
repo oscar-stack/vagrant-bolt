@@ -248,6 +248,8 @@ The settings available in the triggers and the provisioner are the same.
   * Default: The port that vagrant uses to connect to the machine
 * `sudo_password`
   * Description: A string containing the password bolt will use to escalate privileges on the machine
+* `connect_timeout`
+  * Description: A string which controls if the connection timeout for ssh (linux)
 * `host_key_check`
   * Description: A boolean which controls if the connection should check the host key on the remote host (linux)
   * Default: `false`

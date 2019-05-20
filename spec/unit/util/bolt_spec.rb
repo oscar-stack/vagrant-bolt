@@ -29,6 +29,7 @@ describe VagrantBolt::Util::Bolt do
         "alias" => "machine",
         "config" => {
           "ssh" => {
+            "connect-timeout" => "30",
             "host-key-check" => false,
             "port" => "22",
             "user" => "vagrant",
@@ -56,6 +57,7 @@ describe VagrantBolt::Util::Bolt do
       config.run_as = 'root'
       config.port = '22'
       config.private_key = 'bar'
+      config.connect_timeout = '30'
       config.host_key_check = false
       config.user = 'vagrant'
       config.facts = { 'a' => 'b' }
