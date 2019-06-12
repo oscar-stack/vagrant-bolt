@@ -108,7 +108,7 @@ module VagrantBolt::Util
     # @param env [Object] The environment
     # @return [String] The path to the inventory file
     def self.inventory_file(env)
-      File.join(env.local_data_path, 'bolt_inventory.yaml')
+      VagrantBolt::Util::Config.relative_path('bolt_inventory.yaml', env.local_data_path)
     end
 
     # Update and write the inventory file for the current running machines

@@ -50,8 +50,8 @@ class VagrantBolt::Runner
     config.node_list ||= @machine.name.to_s unless config.excludes.include?(@machine.name.to_s)
 
     # Ensure these are absolute paths to allow for running vagrant commands outside of the root dir
-    config.modulepath = VagrantBolt::Util::Config.full_path(config.modulepath, @env.root_path)
-    config.boltdir = VagrantBolt::Util::Config.full_path(config.boltdir, @env.root_path)
+    config.modulepath = VagrantBolt::Util::Config.relative_path(config.modulepath, @env.root_path)
+    config.boltdir = VagrantBolt::Util::Config.relative_path(config.boltdir, @env.root_path)
 
     config
   end

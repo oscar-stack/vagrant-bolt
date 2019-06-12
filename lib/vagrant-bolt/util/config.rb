@@ -32,7 +32,7 @@ module VagrantBolt::Util
       result
     end
 
-    # Convert a path to the absolute path of the inventory if it is relative
+    # Convert a path to the absolute path if it is relative
     # @param path [String] The path to convert
     # @param root_path [Object] The root path to append
     # @return [String] The absolute path or nil if path is nil
@@ -40,6 +40,17 @@ module VagrantBolt::Util
       return path if path.nil? || root_path.nil?
 
       (Pathname.new path).absolute? ? path : File.expand_path(path, root_path)
+    end
+
+    # Convert a path to the relative path from the current directory
+    # @param path [String] The path to convert
+    # @param root_path [Object] The root path to append
+    # @return [String] The relative path or nil if path is nil
+    def self.relative_path(path, root_path)
+      return path if path.nil?
+
+      absolute_path = Pathname.new full_path(path, root_path)
+      absolute_path.relative_path_from(Pathname.getwd).to_s
     end
   end
 end

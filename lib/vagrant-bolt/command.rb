@@ -46,7 +46,7 @@ class VagrantBolt::Command < Vagrant.plugin('2', :command)
   # @param args [Array<String>] An array containing the bolt arguments
   def execute_bolt_command(args)
     bolt_exe = @env.vagrantfile.config.bolt.bolt_exe
-    boltdir = VagrantBolt::Util::Config.full_path(@env.vagrantfile.config.bolt.boltdir, @env.root_path)
+    boltdir = VagrantBolt::Util::Config.relative_path(@env.vagrantfile.config.bolt.boltdir, @env.root_path)
     inventoryfile = VagrantBolt::Util::Bolt.inventory_file(@env)
 
     quoted_args = args.flatten.compact.map { |a| "'#{a}'" }
