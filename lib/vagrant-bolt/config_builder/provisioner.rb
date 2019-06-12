@@ -29,7 +29,7 @@ class VagrantBolt::ConfigBuilder::Provisioner < ConfigBuilder::Model::Provisione
   def_model_attribute :host_key_check
 
   # @!attribute [rw] modulepath
-  # @return [String] The path to the modules. Defaults to `modules`.
+  # @return [String] The path to the modules.
   def_model_attribute :modulepath
 
   # @!attribute [rw] name

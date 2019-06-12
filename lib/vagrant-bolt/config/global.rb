@@ -18,7 +18,7 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
   attr_accessor :host_key_check
 
   # @!attribute [rw] modulepath
-  # @return [String] The path to the modules. Defaults to `modules`.
+  # @return [String] The path to the modules.
   attr_accessor :modulepath
 
   # @!attribute [rw] user
@@ -104,7 +104,7 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
     @boltdir         = '.' if @boltdir == UNSET_VALUE
     @connect_timeout = nil if @connect_timeout == UNSET_VALUE
     @host_key_check  = nil if @host_key_check == UNSET_VALUE
-    @modulepath      = 'modules' if @modulepath == UNSET_VALUE
+    @modulepath      = nil if @modulepath == UNSET_VALUE
     @port            = nil if @port == UNSET_VALUE
     @password        = nil if @password == UNSET_VALUE
     @private_key     = nil if @private_key == UNSET_VALUE

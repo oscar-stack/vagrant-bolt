@@ -262,7 +262,6 @@ The settings available in the triggers and the provisioner are the same.
   * Description: A boolean which controls if the connection should verify SSL on with WinRM (Windows)
 * `modulepath`
   * Description: A string containing the path to bolt modules
-  * Default: `modules` in the vagrant root
 * `tmpdir`
   * Description: A string containing the directory to upload and execute temporary files on the target
 * `verbose`

@@ -21,7 +21,6 @@ describe VagrantBolt::Config::Global do
 
   context "defaults" do
     expected_values = {
-      modulepath: "modules",
       bolt_exe: "bolt",
       boltdir: ".",
     }
@@ -49,6 +48,7 @@ describe VagrantBolt::Config::Global do
       "facts",
       "vars",
       "features",
+      "modulepath",
     ]
     expected_nil.each do |val|
       it "defaults #{val} to nil" do
