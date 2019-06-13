@@ -28,13 +28,11 @@ describe VagrantBolt::Runner do
       allow(result).to receive(:stderr).and_return("")
     end
   end
-  let(:root_path) { '/root/path' }
-  let(:local_data_path) { '/local/data/path' }
-  let(:inventory_path) { "#{local_data_path}/bolt_inventory.yaml" }
+  let(:root_path) { Dir.getwd }
+  let(:local_data_path) { "#{root_path}/.vagrant" }
+  let(:inventory_path) { ".vagrant/bolt_inventory.yaml" }
   before(:each) do
     allow(VagrantBolt::Util::Bolt).to receive(:update_inventory_file).with(iso_env).and_return(inventory_path)
-    allow(iso_env).to receive(:root_path).and_return(root_path)
-    allow(iso_env).to receive(:local_data_path).and_return(local_data_path)
     allow(machine).to receive(:env).and_return(:iso_env)
     allow(machine).to receive(:ssh_info).and_return(
       host: 'foo',
@@ -94,6 +92,8 @@ describe VagrantBolt::Runner do
     let(:options) { { notify: [:stdout, :stderr], env: { PATH: nil } } }
     before(:each) do
       allow(Vagrant::Util::Subprocess).to receive(:execute).and_return(subprocess_result)
+      allow(iso_env).to receive(:root_path).and_return(root_path)
+      allow(iso_env).to receive(:local_data_path).and_return(local_data_path)
     end
 
     it 'does not raise an exeption when all parameters are specified' do
@@ -110,11 +110,10 @@ describe VagrantBolt::Runner do
 
     it 'creates a shell execution' do
       config.bolt_exe = 'bolt'
-      config.modulepath = 'modules'
       config.boltdir = '.'
       config.node_list = 'ssh://test:22'
       config.finalize!
-      command = "bolt task run 'foo' --boltdir '#{root_path}' --modulepath '#{root_path}/modules' --inventoryfile '#{inventory_path}' --nodes 'ssh://test:22'"
+      command = "bolt task run 'foo' --boltdir '.' --inventoryfile '#{inventory_path}' --nodes 'ssh://test:22'"
       expect(Vagrant::Util::Subprocess).to receive(:execute).with('bash', '-c', command, options).and_return(subprocess_result)
       subject.run('task', 'foo')
     end
