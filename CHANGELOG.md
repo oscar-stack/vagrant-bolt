@@ -1,7 +1,7 @@
 # Change Log
 
-## [0.1.1](https://github.com/oscar-stack/vagrant-bolt/tree/0.1.1) (2019-07-01)
-[Full Changelog](https://github.com/oscar-stack/vagrant-bolt/compare/v0.1.0...0.1.1)
+## [v0.1.1](https://github.com/oscar-stack/vagrant-bolt/tree/v0.1.1) (2019-07-01)
+[Full Changelog](https://github.com/oscar-stack/vagrant-bolt/compare/v0.1.0...v0.1.1)
 
 **Merged pull requests:**
 
