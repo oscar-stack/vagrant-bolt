@@ -15,6 +15,7 @@ group :development do
   gem 'rubocop'
   gem 'rubocop-rspec'
   gem 'yard', '~> 0.9.16'
+  gem 'github_changelog_generator'
 end
 
 group :test do
