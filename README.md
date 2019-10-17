@@ -194,7 +194,7 @@ VagrantBolt.task(
   env,
   machine,
   run_as: 'root',
-  bolt_exe: '/usr/local/bin/bolt',
+  bolt_exe: '/opt/puppetlabs/bin/bolt',
   params: { name: "cron", action: "restart" },
 )
 ~~~
@@ -216,7 +216,7 @@ The settings available in the triggers and the provisioner are the same.
 
 * `bolt_exe`
   * Description: A string containing the full path to the bolt executable
-  * Default: `bolt`
+  * Default: `/opt/puppetlabs/bin/bolt` if it exists, else the first `bolt` in the PATH
 * `boltdir`
   * Description: A string containing the bolt working directory
   * Default: The vagrant root

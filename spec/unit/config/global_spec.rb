@@ -20,8 +20,12 @@ describe VagrantBolt::Config::Global do
   end
 
   context "defaults" do
+    before(:each) do
+      allow(File).to receive(:file?).with('/opt/puppetlabs/bin/bolt').and_return(true)
+    end
+
     expected_values = {
-      bolt_exe: "bolt",
+      bolt_exe: "/opt/puppetlabs/bin/bolt",
       boltdir: ".",
     }
     expected_values.each do |val, expected|

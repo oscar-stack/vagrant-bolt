@@ -100,7 +100,7 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
   end
 
   def finalize!
-    @bolt_exe        = 'bolt' if @bolt_exe == UNSET_VALUE
+    @bolt_exe        = bolt_exe_path if @bolt_exe == UNSET_VALUE
     @boltdir         = '.' if @boltdir == UNSET_VALUE
     @connect_timeout = nil if @connect_timeout == UNSET_VALUE
     @host_key_check  = nil if @host_key_check == UNSET_VALUE
@@ -119,6 +119,15 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
     @facts           = nil if @facts == UNSET_VALUE
     @features        = nil if @features == UNSET_VALUE
     @vars            = nil if @vars == UNSET_VALUE
+  end
+
+  # Get the full path to the bolt executable
+  # @return [String] The path to the bolt exe
+  def bolt_exe_path
+    unless Vagrant::Util::Platform.windows?
+      return '/opt/puppetlabs/bin/bolt' if File.file?('/opt/puppetlabs/bin/bolt')
+    end
+    Vagrant::Util::Which.which('bolt') || 'bolt'
   end
 
   def validate(_machine)
