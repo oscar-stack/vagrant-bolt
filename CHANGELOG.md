@@ -1,5 +1,13 @@
 # Change Log
 
+## [v0.1.2](https://github.com/oscar-stack/vagrant-bolt/tree/v0.1.2) (2019-10-17)
+[Full Changelog](https://github.com/oscar-stack/vagrant-bolt/compare/v0.1.1...v0.1.2)
+
+**Merged pull requests:**
+
+- Fix the bolt path issue and create a release [\#11](https://github.com/oscar-stack/vagrant-bolt/pull/11) ([jarretlavallee](https://github.com/jarretlavallee))
+- Fix changelog version tag [\#10](https://github.com/oscar-stack/vagrant-bolt/pull/10) ([jarretlavallee](https://github.com/jarretlavallee))
+
 ## [v0.1.1](https://github.com/oscar-stack/vagrant-bolt/tree/v0.1.1) (2019-07-01)
 [Full Changelog](https://github.com/oscar-stack/vagrant-bolt/compare/v0.1.0...v0.1.1)
 
