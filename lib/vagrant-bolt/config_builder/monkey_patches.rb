@@ -29,7 +29,7 @@ module VagrantBolt::ConfigBuilder::MonkeyPatches
 
   def eval_bolt_triggers_root(vm_root_config)
     # Configure the vm bolt object if the options exist
-    triggers = attr(:bolt_triggers) || [] # rubocop:disable Style/Attr
+    triggers = attr(:bolt_triggers) || []
     triggers.each do |config|
       f = VagrantBolt::ConfigBuilder::Triggers.new_from_hash(config)
       f.call(vm_root_config)

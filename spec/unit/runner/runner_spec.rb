@@ -113,7 +113,7 @@ describe VagrantBolt::Runner do
       config.boltdir = '.'
       config.node_list = 'ssh://test:22'
       config.finalize!
-      command = "bolt task run 'foo' --boltdir '.' --inventoryfile '#{inventory_path}' --nodes 'ssh://test:22'"
+      command = "bolt task run 'foo' --boltdir '.' --inventoryfile '#{inventory_path}' --targets 'ssh://test:22'"
       expect(Vagrant::Util::Subprocess).to receive(:execute).with('bash', '-c', command, options).and_return(subprocess_result)
       subject.run('task', 'foo')
     end

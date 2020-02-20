@@ -2,8 +2,9 @@
 
 source 'https://rubygems.org'
 require 'rubygems/version'
+ruby ">= 2.5.0"
 
-vagrant_branch = ENV['TEST_VAGRANT_VERSION'] || 'v2.2.2'
+vagrant_branch = ENV['TEST_VAGRANT_VERSION'] || 'v2.2.7'
 
 group :plugins do
   gemspec
@@ -31,7 +32,7 @@ group :test do
 end
 
 group :system_tests do
-  gem 'bolt', ">=1.5.0"
+  gem 'bolt', "~> 1.48.0"
 end
 
 

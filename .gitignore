@@ -15,3 +15,4 @@ Gemfile.local
 /site-modules
 *.box
 *.rerun.json
+.resource_types
