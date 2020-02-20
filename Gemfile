@@ -2,7 +2,6 @@
 
 source 'https://rubygems.org'
 require 'rubygems/version'
-ruby ">= 2.5.0"
 
 vagrant_branch = ENV['TEST_VAGRANT_VERSION'] || 'v2.2.7'
 
