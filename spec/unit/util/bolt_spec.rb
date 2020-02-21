@@ -39,7 +39,7 @@ describe VagrantBolt::Util::Bolt do
           },
           "transport" => "ssh",
         },
-        "name" => "ssh://machine:22",
+        "uri" => "ssh://machine:22",
         "facts" => { 'a' => 'b' },
         "vars" => { 'foo' => 'bar' },
         "features" => ['foo'],
@@ -48,8 +48,9 @@ describe VagrantBolt::Util::Bolt do
     let(:config_hash) { { 'config' => { 'a' => 'b' } } }
     let(:node_hash) do
       {
-        'nodes' => [machine_hash],
+        'targets' => [machine_hash],
         'config' => config_hash['config'],
+        'version' => 2,
       }
     end
     before(:each) do
@@ -95,7 +96,7 @@ describe VagrantBolt::Util::Bolt do
       config.node_list = 'ssh://test:22'
       config.user = 'user'
       config.finalize!
-      expected = "bolt task run 'foo' --user \'user\' --inventoryfile '#{inventory_path}' --nodes \'ssh://test:22\'"
+      expected = "bolt task run 'foo' --user \'user\' --inventoryfile '#{inventory_path}' --targets \'ssh://test:22\'"
       expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
     end
 

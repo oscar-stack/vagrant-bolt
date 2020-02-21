@@ -23,6 +23,6 @@ matrix:
   fast_finish: true
   include:
     - rvm: 2.4.4
-      env: TEST_VAGRANT_VERSION=v2.2.2
+      env: TEST_VAGRANT_VERSION=v2.2.7
     - rvm: 2.5.0
       env: TEST_VAGRANT_VERSION=HEAD

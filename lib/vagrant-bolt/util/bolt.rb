@@ -36,7 +36,7 @@ module VagrantBolt::Util
       end
 
       command << "--inventoryfile \'#{inventory_path}\'" unless inventory_path.nil?
-      command << "--nodes \'#{config.node_list}\'" unless config.node_list.nil?
+      command << "--targets \'#{config.node_list}\'" unless config.node_list.nil?
       command << config.args unless config.args.nil?
       command.flatten.join(" ")
     end
@@ -45,12 +45,12 @@ module VagrantBolt::Util
     # @param env [Object] The env object
     # @return [Hash] The hash of config options for the inventory.yaml
     def self.generate_inventory_hash(env)
-      inventory = { 'nodes' => [] }
+      inventory = { 'version' => 2, 'targets' => [] }
       inventory.merge!(env.vagrantfile.config.bolt.inventory_config.compact)
       VagrantBolt::Util::Machine.nodes_in_environment(env).each do |vm|
         next unless VagrantBolt::Util::Machine.running?(vm)
 
-        inventory['nodes'] << generate_node_hash(vm)
+        inventory['targets'] << generate_node_hash(vm)
       end
       inventory.compact
     end
@@ -70,7 +70,7 @@ module VagrantBolt::Util
       transport = VagrantBolt::Util::Machine.windows?(machine) ? 'winrm' : 'ssh'
       node_hash['config'][transport] = machine_transport_hash(machine, machine_config, ssh_info).compact
       node_hash['config']['transport'] = transport
-      node_hash['name'] = "#{transport}://#{ssh_info[:host]}:#{node_hash['config'][transport]['port']}"
+      node_hash['uri'] = "#{transport}://#{ssh_info[:host]}:#{node_hash['config'][transport]['port']}"
       machine_config.each do |key, value|
         next if key == 'config' || value.nil? || value.empty?
 
