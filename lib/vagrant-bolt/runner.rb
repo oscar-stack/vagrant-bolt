@@ -46,7 +46,7 @@ class VagrantBolt::Runner
     config.set_options(args) unless args.nil?
     # Configure the node_list based on the config
     config.node_list ||= [config.nodes - config.excludes].flatten.join(',') unless config.nodes.empty? || config.nodes.to_s.casecmp("all").zero?
-    config.node_list ||= [VagrantBolt::Util::Machine.nodes_in_environment(@env).map(&:name) - config.excludes].flatten.join(',') if config.nodes.to_s.casecmp("all").zero?
+    config.node_list ||= [VagrantBolt::Util::Machine.machines_in_environment(@env).map(&:name) - config.excludes].flatten.join(',') if config.nodes.to_s.casecmp("all").zero?
     config.node_list ||= @machine.name.to_s unless config.excludes.include?(@machine.name.to_s)
 
     # Ensure these are absolute paths to allow for running vagrant commands outside of the root dir

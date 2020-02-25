@@ -46,7 +46,7 @@ describe VagrantBolt::Runner do
 
   context 'setup_overrides' do
     before(:each) do
-      allow(VagrantBolt::Util::Machine).to receive(:nodes_in_environment).with(iso_env).and_return([machine, machine2])
+      allow(VagrantBolt::Util::Machine).to receive(:machines_in_environment).with(iso_env).and_return([machine, machine2])
     end
     it 'adds the command and name to the config' do
       result = subject.send(:setup_overrides, 'task', 'foo')

@@ -47,7 +47,7 @@ module VagrantBolt::Util
     def self.generate_inventory_hash(env)
       inventory = { 'version' => 2, 'targets' => [] }
       inventory.merge!(env.vagrantfile.config.bolt.inventory_config.compact)
-      VagrantBolt::Util::Machine.nodes_in_environment(env).each do |vm|
+      VagrantBolt::Util::Machine.machines_in_environment(env).each do |vm|
         next unless VagrantBolt::Util::Machine.running?(vm)
 
         inventory['targets'] << generate_node_hash(vm)

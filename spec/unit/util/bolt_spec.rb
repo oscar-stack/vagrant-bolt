@@ -71,7 +71,7 @@ describe VagrantBolt::Util::Bolt do
       allow(env).to receive_message_chain("vagrantfile.config.bolt.inventory_config").and_return(config_hash)
       allow(env).to receive(:active_machines).and_return(['machine'])
       allow(env).to receive(:machine).and_return(machine)
-      allow_any_instance_of(VagrantBolt::Util::Machine).to receive(:nodes_in_environment).with(env).and_return([machine])
+      allow_any_instance_of(VagrantBolt::Util::Machine).to receive(:machines_in_environment).with(env).and_return([machine])
       allow_any_instance_of(VagrantBolt::Util::Machine).to receive(:running?).with(machine).and_return(true)
     end
 
