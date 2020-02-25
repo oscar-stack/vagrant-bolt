@@ -72,6 +72,7 @@ describe VagrantBolt::Config::Bolt do
   context "defaults" do
     expected_values = {
       nodes: [],
+      targets: [],
       excludes: [],
     }
     expected_values.each do |val, expected|
@@ -86,6 +87,7 @@ describe VagrantBolt::Config::Bolt do
       "command",
       "params",
       "node_list",
+      "target_list",
       "user",
       "password",
       "port",

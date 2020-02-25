@@ -10,6 +10,7 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
   attr_accessor :name
 
   # @!attribute [rw] nodes
+  # DEPRECATED. Use `targets` instead.
   # Note: The `node_list` will override this setting.
   # @return [Array<String, Symbol>, "ALL"] The nodes to run the task or plan on.
   # Valid values are an array of machine names or the string "ALL".
@@ -17,14 +18,15 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
 
   # @!attribute [rw] excludes
   # Note: The `node_list` will override this setting.
-  # Note: This will be merged with `nodes`, with `excludes` taking precidence.
-  # @return [Array<String, Symbol>] The nodes to exclude from running this task or plan on.
+  # Note: This will be merged with `targets`, with `excludes` taking precidence.
+  # @return [Array<String, Symbol>] The targets to exclude from running this task or plan on.
   # Valid values are an array of machine names.
   attr_accessor :excludes
 
   # @!attribute [rw] node_list
+  # DEPRECATED. Use `target_list` instead.
   # This setting overrides `nodes` and needs to be in the `protocol://ipaddress:port` URI format.
-  # @return [String] The bolt node list. This defaults to the currnet node.
+  # @return [String] The bolt node list. This defaults to the currnet machine.
   attr_accessor :node_list
 
   # @!attribute [rw] params
@@ -39,6 +41,17 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
   # @return [Boolean] If the command should be run with noop. Only valid with tasks and apply.
   attr_accessor :noop
 
+  # @!attribute [rw] targets
+  # Note: The `target_list` will override this setting.
+  # @return [Array<String, Symbol>, "ALL"] The targets to run the task or plan on.
+  # Valid values are an array of machine names or the string "ALL".
+  attr_accessor :targets
+
+  # @!attribute [rw] target_list
+  # This setting overrides `targets` and needs to be in the `protocol://ipaddress:port` URI format.
+  # @return [String] The bolt target list. This defaults to the currnet machine.
+  attr_accessor :target_list
+
   def initialize
     super
     @args         = UNSET_VALUE
@@ -48,6 +61,8 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
     @node_list    = UNSET_VALUE
     @params       = UNSET_VALUE
     @command      = UNSET_VALUE
+    @targets      = []
+    @target_list  = UNSET_VALUE
   end
 
   def finalize!
@@ -73,15 +88,18 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
     @params         = nil if @params == UNSET_VALUE
     @command        = nil if @command == UNSET_VALUE
     @noop           = nil if @noop == UNSET_VALUE
+    # Use nodes if targets is not specified.
+    @targets        = @nodes if @targets.empty?
+    @target_list    = @node_list if @target_list == UNSET_VALUE or @target_list.nil?
   end
 
   def merge(other)
     super.tap do |result|
       new_excludes = (excludes + other.excludes.dup).flatten.uniq
       result.instance_variable_set(:@excludes, new_excludes.to_a)
-      unless nodes.to_s.casecmp("all").zero?
-        new_nodes = (nodes + other.nodes.dup).flatten.uniq
-        result.instance_variable_set(:@nodes, new_nodes.to_a)
+      unless targets.to_s.casecmp("all").zero?
+        new_targets = (targets + other.targets.dup).flatten.uniq
+        result.instance_variable_set(:@targets, new_targets.to_a)
       end
     end
   end
@@ -90,9 +108,9 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
     errors = _detected_errors
     errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_command', command: @command.to_s) if !@command.nil? && !['task', 'plan', 'command'].include?(@command.to_s)
 
-    if @nodes.nil? || (!(@nodes.is_a? Array) && !@nodes.to_s.casecmp("all").zero?)
+    if @targets.nil? || (!(@targets.is_a? Array) && !@targets.to_s.casecmp("all").zero?)
       errors << I18n.t('vagrant-bolt.config.bolt.errors.invalid_data_command',
-                       item: 'nodes',
+                       item: 'targets',
                        command: 'array')
     end
 
@@ -121,8 +139,10 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
   def blacklist
     [
       'nodes',
+      'targets',
       'excludes',
       'node_list',
+      'target_list',
       'bolt_exe',
       'args',
       'command',

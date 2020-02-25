@@ -16,12 +16,12 @@ class VagrantBolt::Runner
   # @param [Symbol, String] command The command of bolt to run; task or plan
   # @param [String] name The name of the bolt task or plan to run
   # @param [Hash] args A optional hash of bolt config overrides. No merging will be done with the overrides
-  # @example run('task', 'facts', {node_list: "machinename"})
+  # @example run('task', 'facts', {targets: ["machinename"]})
   def run(command, name, **args)
     @boltconfig = setup_overrides(command, name, **args)
-    # Don't run anything if there are nodes to run it on
-    # TODO: Gate this in a more efficient manner. It is possible to run plans without a node list.
-    return if @boltconfig.node_list.nil?
+    # Don't run anything if there are targets to run it on
+    # TODO: Gate this in a more efficient manner. It is possible to run plans without a target list.
+    return if @boltconfig.target_list.nil?
 
     @inventory_path = VagrantBolt::Util::Bolt.update_inventory_file(@env)
     validate
@@ -44,10 +44,10 @@ class VagrantBolt::Runner
     config = VagrantBolt::Util::Config.merge_config(config, @env.vagrantfile.config.bolt)
     # Add any additional arguments to the config object
     config.set_options(args) unless args.nil?
-    # Configure the node_list based on the config
-    config.node_list ||= [config.nodes - config.excludes].flatten.join(',') unless config.nodes.empty? || config.nodes.to_s.casecmp("all").zero?
-    config.node_list ||= [VagrantBolt::Util::Machine.machines_in_environment(@env).map(&:name) - config.excludes].flatten.join(',') if config.nodes.to_s.casecmp("all").zero?
-    config.node_list ||= @machine.name.to_s unless config.excludes.include?(@machine.name.to_s)
+    # Configure the target_list based on the config
+    config.target_list ||= [config.targets - config.excludes].flatten.join(',') unless config.targets.empty? || config.targets.to_s.casecmp("all").zero?
+    config.target_list ||= [VagrantBolt::Util::Machine.machines_in_environment(@env).map(&:name) - config.excludes].flatten.join(',') if config.targets.to_s.casecmp("all").zero?
+    config.target_list ||= @machine.name.to_s unless config.excludes.include?(@machine.name.to_s)
 
     # Ensure these are absolute paths to allow for running vagrant commands outside of the root dir
     config.modulepath = VagrantBolt::Util::Config.relative_path(config.modulepath, @env.root_path)

@@ -36,7 +36,7 @@ module VagrantBolt::Util
       end
 
       command << "--inventoryfile \'#{inventory_path}\'" unless inventory_path.nil?
-      command << "--targets \'#{config.node_list}\'" unless config.node_list.nil?
+      command << "--targets \'#{config.target_list}\'" unless config.target_list.nil?
       command << config.args unless config.args.nil?
       command.flatten.join(" ")
     end

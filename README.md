@@ -177,13 +177,13 @@ VagrantBolt.task('facts', env, machine, user: 'ubuntu', password: 'testpassword'
 Run the `facts` plan on `server1` and `server2`.
 
 ~~~ruby
-VagrantBolt.plan('facts', env, machine, nodes: [:server1, :server2])
+VagrantBolt.plan('facts', env, machine, targets: [:server1, :server2])
 ~~~
 
-Run the `hostname` command on all nodes.
+Run the `hostname` command on all targets.
 
 ~~~ruby
-VagrantBolt.command('/bin/hostname', env, machine, nodes: 'all')
+VagrantBolt.command('/bin/hostname', env, machine, targets: 'all')
 ~~~
 
 Run the `service::linux` task as `root` to restart `cron` with a specific path to the bolt executable. This configuration specifies params for the `service::linux` task.
@@ -220,20 +220,20 @@ The settings available in the triggers and the provisioner are the same.
 * `boltdir`
   * Description: A string containing the bolt working directory
   * Default: The vagrant root
-* `node_list`
-  * Description: A string containing bolt node list in URI format
-    * This will override `nodes` and `excludes`
-  * Default: `%{protocol}://%{ssh_ip}:%{ssh_port}` if `nodes` is not specified
-* `nodes`
+* `target_list`
+  * Description: A string containing bolt target list in URI format
+    * This will override `targets` and `excludes`
+  * Default: `%{protocol}://%{ssh_ip}:%{ssh_port}` if `targets` is not specified
+* `targets`
   * Description: An array of machine names to run the task or plan on
-    * The `node_list` will override this setting.
+    * The `target_list` will override this setting.
     * A special `ALL` string can be used instead of an array to use all active machines in the environment
   * Valid Values: An array of machine symbols or the string "ALL"
   * Default: `[]`
 * `excludes`
   * Description: An array of machine names to not run the task on
-    * The `node_list` will override this setting.
-    * This setting will take precidence over `nodes`
+    * The `target_list` will override this setting.
+    * This setting will take precidence over `targets`
   * Valid Values: An array of machine symbols
   * Default: `[]`
 * `params`
@@ -277,7 +277,14 @@ The settings available in the triggers and the provisioner are the same.
 * `vars`
   * Description: A hash containing arbitrary data that may be passed to run_* functions or used for logic in plans
 * `facts`
-  * Description: A hash containing observed information about the node including what can be collected by Facter
+  * Description: A hash containing observed information about the target including what can be collected by Facter
+
+**Deprecated Parameters**
+
+* `node_list`
+  * Replaced by `target_list`
+* `nodes`
+  * Replaced by `targets`
 
 Config Builder
 --------------
@@ -373,7 +380,7 @@ The command can be used to deploy the Puppetfile, for example.
 vagrant bolt puppetfile install
 ~~~
 
-It can be used to run ad-hoc tasks on a node by specifying the node by its machine name.
+It can be used to run ad-hoc tasks on a target by specifying the target by its machine name.
 
 ~~~shell
 vagrant bolt -u task run facts -n server
@@ -390,7 +397,7 @@ vagrant bolt command run 'date' -n agent,master
 Other Use Cases
 ---------------
 
-There are some other use cases for Vagrant Bolt. One of which is to not use the triggers or provisioning to run bolt commands on the nodes, but to manage the inventory file for manual testing. This can easily be accomplished by using a trigger to manage the `inventory.yaml` file and specifying the configuration for the nodes in the config based on the options above. Below is an example trigger that will manage a `./inventory.yaml` file for use with external bolt commands.
+There are some other use cases for Vagrant Bolt. One of which is to not use the triggers or provisioning to run bolt commands on the targets, but to manage the inventory file for manual testing. This can easily be accomplished by using a trigger to manage the `inventory.yaml` file and specifying the configuration for the targets in the config based on the options above. Below is an example trigger that will manage a `./inventory.yaml` file for use with external bolt commands.
 
 ~~~ruby
 require 'vagrant-bolt'

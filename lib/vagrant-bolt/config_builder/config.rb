@@ -37,21 +37,23 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
   def_model_attribute :name
 
   # @!attribute [rw] nodes
+  # DEPRECATED. Use `targets` instead.
   # Note: The `node_list` will override this setting.
   # @return [Array<String, Symbol>, "ALL"] The nodes to run the task or plan on.
   # Valid values are an array of machine names or the string "ALL".
   def_model_attribute :nodes
 
   # @!attribute [rw] excludes
-  # Note: The `node_list` will override this setting.
-  # Note: This will be merged with `nodes`, with `excludes` taking precidence.
-  # @return [Array<String, Symbol>] The nodes to exclude from running this task or plan on.
+  # Note: The `target_list` will override this setting.
+  # Note: This will be merged with `targets`, with `excludes` taking precidence.
+  # @return [Array<String, Symbol>] The targets to exclude from running this task or plan on.
   # Valid values are an array of machine names.
   def_model_attribute :excludes
 
   # @!attribute [rw] node_list
+  # DEPRECATED. Use `target_list` instead.
   # This setting overrides `nodes` and needs to be in the `protocol://ipaddress:port` URI format
-  # @return [String] The bolt node list. This defaults to the currnet node.
+  # @return [String] The bolt node list. This defaults to the current node.
   def_model_attribute :node_list
 
   # @!attribute [rw] noop
@@ -97,6 +99,17 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
   # @!attribute [rw] ssl_verify
   # @return [Boolean] If the connection should verify SSL on with WinRM (Windows)
   def_model_attribute :ssl_verify
+
+  # @!attribute [rw] targets
+  # Note: The `target_list` will override this setting.
+  # @return [Array<String, Symbol>, "ALL"] The targets to run the task or plan on.
+  # Valid values are an array of machine names or the string "ALL".
+  def_model_attribute :targets
+
+  # @!attribute [rw] target_list
+  # This setting overrides `targets` and needs to be in the `protocol://ipaddress:port` URI format
+  # @return [String] The bolt target list. This defaults to the current target.
+  def_model_attribute :target_list
 
   # @!attribute [rw] tmpdir
   # @return [String] The directory to upload and execute temporary files on the target
@@ -144,6 +157,8 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
       with_attr(:sudo_password)   { |val| bolt.sudo_password   = val }
       with_attr(:ssl)             { |val| bolt.ssl             = val }
       with_attr(:ssl_verify)      { |val| bolt.ssl_verify      = val }
+      with_attr(:targets)         { |val| bolt.targets         = val }
+      with_attr(:target_list)     { |val| bolt.target_list     = val }
       with_attr(:tmpdir)          { |val| bolt.tmpdir          = val }
       with_attr(:verbose)         { |val| bolt.verbose         = val }
       with_attr(:facts)           { |val| bolt.facts           = val }

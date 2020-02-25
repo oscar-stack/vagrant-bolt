@@ -37,6 +37,7 @@ class VagrantBolt::ConfigBuilder::Provisioner < ConfigBuilder::Model::Provisione
   def_model_attribute :name
 
   # @!attribute [rw] nodes
+  # DEPRECATED. Use `targets` instead.
   # Note: The `node_list` will override this setting.
   # @return [Array<String, Symbol>, "ALL"] The nodes to run the task or plan on.
   # Valid values are an array of machine names or the string "ALL".
@@ -47,9 +48,9 @@ class VagrantBolt::ConfigBuilder::Provisioner < ConfigBuilder::Model::Provisione
   def_model_attribute :noop
 
   # @!attribute [rw] excludes
-  # Note: The `node_list` will override this setting.
-  # Note: This will be merged with `nodes`, with `excludes` taking precidence.
-  # @return [Array<String, Symbol>] The nodes to exclude from running this task or plan on.
+  # Note: The `target_list` will override this setting.
+  # Note: This will be merged with `targets`, with `excludes` taking precidence.
+  # @return [Array<String, Symbol>] The targets to exclude from running this task or plan on.
   # Valid values are an array of machine names.
   def_model_attribute :excludes
 
@@ -97,6 +98,17 @@ class VagrantBolt::ConfigBuilder::Provisioner < ConfigBuilder::Model::Provisione
   # @!attribute [rw] ssl_verify
   # @return [Boolean] If the connection should verify SSL on with WinRM (Windows)
   def_model_attribute :ssl_verify
+
+  # @!attribute [rw] targets
+  # Note: The `target_list` will override this setting.
+  # @return [Array<String, Symbol>, "ALL"] The targets to run the task or plan on.
+  # Valid values are an array of machine names or the string "ALL".
+  def_model_attribute :targets
+
+  # @!attribute [rw] target_list
+  # This setting overrides `targets` and needs to be in the `protocol://ipaddress:port` URI format
+  # @return [String] The bolt target list. This defaults to the current target.
+  def_model_attribute :target_list
 
   # @!attribute [rw] tmpdir
   # @return [String] The directory to upload and execute temporary files on the target
