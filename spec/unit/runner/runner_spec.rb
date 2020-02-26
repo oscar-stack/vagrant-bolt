@@ -46,7 +46,7 @@ describe VagrantBolt::Runner do
 
   context 'setup_overrides' do
     before(:each) do
-      allow(VagrantBolt::Util::Machine).to receive(:nodes_in_environment).with(iso_env).and_return([machine, machine2])
+      allow(VagrantBolt::Util::Machine).to receive(:machines_in_environment).with(iso_env).and_return([machine, machine2])
     end
     it 'adds the command and name to the config' do
       result = subject.send(:setup_overrides, 'task', 'foo')
@@ -54,31 +54,47 @@ describe VagrantBolt::Runner do
       expect(result.name).to eq('foo')
     end
 
-    it 'uses the server name for the nodes' do
+    it 'uses the server name for the targets' do
       result = subject.send(:setup_overrides, 'task', 'foo')
-      expect(result.node_list).to eq('server')
+      expect(result.target_list).to eq('server')
     end
 
-    it 'allows for using multiple nodes' do
+    it 'allows for using multiple targets' do
+      config.targets = ['server', 'server2']
+      config.finalize!
+      result = subject.send(:setup_overrides, 'task', 'foo')
+      expect(result.target_list).to eq('server,server2')
+    end
+
+    it 'allows for using nodes parameter' do
       config.nodes = ['server', 'server2']
       config.finalize!
       result = subject.send(:setup_overrides, 'task', 'foo')
-      expect(result.node_list).to eq('server,server2')
+      expect(result.target_list).to eq('server,server2')
     end
 
-    it 'adds all nodes when "all" is specified' do
-      config.nodes = 'all'
+    it 'adds all targets when "all" is specified' do
+      config.targets = 'all'
       config.finalize!
       result = subject.send(:setup_overrides, 'task', 'foo')
-      expect(result.node_list).to eq('server,server2')
+      expect(result.target_list).to eq('server,server2')
     end
 
     it 'does not override specified ssh settings' do
+      config.target_list = 'ssh://test:22'
+      config.user = 'root'
+      config.finalize!
+      result = subject.send(:setup_overrides, 'task', 'foo')
+      expect(result.target_list).to eq('ssh://test:22')
+      expect(result.user).to eq('root')
+    end
+
+    it 'target_list defaults to node_list' do
       config.node_list = 'ssh://test:22'
       config.user = 'root'
       config.finalize!
       result = subject.send(:setup_overrides, 'task', 'foo')
-      expect(result.node_list).to eq('ssh://test:22')
+      expect(result.target_list).to eq('ssh://test:22')
       expect(result.user).to eq('root')
     end
 
@@ -111,7 +127,7 @@ describe VagrantBolt::Runner do
     it 'creates a shell execution' do
       config.bolt_exe = 'bolt'
       config.boltdir = '.'
-      config.node_list = 'ssh://test:22'
+      config.target_list = 'ssh://test:22'
       config.finalize!
       command = "bolt task run 'foo' --boltdir '.' --inventoryfile '#{inventory_path}' --targets 'ssh://test:22'"
       expect(Vagrant::Util::Subprocess).to receive(:execute).with('bash', '-c', command, options).and_return(subprocess_result)

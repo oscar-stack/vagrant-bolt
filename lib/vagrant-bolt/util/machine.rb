@@ -32,7 +32,7 @@ module VagrantBolt::Util
     # Generate a list of active machines in the environment
     # @param env [Object] The Environment
     # @return [Array<Object>]
-    def self.nodes_in_environment(env)
+    def self.machines_in_environment(env)
       env.active_machines.map { |vm|
         begin
           env.machine(*vm)

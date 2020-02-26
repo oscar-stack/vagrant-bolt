@@ -6,7 +6,7 @@ Vagrant.configure('2') do |config|
   # Run a trigger on all nodes after provision
   config.trigger.after :provision do |trigger|
     trigger.ruby do |env, machine|
-      VagrantBolt.command('/bin/echo "allnodetest"', env, machine, nodes: 'all')
+      VagrantBolt.command('/bin/echo "allnodetest"', env, machine, targets: 'all')
     end
   end
   config.vm.define 'server1' do |node|

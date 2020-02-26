@@ -79,9 +79,9 @@ shared_examples 'provider/virtualbox' do |provider, options|
       # Check for root level triggers
       result = assert_execute('vagrant', 'provision')
       expect(result.exit_code).to eq(0)
-      # Ensure that the trigger is run on both nodes
+      # Ensure that the trigger is run on both targets
       expect(result.stdout.scan(%r{server[12]:\s+allnodetest}).size).to eq(4)
-      # Ensure that 'nodes = all' includes both nodes
+      # Ensure that 'targets = all' includes both targets
       expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+allnodetest[^\n]+server[12],server[12]})
       # Ensure that the root level `run_as` is used
       expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+allnodetest[^\n]+--run-as 'root'})

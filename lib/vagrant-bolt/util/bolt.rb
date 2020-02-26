@@ -36,7 +36,7 @@ module VagrantBolt::Util
       end
 
       command << "--inventoryfile \'#{inventory_path}\'" unless inventory_path.nil?
-      command << "--targets \'#{config.node_list}\'" unless config.node_list.nil?
+      command << "--targets \'#{config.target_list}\'" unless config.target_list.nil?
       command << config.args unless config.args.nil?
       command.flatten.join(" ")
     end
@@ -47,7 +47,7 @@ module VagrantBolt::Util
     def self.generate_inventory_hash(env)
       inventory = { 'version' => 2, 'targets' => [] }
       inventory.merge!(env.vagrantfile.config.bolt.inventory_config.compact)
-      VagrantBolt::Util::Machine.nodes_in_environment(env).each do |vm|
+      VagrantBolt::Util::Machine.machines_in_environment(env).each do |vm|
         next unless VagrantBolt::Util::Machine.running?(vm)
 
         inventory['targets'] << generate_node_hash(vm)
