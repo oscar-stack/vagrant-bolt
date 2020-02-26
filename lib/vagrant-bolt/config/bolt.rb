@@ -90,7 +90,7 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
     @noop           = nil if @noop == UNSET_VALUE
     # Use nodes if targets is not specified.
     @targets        = @nodes if @targets.empty?
-    @target_list    = @node_list if @target_list == UNSET_VALUE or @target_list.nil?
+    @target_list    = @node_list if (@target_list == UNSET_VALUE) || @target_list.nil?
   end
 
   def merge(other)
