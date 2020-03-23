@@ -47,7 +47,7 @@ ConfigBuilder::Model::VM.prepend(VagrantBolt::ConfigBuilder::MonkeyPatches)
 # Allow for the role filter to handle bolt configs and bolt_triggers
 # @!visibility private
 module VagrantBolt::ConfigBuilder::MonkeyPatches::FilterRoles
-  def merge_targets!(left, right)
+  def merge_nodes!(left, right)
     super.tap do |result|
       array_keys = ['bolt_triggers']
       array_keys.each do |key|
