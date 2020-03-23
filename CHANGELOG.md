@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.2.1](https://github.com/oscar-stack/vagrant-bolt/tree/v0.2.1) (2020-03-23)
+
+[Full Changelog](https://github.com/oscar-stack/vagrant-bolt/compare/v0.2.0...v0.2.1)
+
+**Closed issues:**
+
+- Replace bolt argument nodes with targets [\#13](https://github.com/oscar-stack/vagrant-bolt/issues/13)
+
+**Merged pull requests:**
+
+- Fix config builder role filtering [\#15](https://github.com/oscar-stack/vagrant-bolt/pull/15) ([jarretlavallee](https://github.com/jarretlavallee))
+
 ## [v0.2.0](https://github.com/oscar-stack/vagrant-bolt/tree/v0.2.0) (2020-02-26)
 
 [Full Changelog](https://github.com/oscar-stack/vagrant-bolt/compare/v0.1.2...v0.2.0)
