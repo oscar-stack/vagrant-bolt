@@ -101,6 +101,8 @@ describe VagrantBolt::Config::Bolt do
       "verbose",
       "debug",
       "host_key_check",
+      "machine_alias",
+      "machine_name",
       "modulepath",
       "bolt_exe",
       "boltdir",

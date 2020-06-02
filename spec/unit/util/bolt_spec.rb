@@ -26,7 +26,6 @@ describe VagrantBolt::Util::Bolt do
     end
     let(:machine_hash) do
       {
-        "alias" => "machine",
         "config" => {
           "ssh" => {
             "connect-timeout" => "30",
@@ -41,6 +40,8 @@ describe VagrantBolt::Util::Bolt do
         },
         "uri" => "ssh://machine:22",
         "facts" => { 'a' => 'b' },
+        "alias" => 'machine',
+        "name" => 'somename',
         "vars" => { 'foo' => 'bar' },
         "features" => ['foo'],
       }
@@ -64,6 +65,7 @@ describe VagrantBolt::Util::Bolt do
       config.facts = { 'a' => 'b' }
       config.features = ['foo']
       config.vars = { 'foo' => 'bar' }
+      config.machine_name = 'somename'
       config.finalize!
       allow(machine).to receive_message_chain("config.bolt.inventory_config").and_return(config.inventory_config)
       allow(machine).to receive_message_chain("config.vm.communicator").and_return(:ssh)
