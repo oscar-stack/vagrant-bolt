@@ -17,6 +17,10 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
   # @return [Boolean] If the connection should check the host key on the remote host (linux)
   attr_accessor :host_key_check
 
+  # @!attribute [rw] machine_name
+  # @return [String] The name of the machine to set in the bolt inventory
+  attr_accessor :machine_name
+
   # @!attribute [rw] modulepath
   # @return [String] The path to the modules.
   attr_accessor :modulepath
@@ -82,6 +86,7 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
     @boltdir         = UNSET_VALUE
     @connect_timeout = UNSET_VALUE
     @host_key_check  = UNSET_VALUE
+    @machine_name    = UNSET_VALUE
     @modulepath      = UNSET_VALUE
     @password        = UNSET_VALUE
     @port            = UNSET_VALUE
@@ -104,6 +109,7 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
     @boltdir         = '.' if @boltdir == UNSET_VALUE
     @connect_timeout = nil if @connect_timeout == UNSET_VALUE
     @host_key_check  = nil if @host_key_check == UNSET_VALUE
+    @machine_name    = nil if @machine_name == UNSET_VALUE
     @modulepath      = nil if @modulepath == UNSET_VALUE
     @port            = nil if @port == UNSET_VALUE
     @password        = nil if @password == UNSET_VALUE
@@ -146,6 +152,8 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
 
       if group_objects.include?(key)
         config[key] = value
+      elsif key == 'machine_name'
+        config['name'] = value
       else
         setting_map.each do |transport, settings|
           next unless settings.include?(key)

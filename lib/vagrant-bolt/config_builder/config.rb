@@ -28,6 +28,10 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
   # @return [Boolean] If the connection should check the host key on the remote host (linux)
   def_model_attribute :host_key_check
 
+  # @!attribute [rw] machine_name
+  # @return [String] The name of the machine to set in the bolt inventory
+  attr_accessor :machine_name
+
   # @!attribute [rw] modulepath
   # @return [String] The path to the modules.
   def_model_attribute :modulepath
@@ -142,6 +146,7 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
       with_attr(:debug)           { |val| bolt.debug           = val }
       with_attr(:connect_timeout) { |val| bolt.connect_timeout = val }
       with_attr(:host_key_check)  { |val| bolt.host_key_check  = val }
+      with_attr(:machine_name)    { |val| bolt.machine_name    = val }
       with_attr(:modulepath)      { |val| bolt.modulepath      = val }
       with_attr(:name)            { |val| bolt.name            = val }
       with_attr(:nodes)           { |val| bolt.nodes           = val }

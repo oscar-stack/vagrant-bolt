@@ -43,6 +43,7 @@ describe VagrantBolt::Util::Bolt do
         "facts" => { 'a' => 'b' },
         "vars" => { 'foo' => 'bar' },
         "features" => ['foo'],
+        "name" => 'machine',
       }
     end
     let(:config_hash) { { 'config' => { 'a' => 'b' } } }
@@ -63,6 +64,7 @@ describe VagrantBolt::Util::Bolt do
       config.user = 'vagrant'
       config.facts = { 'a' => 'b' }
       config.features = ['foo']
+      config.machine_name = 'machine'
       config.vars = { 'foo' => 'bar' }
       config.finalize!
       allow(machine).to receive_message_chain("config.bolt.inventory_config").and_return(config.inventory_config)

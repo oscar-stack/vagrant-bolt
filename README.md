@@ -260,6 +260,8 @@ The settings available in the triggers and the provisioner are the same.
   * Description: A boolean which controls if the connection should use SSL on with WinRM (Windows)
 * `ssl_verify`
   * Description: A boolean which controls if the connection should verify SSL on with WinRM (Windows)
+* `machine_name`
+  * Description: A string to use as the machine's name in the bolt inventory file. Defaults to the machine name.
 * `modulepath`
   * Description: A string containing the path to bolt modules
 * `tmpdir`

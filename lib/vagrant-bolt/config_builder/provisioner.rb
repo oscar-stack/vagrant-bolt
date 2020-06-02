@@ -28,6 +28,10 @@ class VagrantBolt::ConfigBuilder::Provisioner < ConfigBuilder::Model::Provisione
   # @return [Boolean] If the connection should check the host key on the remote host (linux)
   def_model_attribute :host_key_check
 
+  # @!attribute [rw] machine_name
+  # @return [String] The name of the machine to set in the bolt inventory
+  attr_accessor :machine_name
+
   # @!attribute [rw] modulepath
   # @return [String] The path to the modules.
   def_model_attribute :modulepath
