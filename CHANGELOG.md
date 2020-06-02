@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.3.0](https://github.com/oscar-stack/vagrant-bolt/tree/v0.3.0) (2020-06-02)
+
+[Full Changelog](https://github.com/oscar-stack/vagrant-bolt/compare/v0.2.1...v0.3.0)
+
+**Merged pull requests:**
+
+- Update inventory naming [\#16](https://github.com/oscar-stack/vagrant-bolt/pull/16) ([jarretlavallee](https://github.com/jarretlavallee))
+
 ## [v0.2.1](https://github.com/oscar-stack/vagrant-bolt/tree/v0.2.1) (2020-03-23)
 
 [Full Changelog](https://github.com/oscar-stack/vagrant-bolt/compare/v0.2.0...v0.2.1)
