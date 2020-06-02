@@ -64,7 +64,6 @@ module VagrantBolt::Util
       ssh_info = machine.ssh_info
       return node_hash if ssh_info.nil?
 
-      node_hash['alias'] = machine.name.to_s
       machine_config = machine.config.bolt.inventory_config
       node_hash['config'] = {}
       transport = VagrantBolt::Util::Machine.windows?(machine) ? 'winrm' : 'ssh'
@@ -76,6 +75,8 @@ module VagrantBolt::Util
 
         node_hash[key] = value
       end
+      node_hash['name'] ||= machine.name.to_s
+      node_hash['alias'] = machine.name.to_s if node_hash['alias'].nil? && node_hash['name'] != machine.name.to_s
       node_hash.compact
     end
 
