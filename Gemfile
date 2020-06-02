@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 require 'rubygems/version'
 
-vagrant_branch = ENV['TEST_VAGRANT_VERSION'] || 'v2.2.7'
+vagrant_branch = ENV['TEST_VAGRANT_VERSION'] || 'v2.2.9'
 
 group :plugins do
   gemspec
@@ -27,11 +27,12 @@ group :test do
                    tag: vagrant_branch
   end
 
-  gem 'vagrant-spec', git: 'https://github.com/hashicorp/vagrant-spec.git'
+  gem 'vagrant-spec', git: 'https://github.com/hashicorp/vagrant-spec.git',
+                   branch: 'master'
 end
 
 group :system_tests do
-  gem 'bolt', "~> 1.48.0"
+  gem 'bolt', "~> 2.0.0"
 end
 
 
