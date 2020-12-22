@@ -50,8 +50,7 @@ describe VagrantBolt::Util::Bolt do
     let(:node_hash) do
       {
         'targets' => [machine_hash],
-        'config' => config_hash['config'],
-        'version' => 2,
+        'config' => config_hash['config']
       }
     end
     before(:each) do
