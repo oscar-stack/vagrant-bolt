@@ -83,8 +83,8 @@ shared_examples 'provider/virtualbox' do |provider, options|
       expect(result.stdout.scan(%r{server[12]:\s+allnodetest}).size).to eq(4)
       # Ensure that 'targets = all' includes both targets
       expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+allnodetest[^\n]+server[12],server[12]})
-      # Ensure that the root level `run_as` is used
-      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+allnodetest[^\n]+--run-as 'root'})
+      # Ensure that the root level `run_as` is not used
+      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+allnodetest})
       ## Configtest
       # Ensure excludes overrides targets
       expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+configtest[^\n]+server2})
@@ -92,7 +92,7 @@ shared_examples 'provider/virtualbox' do |provider, options|
       expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+configtest[^\n]+--verbose})
       expect(result.stdout).not_to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+configtest[^\n]+--debug})
       # Ensure run_as override
-      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+configtest[^\n]+--run-as 'vagrant'})
+      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+configtest})
     end
   end
 end

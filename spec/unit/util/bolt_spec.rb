@@ -148,6 +148,15 @@ describe VagrantBolt::Util::Bolt do
       expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
     end
 
+    it 'run_as is not included' do
+      config.node_list = 'ssh://test:22'
+      config.user = 'user'
+      config.run_as = 'foo'
+      config.finalize!
+      expected = "bolt task run 'foo' --user \'user\' --inventoryfile '#{inventory_path}' --targets \'ssh://test:22\'"
+      expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
+    end
+
     it 'debug, verbose, and noop are omitted when false' do
       config.debug = false
       config.verbose = false
