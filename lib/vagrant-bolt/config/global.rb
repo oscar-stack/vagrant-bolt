@@ -197,7 +197,6 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
       'winrm': [
         'user',
         'password',
-        'run_as',
         'ssl',
         'ssl_verify',
         'port',

@@ -125,12 +125,13 @@ describe VagrantBolt::Config::Bolt do
             "password" => "foo",
             "port" => "22",
             "run-as" => "root",
+            "user" => "Admin",
             "host-key-check" => false,
           },
           "winrm" => {
             "password" => "foo",
             "port" => "22",
-            "run-as" => "root",
+            "user" => "Admin",
             "ssl" => false,
           },
         },
@@ -139,6 +140,7 @@ describe VagrantBolt::Config::Bolt do
     before(:each) do
       subject.password = 'foo'
       subject.run_as = 'root'
+      subject.user = 'Admin'
       subject.port = '22'
       subject.ssl = false
       subject.host_key_check = false
