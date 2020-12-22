@@ -110,9 +110,17 @@ describe VagrantBolt::Util::Bolt do
 
     it 'adds directories to the command' do
       config.modulepath = 'baz'
+      config.project = 'foo'
+      config.finalize!
+      expected = "bolt task run 'foo' --modulepath 'baz' --project 'foo' --inventoryfile '#{inventory_path}'"
+      expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
+    end
+
+    it 'uses project when boltdir is specified' do
+      config.modulepath = 'baz'
       config.boltdir = 'foo'
       config.finalize!
-      expected = "bolt task run 'foo' --boltdir 'foo' --modulepath 'baz' --inventoryfile '#{inventory_path}'"
+      expected = "bolt task run 'foo' --modulepath 'baz' --project 'foo' --inventoryfile '#{inventory_path}'"
       expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
     end
 

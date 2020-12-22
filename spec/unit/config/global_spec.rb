@@ -26,7 +26,7 @@ describe VagrantBolt::Config::Global do
 
     expected_values = {
       bolt_exe: "/opt/puppetlabs/bin/bolt",
-      boltdir: ".",
+      project: ".",
     }
     expected_values.each do |val, expected|
       it "defaults #{val} to #{expected}" do

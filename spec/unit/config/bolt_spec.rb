@@ -106,6 +106,7 @@ describe VagrantBolt::Config::Bolt do
       "modulepath",
       "bolt_exe",
       "boltdir",
+      "project",
       "noop",
     ]
     expected_nil.each do |val|

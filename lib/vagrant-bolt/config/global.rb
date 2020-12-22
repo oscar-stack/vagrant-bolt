@@ -6,7 +6,7 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
   attr_accessor :bolt_exe
 
   # @!attribute [rw] boltdir
-  # @return [String] The bolt working directory. Defaults to `.`
+  # @return [String] DEPRECATED use `project`. The bolt working directory. Defaults to `.`
   attr_accessor :boltdir
 
   # @!attribute [rw] host_key_check
@@ -44,6 +44,10 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
   # @!attribute [rw] private_key
   # @return [String] The path of the private_key to authenticate on the machine.
   attr_accessor :private_key
+
+  # @!attribute [rw] project
+  # @return [String] The bolt project. Defaults to `.`
+  attr_accessor :project
 
   # @!attribute [rw] run_as
   # @return [String] User to run as using privilege escalation.
@@ -96,6 +100,7 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
     @password        = UNSET_VALUE
     @port            = UNSET_VALUE
     @private_key     = UNSET_VALUE
+    @project         = UNSET_VALUE
     @run_as          = UNSET_VALUE
     @ssl             = UNSET_VALUE
     @ssl_verify      = UNSET_VALUE
@@ -120,6 +125,7 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
     @port            = nil if @port == UNSET_VALUE
     @password        = nil if @password == UNSET_VALUE
     @private_key     = nil if @private_key == UNSET_VALUE
+    @project         = @boltdir if @project == UNSET_VALUE || @project.nil?
     @run_as          = nil if @run_as == UNSET_VALUE
     @ssl             = nil if @ssl == UNSET_VALUE
     @ssl_verify      = nil if @ssl_verify == UNSET_VALUE
