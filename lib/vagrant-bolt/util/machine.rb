@@ -21,9 +21,10 @@ module VagrantBolt::Util
         notify: [:stdout, :stderr],
         env: { PATH: ENV["VAGRANT_OLD_ENV_PATH"] },
       ) do |io_name, data|
-        if io_name == :stdout
+        case io_name
+        when :stdout
           localui.info data
-        elsif io_name == :stderr
+        when :stderr
           localui.warn data
         end
       end

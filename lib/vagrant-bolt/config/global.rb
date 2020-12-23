@@ -142,9 +142,8 @@ class VagrantBolt::Config::Global < Vagrant.plugin('2', :config)
   # Get the full path to the bolt executable
   # @return [String] The path to the bolt exe
   def bolt_exe_path
-    unless Vagrant::Util::Platform.windows?
-      return '/opt/puppetlabs/bin/bolt' if File.file?('/opt/puppetlabs/bin/bolt')
-    end
+    return '/opt/puppetlabs/bin/bolt' if !Vagrant::Util::Platform.windows? && File.file?('/opt/puppetlabs/bin/bolt')
+
     Vagrant::Util::Which.which('bolt') || 'bolt'
   end
 

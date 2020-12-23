@@ -63,7 +63,7 @@ class VagrantBolt::Runner
     errors.merge!(@boltconfig.validate(@machine))
     errors.merge!(validate_config)
 
-    errors.keys.each do |key|
+    errors.each_key do |key|
       errors.delete(key) if errors[key].empty?
     end
 
