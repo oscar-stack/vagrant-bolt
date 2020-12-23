@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.4.0](https://github.com/oscar-stack/vagrant-bolt/tree/v0.4.0) (2020-12-23)
+
+[Full Changelog](https://github.com/oscar-stack/vagrant-bolt/compare/v0.3.0...v0.4.0)
+
+**Merged pull requests:**
+
+- Remove deprecated Bolt features [\#17](https://github.com/oscar-stack/vagrant-bolt/pull/17) ([jarretlavallee](https://github.com/jarretlavallee))
+
+**Changes**
+
+- This release requires bolt 2.16.0+
+- Several deprecated features have been removed such as the following
+  - `boltdir` has been changed to `project`. The `project` setting defaults to `boltdir` to avoid breaking changes
+  - `run-as` has been removed from the `winrm` settings hash in the inventory file
+  - `version` has been removed from the inventory file
+  - `run-as` has been removed from the command line as it was overridden by the inventory file
+- Acceptance tests have been fixed to use the gem installation of bolt
+- Travis-CI tests have been migrated to Github Actions
+
 ## [v0.3.0](https://github.com/oscar-stack/vagrant-bolt/tree/v0.3.0) (2020-06-02)
 
 [Full Changelog](https://github.com/oscar-stack/vagrant-bolt/compare/v0.2.1...v0.3.0)
