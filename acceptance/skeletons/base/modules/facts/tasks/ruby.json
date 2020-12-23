@@ -1,4 +1,0 @@
-{
-  "description": "Gather system facts using ruby and facter",
-  "parameters": {}
-}

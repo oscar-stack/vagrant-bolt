@@ -21,18 +21,18 @@ end
 group :test do
   if %r{head}i.match?(vagrant_branch)
     gem 'vagrant', git: 'https://github.com/hashicorp/vagrant.git',
-                   branch: 'master'
+                   branch: 'main'
   else
     gem 'vagrant', git: 'https://github.com/hashicorp/vagrant.git',
                    tag: vagrant_branch
   end
 
   gem 'vagrant-spec', git: 'https://github.com/hashicorp/vagrant-spec.git',
-                   branch: 'master'
+                   branch: 'main'
 end
 
 group :system_tests do
-  gem 'bolt', "~> 2.0.0"
+  gem 'bolt', "~> 2.36.0"
 end
 
 

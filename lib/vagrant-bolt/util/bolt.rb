@@ -45,7 +45,7 @@ module VagrantBolt::Util
     # @param env [Object] The env object
     # @return [Hash] The hash of config options for the inventory.yaml
     def self.generate_inventory_hash(env)
-      inventory = { 'version' => 2, 'targets' => [] }
+      inventory = { 'targets' => [] }
       inventory.merge!(env.vagrantfile.config.bolt.inventory_config.compact)
       VagrantBolt::Util::Machine.machines_in_environment(env).each do |vm|
         next unless VagrantBolt::Util::Machine.running?(vm)

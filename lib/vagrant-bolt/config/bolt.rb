@@ -137,6 +137,8 @@ class VagrantBolt::Config::Bolt < VagrantBolt::Config::Global
       'vars',
       'facts',
       'features',
+      'boltdir',
+      'run_as',
     ]
   end
 end

@@ -126,10 +126,20 @@ describe VagrantBolt::Runner do
 
     it 'creates a shell execution' do
       config.bolt_exe = 'bolt'
+      config.project = '.'
+      config.target_list = 'ssh://test:22'
+      config.finalize!
+      command = "bolt task run 'foo' --project '.' --inventoryfile '#{inventory_path}' --targets 'ssh://test:22'"
+      expect(Vagrant::Util::Subprocess).to receive(:execute).with('bash', '-c', command, options).and_return(subprocess_result)
+      subject.run('task', 'foo')
+    end
+
+    it 'creates a shell execution with a project' do
+      config.bolt_exe = 'bolt'
       config.boltdir = '.'
       config.target_list = 'ssh://test:22'
       config.finalize!
-      command = "bolt task run 'foo' --boltdir '.' --inventoryfile '#{inventory_path}' --targets 'ssh://test:22'"
+      command = "bolt task run 'foo' --project '.' --inventoryfile '#{inventory_path}' --targets 'ssh://test:22'"
       expect(Vagrant::Util::Subprocess).to receive(:execute).with('bash', '-c', command, options).and_return(subprocess_result)
       subject.run('task', 'foo')
     end

@@ -1,6 +1,6 @@
 require 'vagrant-spec/which'
 Vagrant.configure('2') do |config|
-  config.bolt.bolt_exe = Vagrant::Spec::Which.which('bolt')
+  config.bolt.bolt_exe = [Vagrant::Spec::Which.which('ruby'), Vagrant::Spec::Which.which('bolt')]
   config.vm.box = 'box'
   config.vm.define 'server' do |node|
     node.vm.provision :bolt do |bolt|

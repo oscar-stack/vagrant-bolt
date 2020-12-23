@@ -51,7 +51,6 @@ describe VagrantBolt::Util::Bolt do
       {
         'targets' => [machine_hash],
         'config' => config_hash['config'],
-        'version' => 2,
       }
     end
     before(:each) do
@@ -111,9 +110,17 @@ describe VagrantBolt::Util::Bolt do
 
     it 'adds directories to the command' do
       config.modulepath = 'baz'
+      config.project = 'foo'
+      config.finalize!
+      expected = "bolt task run 'foo' --modulepath 'baz' --project 'foo' --inventoryfile '#{inventory_path}'"
+      expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
+    end
+
+    it 'uses project when boltdir is specified' do
+      config.modulepath = 'baz'
       config.boltdir = 'foo'
       config.finalize!
-      expected = "bolt task run 'foo' --boltdir 'foo' --modulepath 'baz' --inventoryfile '#{inventory_path}'"
+      expected = "bolt task run 'foo' --modulepath 'baz' --project 'foo' --inventoryfile '#{inventory_path}'"
       expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
     end
 
@@ -138,6 +145,15 @@ describe VagrantBolt::Util::Bolt do
       config.noop = true
       config.finalize!
       expected = "bolt task run 'foo' --verbose --debug --noop --inventoryfile '#{inventory_path}'"
+      expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
+    end
+
+    it 'run_as is not included' do
+      config.node_list = 'ssh://test:22'
+      config.user = 'user'
+      config.run_as = 'foo'
+      config.finalize!
+      expected = "bolt task run 'foo' --user \'user\' --inventoryfile '#{inventory_path}' --targets \'ssh://test:22\'"
       expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
     end
 

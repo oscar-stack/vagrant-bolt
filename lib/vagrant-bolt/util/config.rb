@@ -18,10 +18,11 @@ module VagrantBolt::Util
       [other, local].each do |obj|
         obj.instance_variables.each do |key|
           value = obj.instance_variable_get(key)
-          if value.is_a? Array
+          case value
+          when Array
             res_value = result.instance_variable_get(key)
             value = (value + res_value).uniq if res_value.is_a? Array
-          elsif value.is_a? Hash
+          when Hash
             res_value = result.instance_variable_get(key)
             value = res_value.merge(value) if res_value.is_a? Hash
           end

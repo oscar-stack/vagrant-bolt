@@ -13,7 +13,7 @@ class VagrantBolt::ConfigBuilder::Provisioner < ConfigBuilder::Model::Provisione
   def_model_attribute :bolt_exe
 
   # @!attribute [rw] boltdir
-  # @return [String] The bolt working directory. Defaults to `.`
+  # @return [String] DEPRECATED use `project`. The bolt working directory. Defaults to `.`
   def_model_attribute :boltdir
 
   # @!attribute [rw] debug
@@ -90,6 +90,10 @@ class VagrantBolt::ConfigBuilder::Provisioner < ConfigBuilder::Model::Provisione
   # @!attribute [rw] private_key
   # @return [String] The path of the private_key to authenticate on the machine.
   def_model_attribute :private_key
+
+  # @!attribute [rw] project
+  # @return [String] The bolt working directory. Defaults to `.`
+  def_model_attribute :project
 
   # @!attribute [rw] run_as
   # @return [String] User to run as using privilege escalation.

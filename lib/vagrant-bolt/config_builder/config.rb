@@ -13,7 +13,7 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
   def_model_attribute :bolt_exe
 
   # @!attribute [rw] boltdir
-  # @return [String] The bolt working directory. Defaults to `.`
+  # @return [String] DEPRECATED use `project`.  The bolt working directory. Defaults to `.`
   def_model_attribute :boltdir
 
   # @!attribute [rw] debug
@@ -71,6 +71,10 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
   # @!attribute [rw] params
   # @return [Hash] The paramater hash for the task or plan
   def_model_attribute :params
+
+  # @!attribute [rw] project
+  # @return [String] The bolt working directory. Defaults to `.`
+  def_model_attribute :project
 
   # @!attribute [rw] command
   # @return [Symbol] Whether bolt should use a task or plan
@@ -163,6 +167,7 @@ class VagrantBolt::ConfigBuilder::Config < ConfigBuilder::Model::Base
       with_attr(:password)        { |val| bolt.password        = val }
       with_attr(:port)            { |val| bolt.port            = val }
       with_attr(:private_key)     { |val| bolt.private_key     = val }
+      with_attr(:project)         { |val| bolt.project         = val }
       with_attr(:run_as)          { |val| bolt.run_as          = val }
       with_attr(:sudo_password)   { |val| bolt.sudo_password   = val }
       with_attr(:ssl)             { |val| bolt.ssl             = val }

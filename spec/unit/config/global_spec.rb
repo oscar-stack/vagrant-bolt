@@ -26,7 +26,7 @@ describe VagrantBolt::Config::Global do
 
     expected_values = {
       bolt_exe: "/opt/puppetlabs/bin/bolt",
-      boltdir: ".",
+      project: ".",
     }
     expected_values.each do |val, expected|
       it "defaults #{val} to #{expected}" do
@@ -70,12 +70,13 @@ describe VagrantBolt::Config::Global do
             "password" => "foo",
             "port" => "22",
             "run-as" => "root",
+            "user" => "Admin",
             "host-key-check" => false,
           },
           "winrm" => {
             "password" => "foo",
             "port" => "22",
-            "run-as" => "root",
+            "user" => "Admin",
             "ssl" => false,
           },
         },
@@ -84,6 +85,7 @@ describe VagrantBolt::Config::Global do
     before(:each) do
       subject.password = 'foo'
       subject.run_as = 'root'
+      subject.user = 'Admin'
       subject.port = '22'
       subject.ssl = false
       subject.host_key_check = false

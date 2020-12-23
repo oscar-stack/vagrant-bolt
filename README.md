@@ -218,8 +218,12 @@ The settings available in the triggers and the provisioner are the same.
   * Description: A string containing the full path to the bolt executable
   * Default: `/opt/puppetlabs/bin/bolt` if it exists, else the first `bolt` in the PATH
 * `boltdir`
+  * DEPRECATED use `project` instead
   * Description: A string containing the bolt working directory
   * Default: The vagrant root
+* `project`
+  * Description: A string containing the bolt project
+  * Default: The value of `boltdir` for backwards compatibilty
 * `target_list`
   * Description: A string containing bolt target list in URI format
     * This will override `targets` and `excludes`
