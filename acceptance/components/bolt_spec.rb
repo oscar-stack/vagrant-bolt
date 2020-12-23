@@ -7,6 +7,7 @@ shared_examples 'provider/virtualbox' do |provider, options|
   before do
     environment.skeleton('base')
     assert_execute('vagrant', 'box', 'add', 'box', options[:box])
+    execute('bolt', '--project', '.', 'puppetfile', 'install')
   end
 
   after do
@@ -21,9 +22,9 @@ shared_examples 'provider/virtualbox' do |provider, options|
 
     it 'runs a task, plan, and command' do
       expect(@result.exit_code).to eq(0)
-      expect(@result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt task run 'facts'})
-      expect(@result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt plan run 'facts'})
-      expect(@result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run})
+      expect(@result.stdout).to match(%r{bolt task run 'facts'})
+      expect(@result.stdout).to match(%r{bolt plan run 'facts'})
+      expect(@result.stdout).to match(%r{bolt command run})
       expect(@result.stdout.scan(%r{Successful on 1 target}).size).to eq(3)
     end
   end
@@ -36,9 +37,9 @@ shared_examples 'provider/virtualbox' do |provider, options|
 
     it 'runs a task, plan, and command' do
       expect(@result.exit_code).to eq(0)
-      expect(@result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt task run 'facts'})
-      expect(@result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt plan run 'facts'})
-      expect(@result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run})
+      expect(@result.stdout).to match(%r{bolt task run 'facts'})
+      expect(@result.stdout).to match(%r{bolt plan run 'facts'})
+      expect(@result.stdout).to match(%r{bolt command run})
       expect(@result.stdout.scan(%r{Successful on 1 target}).size).to eq(3)
     end
   end
@@ -52,15 +53,15 @@ shared_examples 'provider/virtualbox' do |provider, options|
       expect(@result.exit_code).to eq(0)
       result = assert_execute('vagrant', 'bolt', 'task', 'run', 'facts', '-t', 'server')
       expect(result.exit_code).to eq(0)
-      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: '\/[^\ ]+bolt' 'task' 'run' 'facts'})
+      expect(result.stdout).to match(%r{bolt 'task' 'run' 'facts'})
       expect(result.stdout.scan(%r{Successful on 1 target}).size).to eq(1)
       result = assert_execute('vagrant', 'bolt', 'plan', 'run', 'facts', '-t', 'server')
       expect(result.exit_code).to eq(0)
-      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: '\/[^\ ]+bolt' 'plan' 'run' 'facts'})
+      expect(result.stdout).to match(%r{bolt 'plan' 'run' 'facts'})
       expect(result.stdout.scan(%r{Successful on 1 target}).size).to eq(1)
       result = assert_execute('vagrant', 'bolt', 'command', 'run', 'hostname', '-t', 'server')
       expect(result.exit_code).to eq(0)
-      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: '\/[^\ ]+bolt' 'command' 'run'})
+      expect(result.stdout).to match(%r{bolt 'command' 'run'})
       expect(result.stdout.scan(%r{Successful on 1 target}).size).to eq(1)
     end
   end
@@ -82,17 +83,15 @@ shared_examples 'provider/virtualbox' do |provider, options|
       # Ensure that the trigger is run on both targets
       expect(result.stdout.scan(%r{server[12]:\s+allnodetest}).size).to eq(4)
       # Ensure that 'targets = all' includes both targets
-      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+allnodetest[^\n]+server[12],server[12]})
+      expect(result.stdout).to match(%r{bolt command run[^\n]+allnodetest[^\n]+server[12],server[12]})
       # Ensure that the root level `run_as` is not used
-      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+allnodetest})
+      expect(result.stdout).to match(%r{bolt command run[^\n]+allnodetest})
       ## Configtest
       # Ensure excludes overrides targets
-      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+configtest[^\n]+server2})
+      expect(result.stdout).to match(%r{bolt command run[^\n]+configtest[^\n]+server2})
       # Ensure verbose and debug flags are correctly handled
-      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+configtest[^\n]+--verbose})
-      expect(result.stdout).not_to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+configtest[^\n]+--debug})
-      # Ensure run_as override
-      expect(result.stdout).to match(%r{Bolt: Running bolt command locally: \/[^\ ]+bolt command run[^\n]+configtest})
+      expect(result.stdout).to match(%r{bolt command run[^\n]+configtest[^\n]+--verbose})
+      expect(result.stdout).not_to match(%r{bolt command run[^\n]+configtest[^\n]+--debug})
     end
   end
 end

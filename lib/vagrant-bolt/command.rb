@@ -51,12 +51,12 @@ class VagrantBolt::Command < Vagrant.plugin('2', :command)
 
     quoted_args = args.flatten.compact.map { |a| "'#{a}'" }
     command = [
-      "\'#{bolt_exe}\'",
+      bolt_exe,
       quoted_args,
       '--project',
-      "\'#{project}\'",
+      project,
     ]
     command << ['--inventoryfile', "\'#{inventoryfile}\'"] if File.exist?(inventoryfile)
-    VagrantBolt::Util::Machine.run_command(command.flatten.join(" "), @env.ui)
+    VagrantBolt::Util::Machine.run_command(command.flatten.join(' '), @env.ui)
   end
 end

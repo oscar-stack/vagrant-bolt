@@ -1,6 +1,6 @@
 require 'vagrant-spec/which'
 Vagrant.configure('2') do |config|
-  config.bolt.bolt_exe = Vagrant::Spec::Which.which('bolt')
+  config.bolt.bolt_exe = [Vagrant::Spec::Which.which('ruby'), Vagrant::Spec::Which.which('bolt')]
   config.bolt.run_as = 'root'
   config.vm.box = 'box'
   # Run a trigger on all nodes after provision

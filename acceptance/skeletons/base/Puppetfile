@@ -1,0 +1,2 @@
+mod 'puppetlabs-facts', '1.2.0'
+mod 'puppetlabs-ruby_task_helper', '0.5.1'
