@@ -26,7 +26,12 @@ module VagrantBolt::Util
           # Verbose and debug do not have --no flags so exclude them
           next if ['verbose', 'debug', 'noop'].include?(key) && !value
 
-          arg = value ? "--#{key}" : "--no-#{key}"
+          arg = if key == 'debug'
+                  '--log-level=debug'
+                else
+                  value ? "--#{key}" : "--no-#{key}"
+                end
+
           command << arg
         when String
           command << "--#{key} \'#{value}\'"

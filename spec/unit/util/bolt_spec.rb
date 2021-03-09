@@ -144,7 +144,7 @@ describe VagrantBolt::Util::Bolt do
       config.verbose = true
       config.noop = true
       config.finalize!
-      expected = "bolt task run 'foo' --verbose --debug --noop --inventoryfile '#{inventory_path}'"
+      expected = "bolt task run 'foo' --verbose --log-level=debug --noop --inventoryfile '#{inventory_path}'"
       expect(subject.generate_bolt_command(config, inventory_path)).to eq(expected)
     end
 
