@@ -1,11 +1,24 @@
 # Changelog
 
+## [v0.4.1](https://github.com/oscar-stack/vagrant-bolt/tree/v0.4.1) (2021-03-15)
+
+[Full Changelog](https://github.com/oscar-stack/vagrant-bolt/compare/v0.4.0...v0.4.1)
+
+**Closed issues:**
+
+- `config.bolt.debug = true` fails when running with Bolt 3.0 [\#19](https://github.com/oscar-stack/vagrant-bolt/issues/19)
+
+**Merged pull requests:**
+
+- Fix config.debug = true for Bolt 3.0 [\#20](https://github.com/oscar-stack/vagrant-bolt/pull/20) ([op-ct](https://github.com/op-ct))
+
 ## [v0.4.0](https://github.com/oscar-stack/vagrant-bolt/tree/v0.4.0) (2020-12-23)
 
 [Full Changelog](https://github.com/oscar-stack/vagrant-bolt/compare/v0.3.0...v0.4.0)
 
 **Merged pull requests:**
 
+- \(maint\) Change to github actions from travis [\#18](https://github.com/oscar-stack/vagrant-bolt/pull/18) ([jarretlavallee](https://github.com/jarretlavallee))
 - Remove deprecated Bolt features [\#17](https://github.com/oscar-stack/vagrant-bolt/pull/17) ([jarretlavallee](https://github.com/jarretlavallee))
 
 **Changes**
