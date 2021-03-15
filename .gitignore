@@ -1,6 +1,7 @@
 *.swp
 .bundle
 .vendor
+/vendor
 spec/fixtures
 .ruby-version
 .yardoc
