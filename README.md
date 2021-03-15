@@ -438,7 +438,7 @@ Requirements
 ------------
 
 * Vagrant 2.2.0+ is required for this plugin.
-* Bolt 2.16+ needs to be installed on the platform machine and accessible on the path. Use the `bolt_exe` config parameter if it is not on the path.
+* Bolt 2.17+ needs to be installed on the platform machine and accessible on the path. Use the `bolt_exe` config parameter if it is not on the path.
 * Ruby 2.5+
 
 Known Issues
